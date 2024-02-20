@@ -9,11 +9,9 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import Home from './components/Home/Home';
-import Friends from './components/Friends/Friends';
-import Profile from './components/User/Profile';
-
-
+import Home from './Components/Home/Home';
+import Friends from './Components/Friends/Friends';
+import Profile from './Components/User/Profile';
 
 function NavbarComp() {
     return (  
