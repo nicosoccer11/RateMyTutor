@@ -6,6 +6,9 @@ const pool = new Pool({
   database: 'rate_my_tutor_db',
   password: 'ratemytutor',
   port: 5432, // Default PostgreSQL port
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
 
 module.exports = pool;
