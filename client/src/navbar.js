@@ -15,11 +15,15 @@ import Profile from './Components/User/Profile';
 
 function NavbarComp() {
     return (  
-        <div>
+        <>
         <Router>
-            <Navbar expand="lg" className="bg-body-tertiary">
+            <Navbar bg="light" expand="lg" className="bg-body-tertiary">
                 <Container>
-                    <Navbar.Brand href="#home">React-Bootstrap</Navbar.Brand>
+                    <Navbar.Brand className={`me-auto`} href="/">
+                        <Nav.Link to="/">
+                            React-Bootstrap
+                        </Nav.Link>
+                    </Navbar.Brand>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="me-auto">
@@ -74,7 +78,7 @@ function NavbarComp() {
               <Route path='/profile' component={Profile} />
           </Routes>
         </Router>
-        </div>
+        </>
     );
 }
 
