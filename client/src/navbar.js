@@ -15,70 +15,62 @@ import Profile from './Components/User/Profile';
 
 function NavbarComp() {
     return (  
-        <>
         <Router>
-            <Navbar bg="light" expand="lg" className="bg-body-tertiary">
-                <Container>
-                    <Navbar.Brand className={`me-auto`} href="/">
-                        <Nav.Link to="/">
+            <>
+                <Navbar bg="light" expand="lg" className="bg-body-tertiary">
+                    <Container>
+                        <Navbar.Brand className={`me-auto`} as={Link} to="/">
                             React-Bootstrap
-                        </Nav.Link>
-                    </Navbar.Brand>
-                    <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                    <Navbar.Collapse id="basic-navbar-nav">
-                        <Nav className="me-auto">
-                            <Nav.Link>
-                                <Link to="/home">
+                        </Navbar.Brand>
+                        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                        <Navbar.Collapse id="basic-navbar-nav">
+                            <Nav className="me-auto">
+                                <Nav.Link as={Link} to="/home">
                                     Home
-                                </Link>
-                            </Nav.Link>
-                            <Nav.Link>
-                                <Link to="/friends">
+                                </Nav.Link>
+                                <Nav.Link as={Link} to="/friends">
                                     Friends
-                                </Link>
-                            </Nav.Link>
-                            <Nav.Link>
-                                <Link to="/profile">
+                                </Nav.Link>
+                                <Nav.Link as={Link} to="/profile">
                                     Profile
-                                </Link>
-                            </Nav.Link>
-                            <NavDropdown title="Dropdown" id="basic-nav-dropdown">
-                                <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-                                <NavDropdown.Item href="#action/3.2">
-                                    Another action
-                                </NavDropdown.Item>
-                                <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
-                                <NavDropdown.Divider />
-                                <NavDropdown.Item href="#action/3.4">
-                                    Separated link
-                                </NavDropdown.Item>
-                            </NavDropdown>
-                        </Nav>
-                        <Form inline>
-                            <Row>
-                            <Col xs="auto">
-                                <Form.Control
-                                type="text"
-                                placeholder="Search"
-                                className=" mr-sm-2"
-                                />
-                            </Col>
-                            <Col xs="auto">
-                                <Button type="submit">Submit</Button>
-                            </Col>
-                            </Row>
-                        </Form>
-                    </Navbar.Collapse>
-                </Container>
-            </Navbar>
-            <Routes>
-              <Route exact path='/' component={Home} />
-              <Route path='/home' component={Home} />
-              <Route path='/friends' component={Friends} />
-              <Route path='/profile' component={Profile} />
-          </Routes>
+                                </Nav.Link>
+                                <NavDropdown title="Dropdown" id="basic-nav-dropdown">
+                                    <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
+                                    <NavDropdown.Item href="#action/3.2">
+                                        Another action
+                                    </NavDropdown.Item>
+                                    <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
+                                    <NavDropdown.Divider />
+                                    <NavDropdown.Item href="#action/3.4">
+                                        Separated link
+                                    </NavDropdown.Item>
+                                </NavDropdown>
+                            </Nav>
+                            <Form inline>
+                                <Row>
+                                <Col xs="auto">
+                                    <Form.Control
+                                    type="text"
+                                    placeholder="Search"
+                                    className=" mr-sm-2"
+                                    />
+                                </Col>
+                                <Col xs="auto">
+                                    <Button type="submit">Submit</Button>
+                                </Col>
+                                </Row>
+                            </Form>
+                        </Navbar.Collapse>
+                    </Container>
+                </Navbar>
+                <Routes>
+                    <Route exact path='/' element={<Home />} />
+                    <Route path='/home' element={<Home />} />
+                    <Route path='/friends' element={<Friends />} />
+                    <Route path='/profile' element={<Profile />} />
+                </Routes>
+            </>
         </Router>
-        </>
     );
 }
 
