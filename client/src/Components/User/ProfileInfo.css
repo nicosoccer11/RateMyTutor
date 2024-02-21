@@ -1,0 +1,44 @@
+.profile-info-container {
+  display: flex;
+  padding: 10px;
+}
+
+.left-box,
+.right-box {
+  flex: 1;
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+
+.right-box {
+  margin-left: 10px;
+}
+
+.section {
+  margin-bottom: 20px;
+}
+
+.section:not(:last-child) {
+  border-bottom: 1px solid #ccc;
+}
+
+.center {
+  text-align: center;
+}
+
+.rating {
+  font-size: 40px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.rating a {
+  text-decoration: none;
+}
+
+.profile-image {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  overflow: hidden;
+}
