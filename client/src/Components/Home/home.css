@@ -1,0 +1,30 @@
+.post {
+    box-sizing: border-box; /* Changed to border-box for better sizing */
+    width: 70%; /* Keeping the width at 70% of the container */
+    max-width: 600px; /* Added a maximum width for better responsiveness */
+    margin: 0 auto; /* Centering the box horizontally */
+    padding: 20px; /* Adding padding inside the box */
+    border: solid #ccc 1px; /* Softening the border */
+    background-color: #ffffff; /* Adding a background color */
+    border-radius: 10px; /* Adding rounded corners */
+    display: flex;
+    flex-direction: column; /* Stacking content vertically */
+    gap: 10px; /* Adding gap between child elements */
+    margin-top:50px;
+  }
+
+username{
+    font-size: 15px;
+    font-weight: bold;
+    margin-bottom: 0px;
+    margin-top: 0px;
+}
+
+.post_button{
+    margin-right: 20px;
+    width: 20%;
+}
+
+.user-image{
+    width: 10%;
+}
