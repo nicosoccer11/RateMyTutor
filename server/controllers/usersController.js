@@ -43,6 +43,43 @@ const getUserByUsername = async (req, res) => {
   }
 };
 
+// Get a user's profile that is logged in
+const getUserProfile = async (req, res) => {
+  // Assuming authenticateToken middleware adds the username to req.user
+  const username = req.user.username;
+
+  try {
+    // Fetch user information
+    const userResult = await db.query('SELECT * FROM users WHERE Username = $1', [username]);
+    if (userResult.rows.length === 0) {
+      return res.status(404).send('User not found');
+    }
+    const user = userResult.rows[0];
+
+    // Fetch user's reviews as a tutor
+    const reviewsResult = await db.query('SELECT * FROM reviews WHERE TutorReviewedID = $1', [username]);
+    const reviews = reviewsResult.rows;
+
+    // Combine user info and reviews in the response
+    res.json({
+      user: {
+        username: user.username,
+        firstName: user.firstname,
+        lastName: user.lastname,
+        email: user.email,
+        bio: user.bio,
+        profilePicture: user.profilepicture, // Note: Consider converting BYTEA to a suitable format
+        averageRating: user.averagerating
+      },
+      reviews
+    });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error, check console for logs');
+  }
+};
+
+
 // Login a user
 const loginUser = async (req, res) => {
     const { username, password } = req.body;
@@ -71,4 +108,5 @@ module.exports = {
   getAllUsers,
   getUserByUsername,
   loginUser,
+  getUserProfile,
 };
