@@ -46,7 +46,7 @@ const getUserByUsername = async (req, res) => {
 // Get a user's profile that is logged in
 const getUserProfile = async (req, res) => {
   // Assuming authenticateToken middleware adds the username to req.user
-  const username = req.user.username;
+  const username = req.headers['Username'];
 
   try {
     // Fetch user information
@@ -82,25 +82,24 @@ const getUserProfile = async (req, res) => {
 
 // Login a user
 const loginUser = async (req, res) => {
-    const { username, password } = req.body;
-    try {
-      // Query the database for the user
-      const queryResult = await db.query('SELECT * FROM users WHERE Username = $1', [username]);
-      const user = queryResult.rows[0];
-  
-      if (user && user.password === password) {
-        // Passwords match, generate token
-        const token = jwt.sign({ userId: user.username }, process.env.ACCESS_TOKEN_SECRET || 'yourSecretKey', { expiresIn: '1h' });
-        res.json({ message: 'Login successful', token });
-      } else {
-        // Authentication failed
-        res.status(401).send('Authentication failed');
-      }
-    } catch (err) {
-      console.error(err.message);
-      res.status(500).send('Server error');
+  const { username, password } = req.body;
+  try {
+    // Query the database for the user
+    const queryResult = await db.query('SELECT * FROM users WHERE Username = $1', [username]);
+    const user = queryResult.rows[0];
+
+    if (user && user.password === password) {
+      // Passwords match, send username back
+      res.json({ message: 'Login successful', username: user.username });
+    } else {
+      // Authentication failed
+      res.status(401).send('Authentication failed');
     }
-  };
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+};
 
 // Export the functions
 module.exports = {
