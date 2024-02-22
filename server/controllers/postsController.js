@@ -2,8 +2,9 @@
 const db = require('../config/db');
 
 const createPost = async (req, res) => {
-  const { userId, content, picture } = req.body; // Assuming picture is base64 encoded or null
-  const time = new Date(); // Automatically set the time to now
+  const { content, picture } = req.body; // Removed userId from the body, as it's obtained from the token now
+  const time = new Date();
+  const userId = req.username; // Use the username from the token
 
   try {
     const newPost = await db.query(
