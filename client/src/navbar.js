@@ -13,7 +13,12 @@ import Home from './Components/Home/Home';
 import Friends from './Components/Friends/Friends';
 import Profile from './Components/User/Profile';
 
-function NavbarComp() {
+function NavbarComp({ setIsLoggedIn }) {
+
+    const handleLogout = () => {
+        localStorage.removeItem('user');
+        setIsLoggedIn(false);
+    };
     return (  
         <Router>
             <>
@@ -60,6 +65,7 @@ function NavbarComp() {
                                 </Col>
                                 </Row>
                             </Form>
+                            <Button variant="outline-danger" onClick={handleLogout}>Logout</Button>
                         </Navbar.Collapse>
                     </Container>
                 </Navbar>
