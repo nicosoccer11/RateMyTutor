@@ -68,6 +68,7 @@ function NavbarComp() {
                     <Route path='/home' element={<Home />} />
                     <Route path='/friends' element={<Friends />} />
                     <Route path='/profile' element={<Profile />} />
+                    <Route path="/profile/:id" element={<Profile />} />
                 </Routes>
             </>
         </Router>

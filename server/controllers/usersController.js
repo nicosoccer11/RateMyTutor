@@ -46,8 +46,7 @@ const getUserByUsername = async (req, res) => {
 // Get a user's profile that is logged in
 const getUserProfile = async (req, res) => {
   // Assuming authenticateToken middleware adds the username to req.user
-  const username = req.headers['Username'];
-
+  const username = req.headers['username'];
   try {
     // Fetch user information
     const userResult = await db.query('SELECT * FROM users WHERE Username = $1', [username]);

@@ -17,7 +17,7 @@ function Login({ onLogin }) {
             password,
           });
           localStorage.setItem('user', response.data.username);
-          console.log(response.data.username)
+          console.log("setting local storage \'user\' to:", response.data.username)
           onLogin();
         } catch (error) {
           console.error('Error logging in:', error);
@@ -31,7 +31,6 @@ function Login({ onLogin }) {
     return (
         <div className="login-container">
             {isSignup ? <Signup onLogin={onLogin} setIsSignup={setIsSignup}/> : <div>
-                <h2>Login</h2>
                 <form onSubmit={handleSubmit}>
                     <div>
                         <label className="login-label" htmlFor="username">Username:</label>

@@ -26,8 +26,7 @@ function Signup({ onLogin, setIsSignup }) {
           password,
         });
         console.log(response.data);
-        const { usernameReceived } = response.data;
-        localStorage.setItem('username', usernameReceived);
+        localStorage.setItem('user', response.data);
         onLogin();
       } catch (error) {
         console.error('Error logging in:', error);
