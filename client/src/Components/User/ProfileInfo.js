@@ -1,10 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './ProfileInfo.css';
-import Test from './Test.jpg';
 
 function ProfileInfo({ reviewsID }) {
   const [file, setFile] = useState(null);
+  const [imageUrl, setImageUrl] = useState(null);
+
+  // Function to fetch the image URL for the hardcoded username "User test"
+  const fetchImageUrl = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/api/posts?username=User%20test');
+      setImageUrl(response.data.imageUrl); // Assuming your API returns the image URL in the 'imageUrl' field
+    } catch (error) {
+      console.error('Error fetching image URL:', error);
+    }
+  };
+
+  // Fetch the image URL when the component mounts
+  useEffect(() => {
+    fetchImageUrl();
+  }, []); // Empty dependency array ensures the effect runs only once after the initial render
 
   const handleFileInputChange = (event) => {
     const selectedFile = event.target.files[0];
@@ -25,14 +40,17 @@ function ProfileInfo({ reviewsID }) {
       const formData = new FormData();
       formData.append('image', file);
 
-      // Send POST request to the server
+      // Send POST request to upload the file
       await axios.post('http://localhost:5000/api/posts', formData, {
-    headers: {
-    'Content-Type': 'multipart/form-data',
-  },
-});
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
 
       console.log('Image uploaded successfully');
+
+      // After uploading, fetch the updated image URL
+      fetchImageUrl();
     } catch (error) {
       console.error('Error uploading image:', error);
     }
@@ -42,7 +60,8 @@ function ProfileInfo({ reviewsID }) {
     <div className="profile-info-container">
       <div className="left-box">
         <div className="center" onClick={handleImageClick}>
-          <img src={Test} alt="Profile" className="profile-image" />
+          {imageUrl && <img src={imageUrl} alt="Profile" className="profile-image" />}
+          {!imageUrl && <p>Loading...</p>}
           <input
             type="file"
             id="fileInput"
