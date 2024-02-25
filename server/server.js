@@ -1,7 +1,7 @@
 const multer = require('multer');// TODO: move 
 const express = require('express');
 const cors = require('cors'); // TODO: move 
-const { S3Client, PutObjectCommand, GetObjectCommand } = require('@aws-sdk/client-s3');// TODO: move 
+const { S3Client, PutObjectCommand, GetObjectCommand, DeleteBucketCommand, DeleteObjectCommand } = require('@aws-sdk/client-s3');// TODO: move 
 const dotenv = require('dotenv')// TODO: move 
 const crypto = require('crypto')// TODO: move 
 const { UserUploadPicture, getUserByUsername,fetchUserByUsername } = require('./controllers/usersController.js'); // TODO: move 
@@ -41,9 +41,9 @@ app.get('/api/posts', async (req, res) => {
   // add error handeling
   try {
     const user = await fetchUserByUsername(username);
-    console.log("Here")
-    console.log(user.username);
-    console.log("Here")
+    // console.log("Here")
+    // console.log(user.username);
+    // console.log("Here")
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
@@ -64,8 +64,23 @@ app.get('/api/posts', async (req, res) => {
 });
 
 app.post('/api/posts', upload.single('image'), async (req, res) => {
-  console.log("Route accessed!");
-  console.log("req.file", req.file);
+  // Checking if image url already exists so we can delete the image from S3
+  
+  const user = await fetchUserByUsername("User test"); //TODO: currently hardcoded 
+  if (!user) {
+    
+    return res.status(404).json({ error: 'User not found' });
+  }
+  const pictureURL = user.profilepicture;
+  if (pictureURL != ""){
+    const params = {
+      Bucket: bucket_name,
+      Key:pictureURL,
+    } 
+    const command = new DeleteObjectCommand(params)
+    await s3.send(command);
+  }
+  // Posting new image
   // the req.file.buffer is the important part, its the image itself
 
   // resizing the image
@@ -78,6 +93,7 @@ app.post('/api/posts', upload.single('image'), async (req, res) => {
     Body: req.file.buffer,
     ContentType: req.file.mimetype,
   }
+  
   const command = new PutObjectCommand(params)
   await s3.send(command)
   // update database with image
