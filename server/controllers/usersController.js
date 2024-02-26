@@ -1,4 +1,20 @@
 const db = require('../config/db');
+const { bucket_name, bucket_region, access_key, secret_access_key } = require('../config/s3');
+const { S3Client, PutObjectCommand, GetObjectCommand, DeleteBucketCommand, DeleteObjectCommand } = require('@aws-sdk/client-s3');
+const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
+const crypto = require('crypto')
+
+const s3 = new S3Client ({
+    region: bucket_region,
+    credentials: {
+      accessKeyId: access_key,
+      secretAccessKey: secret_access_key
+    }
+  });
+
+//TODO: keep or not
+const dotenv = require('dotenv');
+dotenv.config()
 
 // Create a new user with specified fields
 const createUser = async (req, res) => {
@@ -31,9 +47,6 @@ async function fetchUserByUsername(username) {
     const result = await db.query('SELECT * FROM users WHERE Username = $1', [username]);
 
     if (result.rows.length > 0) {
-      // console.log("Function")
-      // console.log(result.rows[0])
-      // console.log("Function")
       return result.rows[0]; // Return the user object
     } else {
       return null; // No user found
@@ -63,20 +76,64 @@ const getUserByUsername = async (req, res) => {
 
 // Updating user's profile picture
 const UserUploadPicture = async (imageName) => {
-  //const { picture } = req.params;
   try {
-    //await db.query('SELECT * FROM users WHERE Username = $1', [username]);
     await db.query('UPDATE users SET profilepicture = $1 WHERE username = $2', [imageName, 'User test']);
-
-    // if (user.rows.length > 0) {
-    //   res.json(user.rows[0]);
-    // } else {
-    //   res.status(404).send('User not found');
-    // }
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error, check console for logs');
   }
+};
+
+const getUserProfilePicture = async(req,res) => {
+  const { username } = req.query;
+    try {
+      const user = await fetchUserByUsername(username);
+      const pictureName = user.profilepicture;
+      const getObjectParams = {
+      Bucket: bucket_name,
+      Key: pictureName,
+      }
+      
+      const command = new GetObjectCommand(getObjectParams);
+      
+      const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
+      res.json({ imageUrl: url });
+    } catch (error) {
+      console.error('Error retrieving user data:', error);
+      res.status(500).send('Server Error');
+    }
+};
+
+const randomImageName = (bytes = 32) => crypto.randomBytes(16).toString('hex')
+const imageName = randomImageName()
+const createUserProfilePicture = async(req,res) => {
+  const user = await fetchUserByUsername("User test"); //TODO: currently hardcoded 
+  if (!user) {
+    
+    return res.status(404).json({ error: 'User not found' });
+  }
+  const pictureURL = user.profilepicture;
+  if (pictureURL != ""){
+    const params = {
+      Bucket: bucket_name,
+      Key:pictureURL,
+    } 
+    const command = new DeleteObjectCommand(params)
+    await s3.send(command);
+  }
+  // Posting new image
+  const params = {
+    Bucket: bucket_name,
+    Key: imageName,
+    Body: req.file.buffer,
+    ContentType: req.file.mimetype,
+  }
+  
+  const command = new PutObjectCommand(params)
+  await s3.send(command)
+  // update database with image
+  await UserUploadPicture(imageName); 
+  res.send({});
 };
 
 // Export the functions
@@ -86,4 +143,6 @@ module.exports = {
   getUserByUsername,
   UserUploadPicture,
   fetchUserByUsername,
+  getUserProfilePicture,
+  createUserProfilePicture,
 };
