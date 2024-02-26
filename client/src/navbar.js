@@ -19,10 +19,11 @@ function NavbarComp({ setIsLoggedIn }) {
         localStorage.removeItem('user');
         setIsLoggedIn(false);
     };
+    
     return (  
         <Router>
             <>
-                <Navbar bg="light" expand="lg" className="bg-body-tertiary">
+                <Navbar bg="light" expand="lg" className="bg-body-tertiary" sticky="top">
                     <Container>
                         <Navbar.Brand className={`me-auto`} as={Link} to="/">
                             React-Bootstrap
