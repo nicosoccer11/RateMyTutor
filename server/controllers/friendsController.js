@@ -66,7 +66,6 @@ const getFriends = async (req, res) => {
   }
 };
 
-
 module.exports = {
   addFriend,
   getFriends,
