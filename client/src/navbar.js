@@ -14,6 +14,7 @@ import Friends from './Components/Friends/Friends';
 import Profile from './Components/User/Profile';
 import Chat from './Components/Messages/Chat';
 import { ChakraProvider, theme } from '@chakra-ui/react';
+import Search from './Components/Search/Search';
 
 function NavbarComp({ setIsLoggedIn }) {
 
@@ -44,6 +45,9 @@ function NavbarComp({ setIsLoggedIn }) {
                                 </Nav.Link>
                                 <Nav.Link as={Link} to="/messages">
                                     Messages
+                                </Nav.Link>
+                                <Nav.Link as={Link} to="/search">
+                                    Search
                                 </Nav.Link>
                                 <NavDropdown title="Dropdown" id="basic-nav-dropdown">
                                     <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
@@ -82,6 +86,7 @@ function NavbarComp({ setIsLoggedIn }) {
                     <Route path='/profile' element={<Profile />} />
                     <Route path="/profile/:id" element={<Profile />} />
                     <Route path='/messages' element={<ChakraProvider theme={theme} resetCSS={false}> <Chat /> </ChakraProvider>} />
+                    <Route path='/search' element={<Search />} />
                 </Routes>
             </>
         </Router>
