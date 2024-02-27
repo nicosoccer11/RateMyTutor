@@ -31,7 +31,7 @@ function Home() {
     useEffect(() => {
         const fetchPostsInfo = async () => {
             try {
-                const response = await axios.get('http://localhost:5000/posts/friends/${username}', {
+                const response = await axios.get('http://localhost:5000/posts/friends/' + username, {
                 });
                 setPosts(response.data.posts);
             } catch (error) {
@@ -64,10 +64,10 @@ function Home() {
         <div>
             <button className="add-post-button" onClick={handleAddPostClick}>Add Post</button>
             {showCreatePost ? <CreatePost onClose={() => setShowCreatePost(false)} onSubmit={handleNewPost} /> : <></>}
-            {posts.map((post, index) => (
-                <Post key={index} user={post.user} post={post.content} />
+            {posts != [] && posts.map((post, index) => (
+
+                <Post key={index} user={post.userid} content={post.content} />
             ))}
-            <Post user="test" content="testing" /><Post user="test" content="testing" /><Post user="test" content="testing" /><Post user="test" content="testing" /><Post user="test" content="testing" /><Post user="test" content="testing" /><Post user="test" content="testing" /><Post user="test" content="testing" />
         </div>
     );
 }
