@@ -8,6 +8,10 @@ function ProfileInfo({ reviewsID, profile, reviewTotal }) {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [averageRating, setAverageRating] = useState('');
+  const [shortDescription, setShortDescription] = useState('');
+  const [longDescription, setLongDescription] = useState('');
+  const [qualifications, setQualifications] = useState([]);
+  const [education, setEducation] = useState([]);
 
   useEffect(() => {
     if (profile) {
@@ -15,6 +19,11 @@ function ProfileInfo({ reviewsID, profile, reviewTotal }) {
       setFirstName(profile.firstName);
       setLastName(profile.lastName);
       setAverageRating(profile.averageRating);
+      setShortDescription(profile.shortDescription);
+      setLongDescription(profile.longDescription);
+      setEducation(profile.education);
+      setQualifications(profile.qualifications);
+      console.log("average", profile.averageRating);
     }
   }, [profile]);
 
@@ -29,10 +38,10 @@ function ProfileInfo({ reviewsID, profile, reviewTotal }) {
         </div>
         <div className="section">
           <h2>Short Description</h2>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce sit amet est eu mauris convallis scelerisque.</p>
+          <p>{shortDescription}</p>
         </div>
         <div className="section">
-          <p className="rating">4.5/5 <a href={`#${reviewsID}`}> ({reviewTotal} review(s))</a></p>
+          <p className="rating">{averageRating}/10 <a href={`#${reviewsID}`}> ({reviewTotal} review(s))</a></p>
         </div>
       </div>
 
@@ -41,27 +50,19 @@ function ProfileInfo({ reviewsID, profile, reviewTotal }) {
           <h1>About {firstName} {lastName}</h1>
         </div>
         <div className="section">
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce sit amet est eu mauris convallis scelerisque. Aliquam tincidunt ex vel arcu eleifend, vel pulvinar nisi rutrum. Sed auctor leo ac sem porttitor, vel scelerisque velit dapibus. Sed auctor leo ac sem porttitor, vel scelerisque velit dapibus.</p>
+          <p>{longDescription}</p>
         </div>
         <div className="section">
           <h2>Education</h2>
-          <p>Bachelor's Degree in Computer Science, University of Example</p>
-        </div>
-        <div className="section">
-          <h2>Skills</h2>
-          <ul>
-            <li>React</li>
-            <li>JavaScript</li>
-            <li>HTML</li>
-            <li>CSS</li>
-          </ul>
+          {education.length && education.map((line) =>
+            <li>{line.degree} {line.school}</li>
+          )}
         </div>
         <div className="section">
           <h2>Qualifications</h2>
-          <p>Certified Web Developer</p>
-        </div>
-        <div className="section">
-          <h2>More</h2>
+          {qualifications.length && qualifications.map((line) =>
+            <li>{line.skill}</li>
+          )}
         </div>
       </div>
     </div>

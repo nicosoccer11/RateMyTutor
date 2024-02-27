@@ -3,18 +3,6 @@ import './Reviews.css';
 
 function Reviews({ reviews }) {
 
-    // const [paragraph, setParagraph] = useState('');
-    // const [score, setScore] = useState('');
-
-    // useEffect(() => {
-    //     // Check if profile data exists
-    //     if (reviews) {
-    //         // Set variables from profile data
-    //         setScore(reviews.score);
-    //         setParagraph(reviews.paragraph);
-    //     }
-    // }, [reviews]);
-
     return (
         <div id="reviews" className="reviews">
             <h2>Reviews</h2>

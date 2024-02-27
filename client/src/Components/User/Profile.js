@@ -23,6 +23,7 @@ function Profile() {
             username: username
           }
         });
+        console.log(response.data.user);
         setProfileInfo(response.data.user);
         setReviews(response.data.reviews);
         setReviewTotal(response.data.reviews.length);
