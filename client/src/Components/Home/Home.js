@@ -51,8 +51,8 @@ function Home() {
                 content: content,
                 username: localStorage.getItem('user')
             });
-            const response = await axios.get('http://localhost:5000/posts');
-            setPosts(response.data.posts);
+            // const response = await axios.get('http://localhost:5000/posts');
+            // setPosts(response.data.posts);
         } catch (error) {
             console.error('Error adding new post:', error);
         }

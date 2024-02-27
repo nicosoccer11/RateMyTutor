@@ -10,6 +10,7 @@ function Profile() {
   const [reviews, setReviews] = useState(null);
   const [reviewTotal, setReviewTotal] = useState(0);
   const user = useParams();
+  const [userProfileID, setUserProfileID] = useState(null);
 
   useEffect(() => {
     const fetchProfileInfo = async () => {
@@ -23,10 +24,11 @@ function Profile() {
             username: username
           }
         });
-        console.log(response.data.user);
+
         setProfileInfo(response.data.user);
         setReviews(response.data.reviews);
         setReviewTotal(response.data.reviews.length);
+        setUserProfileID(response.data.user.username);
       } catch (error) {
         console.error('Error retrieving profile data:', error);
       }
@@ -40,7 +42,7 @@ function Profile() {
   return (
     <div>
       <ProfileInfo reviewsID="reviews" profile={profileInfo} reviewTotal={reviewTotal} />
-      <Reviews reviews={reviews}/>
+      <Reviews reviews={reviews} user={userProfileID} />
     </div>
   );
 }
