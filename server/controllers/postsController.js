@@ -21,7 +21,7 @@ const createPost = async (req, res) => {
 
 // Function to get all posts from all friends
 const getFriendsPosts = async (req, res) => {
-  const { username } = req.body; // Assuming you're getting the username in the request body
+  const { username } = req.params; 
 
   try {
     // Query to find all friends (both directions)
@@ -36,7 +36,6 @@ const getFriendsPosts = async (req, res) => {
     // If there are no friends, return an empty array early
     if (friendUsernames.length === 0) {
       return res.json({
-        message: 'No posts found because the user has no friends or no posts by friends.',
         posts: []
       });
     }
@@ -48,7 +47,6 @@ const getFriendsPosts = async (req, res) => {
     );
 
     res.json({
-      message: 'Posts retrieved successfully',
       posts: posts.rows
     });
   } catch (err) {

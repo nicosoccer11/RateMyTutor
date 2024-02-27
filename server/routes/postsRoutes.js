@@ -7,6 +7,6 @@ const router = express.Router();
 router.post('/posts', createPost);
 
 // Route to get posts from friends
-router.get('/posts/friends', getFriendsPosts);
+router.get('/posts/friends/:username', getFriendsPosts);
 
 module.exports = router;
