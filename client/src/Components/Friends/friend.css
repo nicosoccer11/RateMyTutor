@@ -1,5 +1,5 @@
 .friend-list-container {
-    width: 300px;
+    width: 350px;
     margin: 0 auto;
     font-family: Arial, sans-serif;
   }
@@ -53,10 +53,10 @@ label {
 .message {
   font-size: 20px;
   margin-left:60px;
-  padding: 5px 10px; /* Adjust padding as needed */
-  border-radius: 20px; 
+  padding: 5px 5px; /* Adjust padding as needed */
+  border-radius: 10px; 
 }
 .name {
-  padding-right: 60px;
-  max-width: 60px;
+  /* padding-right: 100px; */
+  max-width: 200px;
 }

@@ -5,7 +5,7 @@ const router = express.Router();
 // Route to add a new friend
 router.post('/friends/add', addFriend);
 
-// Route to get all friends
-router.get('/friends/get', getFriends);
+// Route to add a new friend
+router.post('/friends/get', getFriends);
 
 module.exports = router;
