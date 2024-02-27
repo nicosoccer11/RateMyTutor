@@ -3,6 +3,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Navbar from './navbar';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from './Components/Login/Login';
+import './App.css'
+import { ChakraProvider, theme}  from "@chakra-ui/react"
 
 function App() {
 
@@ -16,9 +18,9 @@ function App() {
   }, []);
 
   return (
-    <div>
+    <ChakraProvider theme={theme}>
       {isLoggedIn ? <Navbar setIsLoggedIn={setIsLoggedIn} /> : <Login onLogin={() => setIsLoggedIn(true)} />}
-    </div>
+    </ChakraProvider>
   );
 }
 
