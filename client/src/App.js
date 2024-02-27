@@ -18,9 +18,9 @@ function App() {
   }, []);
 
   return (
-    <ChakraProvider theme={theme}>
+    <div>
       {isLoggedIn ? <Navbar setIsLoggedIn={setIsLoggedIn} /> : <Login onLogin={() => setIsLoggedIn(true)} />}
-    </ChakraProvider>
+    </div>
   );
 }
 
