@@ -6,6 +6,7 @@ const cors = require('cors'); // Stuff breaks if you remove this
 // Add Routes here
 const userRoutes = require('./routes/userRoutes');
 const postsRoutes = require('./routes/postsRoutes');
+const imageRoutes = require('./routes/imageRoutes');
 //Add Routes here
 
 const app = express();
@@ -18,6 +19,8 @@ app.use(express.json());
 app.use(userRoutes);
 // User the posts routes
 app.use(postsRoutes);
+// Use the image routes
+app.use(imageRoutes);
 
 app.listen(5000, () => {
   console.log('Server is running on port 5000');
