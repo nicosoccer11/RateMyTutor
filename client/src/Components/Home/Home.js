@@ -26,14 +26,12 @@ function Home() {
 
     const [posts, setPosts] = useState([]);
     const [showCreatePost, setShowCreatePost] = useState(false);
+    const username = localStorage.getItem('user');
 
     useEffect(() => {
         const fetchPostsInfo = async () => {
             try {
-                const response = await axios.get('http://localhost:5000/posts', {
-                    headers: {
-                        username: localStorage.getItem('user')
-                    }
+                const response = await axios.get('http://localhost:5000/posts/friends/${username}', {
                 });
                 setPosts(response.data.posts);
             } catch (error) {
