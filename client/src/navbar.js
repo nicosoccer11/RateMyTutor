@@ -13,6 +13,7 @@ import Home from './Components/Home/Home';
 import Friends from './Components/Friends/Friends';
 import Profile from './Components/User/Profile';
 import Chat from './Components/Messages/Chat';
+import { ChakraProvider, theme } from '@chakra-ui/react';
 
 function NavbarComp({ setIsLoggedIn }) {
 
@@ -80,7 +81,7 @@ function NavbarComp({ setIsLoggedIn }) {
                     <Route path='/friends' element={<Friends />} />
                     <Route path='/profile' element={<Profile />} />
                     <Route path="/profile/:id" element={<Profile />} />
-                    <Route path='/messages' element={<Chat />} />
+                    <Route path='/messages' element={<ChakraProvider theme={theme} resetCSS={false}> <Chat /> </ChakraProvider>} />
                 </Routes>
             </>
         </Router>
