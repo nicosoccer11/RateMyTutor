@@ -10,6 +10,7 @@ const friendRoutes = require('./routes/friendRoutes');
 const messageRoutes = require('./routes/messageRoutes');
 const qualificationRoutes = require('./routes/qualificationRoutes');
 const educationRoutes = require('./routes/educationRoutes');
+const imageRoutes = require('./routes/imageRoutes');
 //Add Routes here
 
 const app = express();
@@ -32,6 +33,8 @@ app.use(messageRoutes);
 app.use(qualificationRoutes);
 // Use the education routes
 app.use(educationRoutes);
+// Use the image routes
+app.use(imageRoutes);
 
 
 app.listen(5000, () => {

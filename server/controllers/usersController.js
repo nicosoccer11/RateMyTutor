@@ -21,7 +21,6 @@ const createUser = async (req, res) => {
   }
 };
 
-
 // Get all users
 const getAllUsers = async (req, res) => {
   try {
@@ -138,6 +137,30 @@ const updateUser = async (req, res) => {
   }
 };
 
+// Search users by username
+const searchUsersByUsername = async (req, res) => {
+  // Assuming you're receiving the search string as a query parameter
+  const searchString = req.query.username; // The query parameter could be ?username=someUsername
+
+  if (!searchString) {
+    return res.status(400).send('Search username is required.');
+  }
+
+  try {
+    const query = `
+      SELECT * FROM users
+      WHERE Username ILIKE $1
+    `;
+    // Use % wildcards to match any sequence of characters before and after the searchString
+    const searchValue = `%${searchString}%`;
+
+    const result = await db.query(query, [searchValue]);
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error, check console for logs');
+  }
+};
 
 // Export the functions
 module.exports = {
@@ -146,4 +169,5 @@ module.exports = {
   loginUser,
   getUserProfile,
   updateUser,
+  searchUsersByUsername
 };
