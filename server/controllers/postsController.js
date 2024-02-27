@@ -19,6 +19,43 @@ const createPost = async (req, res) => {
   }
 };
 
+// Function to get all posts from all friends
+const getFriendsPosts = async (req, res) => {
+  const { username } = req.params; 
+
+  try {
+    // Query to find all friends (both directions)
+    const friends1 = await db.query(
+      `SELECT user2id AS friend FROM friends WHERE user1id = $1 UNION SELECT user1id FROM friends WHERE user2id = $1`,
+      [username]
+    );
+
+    // Extract friend usernames to an array
+    const friendUsernames = friends1.rows.map(row => row.friend);
+
+    // If there are no friends, return an empty array early
+    if (friendUsernames.length === 0) {
+      return res.json({
+        posts: []
+      });
+    }
+
+    // Query to get posts made by any of the friends
+    const posts = await db.query(
+      `SELECT * FROM posts WHERE UserID = ANY($1::varchar[]) ORDER BY Time DESC`,
+      [friendUsernames]
+    );
+
+    res.json({
+      posts: posts.rows
+    });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error, check console for logs');
+  }
+};
+
 module.exports = {
   createPost,
+  getFriendsPosts,
 };
