@@ -6,6 +6,8 @@ require('dotenv').config();
 const userRoutes = require('./routes/userRoutes');
 const postsRoutes = require('./routes/postsRoutes');
 const reviewsRoutes = require('./routes/reviewsRoutes');
+const friendRoutes = require('./routes/friendRoutes');
+const messageRoutes = require('./routes/messageRoutes');
 //Add Routes here
 
 const app = express();
@@ -21,7 +23,10 @@ app.use(userRoutes);
 app.use(postsRoutes);
 // Use the reviews routes
 app.use(reviewsRoutes);
-
+// Use the friend routes
+app.use(friendRoutes);
+// Use the message routes
+app.use(messageRoutes);
 
 
 app.listen(5000, () => {

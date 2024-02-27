@@ -1,7 +1,7 @@
 // controllers/reviewsController.js
 const db = require('../config/db');
 
-// Function to add a new review
+// Add a new review
 const addReview = async (req, res) => {
   const { score, paragraph, userReviewingID, tutorReviewedID } = req.body;
 

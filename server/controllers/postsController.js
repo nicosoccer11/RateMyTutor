@@ -1,11 +1,11 @@
 // controllers/postsController.js
 const db = require('../config/db');
 
+// Create a post
 const createPost = async (req, res) => {
-  console.log(req.body);
-  const { content, picture, username } = req.body; // Removed userId from the body, as it's obtained from the token now
+  const { content, picture, username } = req.body; 
   const time = new Date();
-  const userId = username; // Use the username from the token
+  const userId = username; 
 
   try {
     const newPost = await db.query(
