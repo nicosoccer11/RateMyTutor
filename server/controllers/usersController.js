@@ -33,22 +33,6 @@ const getAllUsers = async (req, res) => {
   }
 };
 
-// Get a user by their username
-const getUserByUsername = async (req, res) => {
-  const { username } = req.params;
-  try {
-    const user = await db.query('SELECT * FROM users WHERE Username = $1', [username]);
-    if (user.rows.length > 0) {
-      res.json(user.rows[0]);
-    } else {
-      res.status(404).send('User not found');
-    }
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server Error, check console for logs');
-  }
-};
-
 // Get a user's profile
 const getUserProfile = async (req, res) => {
   const username = req.headers['username'];
@@ -72,7 +56,15 @@ const getUserProfile = async (req, res) => {
     );
     const averageRating = averageRatingResult.rows[0].averagerating ? parseFloat(averageRatingResult.rows[0].averagerating).toFixed(2) : null;
 
-    // Combine user info, reviews, and average rating in the response
+    // Fetch user's education
+    const educationResult = await db.query('SELECT * FROM education WHERE Username = $1', [username]);
+    const education = educationResult.rows;
+
+    // Fetch user's qualifications
+    const qualificationsResult = await db.query('SELECT * FROM qualifications WHERE Username = $1', [username]);
+    const qualifications = qualificationsResult.rows;
+
+    // Combine user info, reviews, education, qualifications, and average rating in the response
     res.json({
       user: {
         username: user.username,
@@ -80,10 +72,12 @@ const getUserProfile = async (req, res) => {
         lastName: user.lastname,
         email: user.email,
         bio: user.bio,
-        profilePicture: user.profilepicture, 
+        profilePicture: user.profilepicture,
         averageRating: averageRating,
         shortDescription: user.shortdescription,
-        longDescription: user.longdescription
+        longDescription: user.longdescription,
+        education,
+        qualifications
       },
       reviews
     });
@@ -92,6 +86,7 @@ const getUserProfile = async (req, res) => {
     res.status(500).send('Server Error, check console for logs');
   }
 };
+
 
 // Login a user
 const loginUser = async (req, res) => {
