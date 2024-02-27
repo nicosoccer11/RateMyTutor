@@ -8,10 +8,11 @@ const postsRoutes = require('./routes/postsRoutes');
 const reviewsRoutes = require('./routes/reviewsRoutes');
 const friendRoutes = require('./routes/friendRoutes');
 const messageRoutes = require('./routes/messageRoutes');
+const qualificationRoutes = require('./routes/qualificationRoutes');
+const educationRoutes = require('./routes/educationRoutes');
 //Add Routes here
 
 const app = express();
-
 
 // Middleware to parse JSON bodies
 app.use(express.json());
@@ -27,6 +28,10 @@ app.use(reviewsRoutes);
 app.use(friendRoutes);
 // Use the message routes
 app.use(messageRoutes);
+// Use the qualification routes
+app.use(qualificationRoutes);
+// Use the education routes
+app.use(educationRoutes);
 
 
 app.listen(5000, () => {
