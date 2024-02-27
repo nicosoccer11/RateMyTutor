@@ -1,8 +1,23 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './ProfileInfo.css';
-import Test from './Test.jpg'
+import Test from './Test.jpg';
 
-function ProfileInfo({reviewsID}) {
+function ProfileInfo({ reviewsID, profile, reviewTotal }) {
+
+  const [username, setUsername] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [averageRating, setAverageRating] = useState('');
+
+  useEffect(() => {
+    if (profile) {
+      setUsername(profile.username);
+      setFirstName(profile.firstName);
+      setLastName(profile.lastName);
+      setAverageRating(profile.averageRating);
+    }
+  }, [profile]);
+
   return (
     <div className="profile-info-container">
       <div className="left-box">
@@ -10,20 +25,20 @@ function ProfileInfo({reviewsID}) {
           <img src={Test} alt="Profile" className="profile-image" />
         </div>
         <div className="section">
-          <h2 className="center">"User"</h2>
+          <h2 className="center">{username}</h2>
         </div>
         <div className="section">
           <h2>Short Description</h2>
           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce sit amet est eu mauris convallis scelerisque.</p>
         </div>
         <div className="section">
-          <p className="rating">4.5/5 <a href={`#${reviewsID}`}> (40 reviews)</a></p>
+          <p className="rating">4.5/5 <a href={`#${reviewsID}`}> ({reviewTotal} review(s))</a></p>
         </div>
       </div>
 
       <div className="right-box">
         <div className="section">
-          <h1>About "User"</h1>
+          <h1>About {firstName} {lastName}</h1>
         </div>
         <div className="section">
           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce sit amet est eu mauris convallis scelerisque. Aliquam tincidunt ex vel arcu eleifend, vel pulvinar nisi rutrum. Sed auctor leo ac sem porttitor, vel scelerisque velit dapibus. Sed auctor leo ac sem porttitor, vel scelerisque velit dapibus.</p>

@@ -13,11 +13,17 @@ import Home from './Components/Home/Home';
 import Friends from './Components/Friends/Friends';
 import Profile from './Components/User/Profile';
 
-function NavbarComp() {
+function NavbarComp({ setIsLoggedIn }) {
+
+    const handleLogout = () => {
+        localStorage.removeItem('user');
+        setIsLoggedIn(false);
+    };
+    
     return (  
         <Router>
             <>
-                <Navbar bg="light" expand="lg" className="bg-body-tertiary">
+                <Navbar bg="light" expand="lg" className="bg-body-tertiary" sticky="top">
                     <Container>
                         <Navbar.Brand className={`me-auto`} as={Link} to="/">
                             React-Bootstrap
@@ -60,6 +66,7 @@ function NavbarComp() {
                                 </Col>
                                 </Row>
                             </Form>
+                            <Button variant="outline-danger" onClick={handleLogout}>Logout</Button>
                         </Navbar.Collapse>
                     </Container>
                 </Navbar>
@@ -68,6 +75,7 @@ function NavbarComp() {
                     <Route path='/home' element={<Home />} />
                     <Route path='/friends' element={<Friends />} />
                     <Route path='/profile' element={<Profile />} />
+                    <Route path="/profile/:id" element={<Profile />} />
                 </Routes>
             </>
         </Router>

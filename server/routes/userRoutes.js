@@ -1,10 +1,10 @@
 // routes/userRoutes.js
 const express = require('express');
-const authenticateToken = require('../middleware/authenticateToken');
 const router = express.Router();
 
 //Update here when add new route
-const { createUser, getAllUsers, getUserByUsername, loginUser, getUserProfile } = require('../controllers/usersController');
+const { createUser, getAllUsers, getUserByUsername, 
+        loginUser, getUserProfile, updateUser } = require('../controllers/usersController');
 
 // Route to create a new user
 router.post('/users', createUser);
@@ -13,13 +13,16 @@ router.post('/users', createUser);
 router.get('/users', getAllUsers);
 
 // Route to get a user by username   
-router.get('/users/:username', getUserByUsername); 
+router.get('/users/:username', getUserByUsername);
+
+// Route to update a user by username
+router.patch('/users/:username', updateUser);
 
 // Route to login a user
 router.post('/users/login', loginUser);
 
 // Route to get a user's profile who is logged in
-router.get('/profile', authenticateToken, getUserProfile);
+router.get('/profile', getUserProfile);
 
 // Define other user routes here
 
