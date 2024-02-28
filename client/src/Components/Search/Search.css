@@ -6,6 +6,7 @@
   .search-form {
     display: flex;
     align-items: center;
+    padding-bottom: 10px;
   }
   
   .search-input {
@@ -41,4 +42,67 @@
   .results-item:hover {
     background-color: #e9e9e9;
   }
+
+  .user-list-container {
+    width: 300px;
+    margin: 0 auto;
+    font-family: Arial, sans-serif;
+  }
+  
+.user-list-box {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  overflow: hidden; /* Ensures border corners are rounded */
+}
+
+.user-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.user-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+.user-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.user-info h3 {
+  margin: 0;
+  max-width: fit-content;
+  display: flex;
+}
+
+.user-info p {
+  margin: 5px 0 0;
+  color: #888;
+}
+label {
+  font-size: 40px;
+  font-weight: bold;
+  display: flex;
+  padding-top: 5%;
+  padding-bottom: 5%;
+  justify-content: center; /* Align horizontally to center */
+  align-items: center; /* Align vertically to center if needed */
+}
+
+.message {
+  font-size: 20px;
+  margin-left:60px;
+  padding: 5px 10px; /* Adjust padding as needed */
+  border-radius: 20px; 
+}
+.name {
+  padding-right: 60px;
+  max-width: 60px;
+}
   

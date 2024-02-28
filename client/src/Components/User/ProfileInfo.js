@@ -23,7 +23,6 @@ function ProfileInfo({ reviewsID, profile, reviewTotal }) {
       setLongDescription(profile.longDescription);
       setEducation(profile.education);
       setQualifications(profile.qualifications);
-      console.log("average", profile.averageRating);
     }
   }, [profile]);
 
