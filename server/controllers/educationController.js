@@ -2,12 +2,11 @@ const db = require('../config/db');
 
 // Add a new education record
 const addEducation = async (req, res) => {
-  console.log(req.body);
   const { username, school, degree } = req.body;
-  
+
   try {
     const newEducation = await db.query(
-      'INSERT INTO education (Username, School, Degree) VALUES ($1, $2, $3) RETURNING *',
+      'INSERT INTO education (username, School, Degree) VALUES ($1, $2, $3) RETURNING *',
       [username, school, degree]
     );
 
@@ -46,7 +45,33 @@ const editEducation = async (req, res) => {
   }
 };
 
+// Delete an education record
+const deleteEducation = async (req, res) => {
+  const { educationID } = req.params;
+
+  try {
+    const deletedEducation = await db.query(
+      'DELETE FROM education WHERE EducationID = $1 RETURNING *',
+      [educationID]
+    );
+
+    if (deletedEducation.rowCount === 0) {
+      return res.status(404).send('Education record not found');
+    }
+
+    res.json({
+      message: 'Education deleted successfully',
+      deletedEducation: deletedEducation.rows[0]
+    });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+};
+
+
 module.exports = {
   addEducation,
-  editEducation
+  editEducation,
+  deleteEducation
 };

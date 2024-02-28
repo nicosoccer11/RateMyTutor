@@ -45,7 +45,33 @@ const editQualification = async (req, res) => {
   }
 };
 
+// Delete a qualification
+const deleteQualification = async (req, res) => {
+  const { qualificationID } = req.params;
+
+  try {
+    const result = await db.query(
+      'DELETE FROM qualifications WHERE QualificationID = $1 RETURNING *',
+      [qualificationID]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).send('Qualification not found');
+    }
+
+    res.json({
+      message: 'Qualification deleted successfully',
+      deletedQualification: result.rows[0]
+    });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+};
+
+
 module.exports = { 
     addQualification,
-    editQualification
+    editQualification,
+    deleteQualification
     };

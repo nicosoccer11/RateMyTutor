@@ -87,6 +87,7 @@ function NavbarComp({ setIsLoggedIn }) {
                     <Route path="/profile/:id" element={<Profile />} />
                     <Route path='/messages' element={<ChakraProvider theme={theme} resetCSS={false}> <Chat /> </ChakraProvider>} />
                     <Route path='/search' element={<Search />} />
+                    <Route path='/messages/:id' element={<ChakraProvider theme={theme} resetCSS={false}> <Chat /> </ChakraProvider>} />
                 </Routes>
             </>
         </Router>

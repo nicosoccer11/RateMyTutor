@@ -3,9 +3,12 @@ import './friend.css'; // Import CSS file
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Profile from '../User/Profile';
 import axios from 'axios';
+import Chat from '../Messages/Chat';
 
 const Friends = () => {
   const [currentPage, setCurrentPage] = useState(null);
+  const [otherUser, setOtherUser] = useState("test");
+  
 
   // State to hold the list of friends
   const [friends, setFriends] = useState([]);
@@ -13,11 +16,14 @@ const Friends = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.post('http://localhost:5000/friends/get', {
+        await axios.post('http://localhost:5000/friends/get', {
           username,
+        }).then((response) => {
+          console.log(response);
+          const data = response.data; // Assuming the data returned is an array of friends
+          setFriends(data.friends); 
         });
-        const data = response.data; // Assuming the data returned is an array of friends
-        setFriends(data.friends); 
+        
       } catch (error) {
         // Handle error, such as setting an error state
         console.error('Error fetching data:', error);
@@ -31,7 +37,8 @@ const Friends = () => {
 
   const handleSendMessage = (friendId) => {
     // Logic for sending a message to the friend with the given ID
-    console.log(`Sending message to ${friendId}`);
+    setOtherUser(friendId);
+    console.log(`Sending message to ${friendId}, ${otherUser}`);
   };
 
   return (
@@ -48,8 +55,9 @@ const Friends = () => {
               />
               <div className="friend-info">
                 <h3>
-                  <Link className='name' to={`/profile/${friend}`}>{friend}</Link>
-                  <button className ="message" onClick={() => handleSendMessage(friend)}>Message</button>
+                  <Link className='name' to={`/profile/${friend.id}`}>{friend.name}</Link>
+                  
+                  <button className ="message" onClick={() => handleSendMessage(friend)}><Link to={`/messages/${friend}`}>Messages</Link></button>
                 </h3>
               </div>
             </li>
@@ -58,6 +66,7 @@ const Friends = () => {
       </div>
       <Routes>
         <Route path="/profile/:id" element={<Profile />} />
+        <Route path="/messages/:id" element={<Chat/>} />
       </Routes>
     </div>
   );

@@ -139,28 +139,44 @@ const updateUser = async (req, res) => {
 
 // Search users by username
 const searchUsersByUsername = async (req, res) => {
-  // Assuming you're receiving the search string as a query parameter
-  const searchString = req.query.username; // The query parameter could be ?username=someUsername
+  const searchString = req.query.username;
+  const requesterUsername = req.query.requester;
 
   if (!searchString) {
     return res.status(400).send('Search username is required.');
   }
 
   try {
-    const query = `
-      SELECT * FROM users
+    // Step 1: Fetch matching users
+    const usersQuery = `
+      SELECT Username FROM users
       WHERE Username ILIKE $1
+      AND Username <> $2
     `;
-    // Use % wildcards to match any sequence of characters before and after the searchString
     const searchValue = `%${searchString}%`;
+    const usersResult = await db.query(usersQuery, [searchValue, requesterUsername]);
+    let users = usersResult.rows;
 
-    const result = await db.query(query, [searchValue]);
-    res.json(result.rows);
+    // Step 2: Check friendship status for each user
+    for (let i = 0; i < users.length; i++) {
+      const friendCheckQuery = `
+        SELECT EXISTS (
+          SELECT 1 FROM friends
+          WHERE (LOWER(User1ID) = LOWER($1) AND LOWER(User2ID) = LOWER($2))
+          OR (LOWER(User1ID) = LOWER($2) AND LOWER(User2ID) = LOWER($1))
+        ) AS "isFriend"
+      `;
+      const friendCheckResult = await db.query(friendCheckQuery, [requesterUsername, users[i].username]);
+      users[i].isFriend = friendCheckResult.rows[0].isFriend;
+    }
+
+    res.json(users);
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error, check console for logs');
   }
 };
+
 
 // Export the functions
 module.exports = {
