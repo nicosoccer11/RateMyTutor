@@ -2,12 +2,13 @@ const db = require('../config/db');
 
 // Add a new education record
 const addEducation = async (req, res) => {
-  const { userID, school, degree } = req.body;
-
+  console.log(req.body);
+  const { username, school, degree } = req.body;
+  
   try {
     const newEducation = await db.query(
-      'INSERT INTO education (UserID, School, Degree) VALUES ($1, $2, $3) RETURNING *',
-      [userID, school, degree]
+      'INSERT INTO education (Username, School, Degree) VALUES ($1, $2, $3) RETURNING *',
+      [username, school, degree]
     );
 
     res.json({

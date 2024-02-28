@@ -6,7 +6,7 @@ const addQualification = async (req, res) => {
   
     try {
       const result = await db.query(
-        'INSERT INTO qualifications (UserID, Skill) VALUES ($1, $2) RETURNING *',
+        'INSERT INTO qualifications (Username, Skill) VALUES ($1, $2) RETURNING *',
         [username, skill]
       );
   

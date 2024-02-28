@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import './ProfileInfo.css';
 import Test from './Test.jpg';
+import { FaPlus } from 'react-icons/fa';
+import axios from 'axios';
 
 function ProfileInfo({ reviewsID, profile, reviewTotal }) {
 
@@ -12,6 +14,11 @@ function ProfileInfo({ reviewsID, profile, reviewTotal }) {
   const [longDescription, setLongDescription] = useState('');
   const [qualifications, setQualifications] = useState([]);
   const [education, setEducation] = useState([]);
+  const [skill, setSkill] = useState('');
+  const [school, setSchool] = useState('');
+  const [degree, setDegree] = useState('');
+  const [showAddEducation, setShowAddEducation] = useState(false);
+  const [showAddQualification, setShowAddQualification] = useState(false);
 
   useEffect(() => {
     if (profile) {
@@ -25,6 +32,34 @@ function ProfileInfo({ reviewsID, profile, reviewTotal }) {
       setQualifications(profile.qualifications);
     }
   }, [profile]);
+
+  const addQualification = async () => {
+    try {
+      const response = await axios.post('http://localhost:5000/qualifications/add', {
+        username,
+        skill,
+      });
+      setShowAddQualification(false);
+      setSkill('');
+    } catch (error) {
+      console.error('Error adding qualification', error);
+    }
+  };
+
+  const addEducation = async () => {
+    try {
+      const response = await axios.post('http://localhost:5000/education/add', {
+        username,
+        school,
+        degree,
+      });
+      setShowAddEducation(false);
+      setSchool('');
+      setDegree('');
+    } catch (error) {
+      console.error('Error adding qualification', error);
+    }
+  };
 
   return (
     <div className="profile-info-container">
@@ -52,17 +87,45 @@ function ProfileInfo({ reviewsID, profile, reviewTotal }) {
           <p>{longDescription}</p>
         </div>
         <div className="section">
-          <h2>Education</h2>
+          <div className="section-header">
+            <h2>Education <button className="add-icon" onClick={() => setShowAddEducation(true)}>
+              <FaPlus />
+            </button></h2>
+          </div>
           {education.length && education.map((line) =>
             <li>{line.degree} {line.school}</li>
           )}
         </div>
+        {showAddEducation && (
+          <div className="popup">
+            <label htmlFor="qualification">School:</label>
+            <input type="text" value={school} onChange={(e) => setSchool(e.target.value)} />
+            <label htmlFor="qualification">Degree:</label>
+            <input type="text" value={degree} onChange={(e) => setDegree(e.target.value)} />
+            <button onClick={addEducation}>Add Education</button>
+            <button onClick={() => {setShowAddEducation(false); setSchool(''); setDegree('')}}>Cancel</button>
+          </div>
+        )}
         <div className="section">
-          <h2>Qualifications</h2>
+          <div className="section-header">
+            <h2>Qualifications <button className="add-icon" onClick={() => setShowAddQualification(true)}>
+              <FaPlus />
+            </button></h2>
+          </div>
+
+
           {qualifications.length && qualifications.map((line) =>
             <li>{line.skill}</li>
           )}
         </div>
+        {showAddQualification && (
+          <div className="popup">
+            <label htmlFor="qualification">Qualification:</label>
+            <input type="text" value={skill} onChange={(e) => setSkill(e.target.value)} />
+            <button onClick={addQualification}>Add Qualification</button>
+            <button onClick={() => {setShowAddQualification(false); setSkill('')}}>Cancel</button>
+          </div>
+        )}
       </div>
     </div>
   );
