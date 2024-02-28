@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import Footer from "./Footer";
 import Header from "./Header";
 import Messages from "./Messages";
+import { useParams } from 'react-router-dom';
 
 const Chat = () => {
   const [messages, setMessages] = useState([
@@ -15,6 +16,11 @@ const Chat = () => {
 	},
   ]);
   const [inputMessage, setInputMessage] = useState("");
+  const friendId = useParams();
+
+  console.log(friendId);
+  //const receiver = friendID ? friendID : "computer";
+  //console.log(receiver);
 
   const handleSendMessage = () => {
 	if (!inputMessage.trim().length) {
