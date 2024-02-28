@@ -3,7 +3,7 @@ import './ProfileInfo.css';
 import Test from './Test.jpg';
 import { FaPlus } from 'react-icons/fa';
 import axios from 'axios';
-import { FaEdit, FaTrash } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaSave } from 'react-icons/fa';
 
 function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue }) {
 
@@ -29,6 +29,8 @@ function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue }) {
   const [qIDD, setQIDD] = useState('');
   const [editingEducation, setEditingEducation] = useState(false);
   const [editingQualifications, setEditingQualifications] = useState(false);
+  const [editingLongDescription, setEditingLongDescription] = useState(false);
+  const [editingShortDescription, setEditingShortDescription] = useState(false);
   const sessionUsername = localStorage.getItem('user');
 
   useEffect(() => {
@@ -163,6 +165,36 @@ function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue }) {
     }
   }
 
+  const handleEditLongDescription = () => {
+    setEditingLongDescription(true);
+  };
+
+  const handleSaveLongDescription = async () => {
+    try {
+      await axios.patch(`http://localhost:5000/users/update/${username}`, {
+        LongDescription: longDescription
+      });
+      setEditingLongDescription(false);
+    } catch (error) {
+      console.error('Error saving long description', error);
+    }
+  };
+
+  const handleEditShortDescription = () => {
+    setEditingShortDescription(true);
+  };
+
+  const handleSaveShortDescription = async () => {
+    try {
+      await axios.patch(`http://localhost:5000/users/update/${username}`, {
+        ShortDescription: shortDescription
+      });
+      setEditingShortDescription(false);
+    } catch (error) {
+      console.error('Error saving long description', error);
+    }
+  };
+
   return (
     <div className="profile-info-container">
       <div className="left-box">
@@ -174,7 +206,22 @@ function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue }) {
         </div>
         <div className="section">
           <h2>Short Description</h2>
-          <p>{shortDescription}</p>
+          {editingShortDescription ? (
+            <>
+              <textarea
+                value={shortDescription}
+                onChange={(e) => setShortDescription(e.target.value)}
+                rows={1}
+                cols={50}
+              />
+              <button onClick={handleSaveShortDescription}><FaSave /></button>
+            </>
+          ) : (
+            <>
+              <p>{shortDescription}</p>
+              <button onClick={handleEditShortDescription}><FaEdit /></button>
+            </>
+          )}
         </div>
         <div className="section">
           <p className="rating">{averageRating}/10 <a href={`#${reviewsID}`}> ({reviewTotal} review(s))</a></p>
@@ -186,7 +233,22 @@ function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue }) {
           <h1>About {firstName} {lastName}</h1>
         </div>
         <div className="section">
-          <p>{longDescription}</p>
+          {editingLongDescription ? (
+            <>
+              <textarea
+                value={longDescription}
+                onChange={(e) => setLongDescription(e.target.value)}
+                rows={4}
+                cols={50}
+              />
+              <button onClick={handleSaveLongDescription}><FaSave /></button>
+            </>
+          ) : (
+            <>
+              <p>{longDescription}</p>
+              <button onClick={handleEditLongDescription}><FaEdit /></button>
+            </>
+          )}
         </div>
         <div className="section">
           <div className="section-header">

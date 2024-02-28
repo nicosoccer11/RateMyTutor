@@ -3,7 +3,7 @@ import './Reviews.css';
 import CreateReview from './CreateReview';
 import axios from 'axios';
 
-function Reviews({ reviews, user }) {
+function Reviews({ reviews, user, update, updateValue }) {
 
     const [showAddReview, setShowAddReview] = useState(false);
     const [showCreateReview, setShowCreateReview] = useState(false);
@@ -16,6 +16,7 @@ function Reviews({ reviews, user }) {
                 userReviewingID: localStorage.getItem('user'),
                 tutorReviewedID: user
             });
+            update(!updateValue);
         } catch (error) {
             console.error('Error adding new review:', error);
         }

@@ -57,7 +57,7 @@ function Search() {
                             <div className="user-info">
                                 <h3>
                                     <Link className='name' to={`/profile/${user.username}`}>{user.username}</Link>
-                                    <button className="add-friend" onClick={() => handleAddUser(user.username)}>Add Friend</button>
+                                    {!user.isFriend && <button className="add-friend" onClick={() => handleAddUser(user.username)}>Add Friend</button>}
                                 </h3>
                             </div>
                         </li>

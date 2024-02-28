@@ -7,11 +7,12 @@
 }
 
 .review {
-    border: 1px solid #ccc;
+    border: 1px solid black;
     display: flex;
     align-items: center;
     width: 80%;
     background-color: lightgray;
+    margin-bottom: 5px;
 }
 
 .review-content {

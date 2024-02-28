@@ -43,7 +43,7 @@ function Profile() {
   return (
     <div>
       <ProfileInfo reviewsID="reviews" profile={profileInfo} reviewTotal={reviewTotal} update={setUpdate} updateValue={update} />
-      <Reviews reviews={reviews} user={userProfileID} />
+      <Reviews reviews={reviews} user={userProfileID} update={setUpdate} updateValue={update} />
     </div>
   );
 }
