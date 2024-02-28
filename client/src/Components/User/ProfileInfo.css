@@ -138,3 +138,39 @@
 .confirmation-popup button:hover {
   background-color: #0056b3;
 }
+
+/* CSS for edit and delete buttons */
+.edit-button,
+.delete-button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin-right: 5px; /* Adjust margin as needed */
+}
+
+/* Styling for icons */
+.edit-icon,
+.delete-icon {
+  font-size: 1.2em; /* Adjust icon size as needed */
+  color: #777; /* Adjust icon color */
+}
+
+/* Hover effect */
+.edit-button:hover .edit-icon,
+.delete-button:hover .delete-icon {
+  color: #333; /* Change color on hover */
+}
+
+.section li {
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.section li button {
+  margin-right: 8px;
+}
+
+.icons{
+  float: right;
+}

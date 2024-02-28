@@ -3,8 +3,9 @@ import './ProfileInfo.css';
 import Test from './Test.jpg';
 import { FaPlus } from 'react-icons/fa';
 import axios from 'axios';
+import { FaEdit, FaTrash } from 'react-icons/fa';
 
-function ProfileInfo({ reviewsID, profile, reviewTotal }) {
+function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue }) {
 
   const [username, setUsername] = useState('');
   const [firstName, setFirstName] = useState('');
@@ -56,6 +57,7 @@ function ProfileInfo({ reviewsID, profile, reviewTotal }) {
         });
         setShowAddQualification(false);
         setSkill('');
+        update(!updateValue);
       } catch (error) {
         console.error('Error adding qualification', error);
       }
@@ -76,6 +78,7 @@ function ProfileInfo({ reviewsID, profile, reviewTotal }) {
       });
       setShowAddQualification(false);
       setSkill('');
+      update(!updateValue);
     } catch (error) {
       console.error('Error editing qualification', error);
     }
@@ -92,6 +95,7 @@ function ProfileInfo({ reviewsID, profile, reviewTotal }) {
       const response = await axios.delete(`http://localhost:5000/qualifications/delete/${qIDD}`, {
       });
       setShowDeleteConfirmationQ(false);
+      update(!updateValue);
     } catch (error) {
       console.error('Error removing education', error);
     }
@@ -111,6 +115,7 @@ function ProfileInfo({ reviewsID, profile, reviewTotal }) {
         setShowAddEducation(false);
         setSchool('');
         setDegree('');
+        update(!updateValue);
       } catch (error) {
         console.error('Error adding qualification', error);
       }
@@ -134,6 +139,7 @@ function ProfileInfo({ reviewsID, profile, reviewTotal }) {
       setShowAddEducation(false);
       setSchool('');
       setDegree('');
+      update(!updateValue);
     } catch (error) {
       console.error('Error editing education', error);
     }
@@ -151,6 +157,7 @@ function ProfileInfo({ reviewsID, profile, reviewTotal }) {
       const response = await axios.delete(`http://localhost:5000/education/delete/${eIDD}`, {
       });
       setShowDeleteConfirmationE(false);
+      update(!updateValue);
     } catch (error) {
       console.error('Error removing education', error);
     }
@@ -189,8 +196,14 @@ function ProfileInfo({ reviewsID, profile, reviewTotal }) {
           </div>
           {education.length && education.map((line) =>
             <li key={line.educationid}>{line.degree} {line.school}
-              {username == sessionUsername && <><button onClick={() => handleEditEducation(line.school, line.degree, line.educationid)}>Edit</button>
-                <button onClick={() => handleDeleteEducation(line.educationid, line.school, line.degree)}>Delete</button></>}</li>
+              {username === sessionUsername &&
+                <div className="icons"><button onClick={() => handleEditEducation(line.school, line.degree, line.educationid)}>
+                  <FaEdit />
+                </button>
+                  <button onClick={() => handleDeleteEducation(line.educationid, line.school, line.degree)}>
+                    <FaTrash />
+                  </button></div>}
+            </li>
           )}
           {showDeleteConfirmationE && (
             <div className="confirmation-popup">
@@ -220,8 +233,12 @@ function ProfileInfo({ reviewsID, profile, reviewTotal }) {
           </div>
           {qualifications.length && qualifications.map((line) =>
             <li key={line.qualificationid}>{line.skill}
-              {username == sessionUsername && <><button onClick={() => handleEditQualification(line.skill, line.qualificationid)}>Edit</button>
-                <button onClick={() => handleDeleteQualification(line.qualificationid, line.skill)}>Delete</button></>}</li>
+              {username == sessionUsername && <div className="icons"><button onClick={() => handleEditQualification(line.skill, line.qualificationid)}>
+                <FaEdit />
+              </button>
+                <button onClick={() => handleDeleteQualification(line.qualificationid, line.skill)}>
+                  <FaTrash />
+                </button></div>}</li>
           )}
           {showDeleteConfirmationQ && (
             <div className="confirmation-popup">

@@ -11,6 +11,7 @@ function Profile() {
   const [reviewTotal, setReviewTotal] = useState(0);
   const user = useParams();
   const [userProfileID, setUserProfileID] = useState(null);
+  const [update, setUpdate] = useState(false);
 
   useEffect(() => {
     const fetchProfileInfo = async () => {
@@ -36,12 +37,12 @@ function Profile() {
     fetchProfileInfo();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+  }, [user, update]);
 
 
   return (
     <div>
-      <ProfileInfo reviewsID="reviews" profile={profileInfo} reviewTotal={reviewTotal} />
+      <ProfileInfo reviewsID="reviews" profile={profileInfo} reviewTotal={reviewTotal} update={setUpdate} updateValue={update} />
       <Reviews reviews={reviews} user={userProfileID} />
     </div>
   );
