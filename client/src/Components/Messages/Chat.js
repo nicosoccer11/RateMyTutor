@@ -48,17 +48,17 @@ const Chat = () => {
 		}
 		const data = inputMessage;
 
-		setMessages((old) => [...old, { from: "me", text: data }]);
+		setMessages((old) => [...old, { from: user, text: data }]);
 		setInputMessage("");
 
 		setTimeout(() => {
-		setMessages((old) => [...old, { from: "computer", text: data }]);
+		//setMessages((old) => [...old, { from: "computer", text: data }]);
 		}, 1000);
 
 		axios.post('http://localhost:5000/messages/send', {
-			senderUsername: "test",
-			receiverUsername: "User test",
-			content: "testing this on vscode"
+			senderUsername: user,
+			receiverUsername: friendId.id,
+			content: inputMessage
 		}).then((response) => {
 			console.log(response);
 		}, (error) => {
