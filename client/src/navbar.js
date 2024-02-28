@@ -42,9 +42,9 @@ function NavbarComp({ setIsLoggedIn }) {
                                 <Nav.Link as={Link} to="/profile">
                                     Profile
                                 </Nav.Link>
-                                <Nav.Link as={Link} to="/messages">
+                                {/* <Nav.Link as={Link} to="/messages">
                                     Messages
-                                </Nav.Link>
+                                </Nav.Link> */}
                                 <NavDropdown title="Dropdown" id="basic-nav-dropdown">
                                     <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
                                     <NavDropdown.Item href="#action/3.2">
@@ -82,6 +82,7 @@ function NavbarComp({ setIsLoggedIn }) {
                     <Route path='/profile' element={<Profile />} />
                     <Route path="/profile/:id" element={<Profile />} />
                     <Route path='/messages' element={<ChakraProvider theme={theme} resetCSS={false}> <Chat /> </ChakraProvider>} />
+                    <Route path='/messages/:id' element={<ChakraProvider theme={theme} resetCSS={false}> <Chat /> </ChakraProvider>} />
                 </Routes>
             </>
         </Router>
