@@ -19,9 +19,10 @@ function ProfileInfo({ reviewsID, profile, reviewTotal }) {
   const [degree, setDegree] = useState('');
   const [showAddEducation, setShowAddEducation] = useState(false);
   const [showAddQualification, setShowAddQualification] = useState(false);
-
+  const sessionUsername = localStorage.getItem('user');
   useEffect(() => {
     if (profile) {
+      console.log(profile);
       setUsername(profile.username);
       setFirstName(profile.firstName);
       setLastName(profile.lastName);
@@ -88,9 +89,9 @@ function ProfileInfo({ reviewsID, profile, reviewTotal }) {
         </div>
         <div className="section">
           <div className="section-header">
-            <h2>Education <button className="add-icon" onClick={() => setShowAddEducation(true)}>
+            <h2>Education {username == sessionUsername &&<button className="add-icon" onClick={() => setShowAddEducation(true)}>
               <FaPlus />
-            </button></h2>
+            </button>}</h2>
           </div>
           {education.length && education.map((line) =>
             <li>{line.degree} {line.school}</li>
@@ -108,12 +109,10 @@ function ProfileInfo({ reviewsID, profile, reviewTotal }) {
         )}
         <div className="section">
           <div className="section-header">
-            <h2>Qualifications <button className="add-icon" onClick={() => setShowAddQualification(true)}>
+            <h2>Qualifications {username == sessionUsername && <button className="add-icon" onClick={() => setShowAddQualification(true)}>
               <FaPlus />
-            </button></h2>
+            </button>}</h2>
           </div>
-
-
           {qualifications.length && qualifications.map((line) =>
             <li>{line.skill}</li>
           )}
