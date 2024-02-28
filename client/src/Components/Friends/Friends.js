@@ -46,5 +46,5 @@ const Friends = () => {
     </div>
   );
 };
-//test
+
 export default Friends;
