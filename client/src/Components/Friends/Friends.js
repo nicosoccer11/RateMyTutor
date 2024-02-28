@@ -1,17 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import './friend.css'; // Import CSS file
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Profile from '../User/Profile';
+import axios from 'axios';
 
 const Friends = () => {
   const [currentPage, setCurrentPage] = useState(null);
 
   // State to hold the list of friends
-  const [friends, setFriends] = useState([
-    { id: 'test', name: 'John' },
-    { id: 'User test', name: 'Jane' },
-    { id: 3, name: 'Doe' },
-  ]);
+  const [friends, setFriends] = useState([]);
+  const[username,setUsername]=useState(localStorage.getItem('user'));
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.post('http://localhost:5000/friends/get', {
+          username,
+        });
+        const data = response.data; // Assuming the data returned is an array of friends
+        setFriends(data.friends); 
+      } catch (error) {
+        // Handle error, such as setting an error state
+        console.error('Error fetching data:', error);
+      }
+    };
+
+  fetchData();
+    return () => {
+    };
+  }, []);
 
   const handleSendMessage = (friendId) => {
     // Logic for sending a message to the friend with the given ID
@@ -24,16 +40,16 @@ const Friends = () => {
       <div className="friend-list-box">
         <ul className="friend-list">
           {friends.map((friend) => (
-            <li key={friend.id} className="friend-item">
+            <li key={friend} className="friend-item">
               <img
                 className="friend-avatar"
-                src={`https://via.placeholder.com/50?text=${friend.name}`}
-                alt={friend.name}
+                src={`https://via.placeholder.com/50?text=${friend}`}
+                alt={friend}
               />
               <div className="friend-info">
                 <h3>
-                  <Link className='name' to={`/profile/${friend.id}`}>{friend.name}</Link>
-                  <button className ="message" onClick={() => handleSendMessage(friend.id)}>Message</button>
+                  <Link className='name' to={`/profile/${friend}`}>{friend}</Link>
+                  <button className ="message" onClick={() => handleSendMessage(friend)}>Message</button>
                 </h3>
               </div>
             </li>
