@@ -189,7 +189,7 @@ function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue }) {
       await axios.patch(`http://localhost:5000/users/update/${username}`, {
         ShortDescription: shortDescription
       });
-      setEditingShortDescription(false);
+      setEditingShortDescription(false); 
     } catch (error) {
       console.error('Error saving long description', error);
     }
