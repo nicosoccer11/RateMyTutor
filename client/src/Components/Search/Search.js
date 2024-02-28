@@ -12,10 +12,10 @@ function Search() {
     const handleSearch = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.get(`http://localhost:5000/users/search?username=${query}`, {
+            const response = await axios.get(`http://localhost:5000/users/search?username=${query}&requester=${user2Username}`, {
             });
             setResults(response.data);
-            console.log(results);
+            console.log(response.data);
         } catch (error) {
             console.error('Error getting users:', error);
         }

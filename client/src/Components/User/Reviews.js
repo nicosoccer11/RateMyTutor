@@ -36,7 +36,7 @@ function Reviews({ reviews, user }) {
             </div>}
             {reviews ? (
                 reviews.map((review, index) => (
-                    <div className="review">
+                    <div key={review.reviewid} className="review">
                         <div className="review-content">
                             <div className="review-rating">
                                 <p>Quality:</p>

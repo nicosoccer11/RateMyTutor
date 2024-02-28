@@ -49,7 +49,7 @@ const Friends = () => {
           {friends.map((friend) => (
             <li key={friend} className="friend-item">
               <img
-                className="friend-avatar"
+                className="friend-avatar" 
                 src={`https://via.placeholder.com/50?text=${friend}`}
                 alt={friend}
               />

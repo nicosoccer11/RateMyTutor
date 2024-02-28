@@ -26,6 +26,8 @@ function ProfileInfo({ reviewsID, profile, reviewTotal }) {
   const [showDeleteConfirmationQ, setShowDeleteConfirmationQ] = useState(false);
   const [skillD, setSkillD] = useState('');
   const [qIDD, setQIDD] = useState('');
+  const [editingEducation, setEditingEducation] = useState(false);
+  const [editingQualifications, setEditingQualifications] = useState(false);
   const sessionUsername = localStorage.getItem('user');
 
   useEffect(() => {
@@ -43,21 +45,41 @@ function ProfileInfo({ reviewsID, profile, reviewTotal }) {
   }, [profile]);
 
   const addQualification = async () => {
+    if (editingQualifications) {
+      editQualification()
+    }
+    else {
+      try {
+        const response = await axios.post('http://localhost:5000/qualifications/add', {
+          username,
+          skill,
+        });
+        setShowAddQualification(false);
+        setSkill('');
+      } catch (error) {
+        console.error('Error adding qualification', error);
+      }
+    }
+  };
+
+  const handleEditQualification = async (skill, id) => {
+    setSkill(skill);
+    setQIDD(id);
+    setShowAddQualification(true);
+    setEditingQualifications(true);
+  }
+
+  const editQualification = async () => {
     try {
-      const response = await axios.post('http://localhost:5000/qualifications/add', {
-        username,
-        skill,
+      const response = await axios.patch(`http://localhost:5000/qualifications/edit/${qIDD}`, {
+        skill
       });
       setShowAddQualification(false);
       setSkill('');
     } catch (error) {
-      console.error('Error adding qualification', error);
+      console.error('Error editing qualification', error);
     }
   };
-
-  const editQualification = async (id) => {
-
-  }
 
   const handleDeleteQualification = (id, skill) => {
     setQIDD(id);
@@ -65,21 +87,47 @@ function ProfileInfo({ reviewsID, profile, reviewTotal }) {
     setShowDeleteConfirmationQ(true);
   };
 
-  const deleteQualification = async (id) => {
-    // try {
-    //   const response = await axios.post('http://localhost:5000/education/add', {
-    //     qIDD,
-    //   });
-    //   setShowDeleteConfirmationQ(false);
-    // } catch (error) {
-    //   console.error('Error removing qualification', error);
-    // }
+  const deleteQualification = async () => {
+    try {
+      const response = await axios.delete(`http://localhost:5000/qualifications/delete/${qIDD}`, {
+      });
+      setShowDeleteConfirmationQ(false);
+    } catch (error) {
+      console.error('Error removing education', error);
+    }
   }
 
   const addEducation = async () => {
+    if (editingEducation) {
+      editEducation();
+    }
+    else {
+      try {
+        const response = await axios.post('http://localhost:5000/education/add', {
+          username,
+          school,
+          degree,
+        });
+        setShowAddEducation(false);
+        setSchool('');
+        setDegree('');
+      } catch (error) {
+        console.error('Error adding qualification', error);
+      }
+    }
+  };
+
+  const handleEditEducation = async (school, degree, id) => {
+    setSchool(school);
+    setDegree(degree);
+    setEIDD(id);
+    setShowAddEducation(true);
+    setEditingEducation(true);
+  }
+
+  const editEducation = async () => {
     try {
-      const response = await axios.post('http://localhost:5000/education/add', {
-        username,
+      const response = await axios.patch(`http://localhost:5000/education/edit/${eIDD}`, {
         school,
         degree,
       });
@@ -87,13 +135,9 @@ function ProfileInfo({ reviewsID, profile, reviewTotal }) {
       setSchool('');
       setDegree('');
     } catch (error) {
-      console.error('Error adding qualification', error);
+      console.error('Error editing education', error);
     }
   };
-
-  const editEducation = async (ID) => {
-
-  }
 
   const handleDeleteEducation = (id, school, degree) => {
     setEIDD(id);
@@ -102,15 +146,14 @@ function ProfileInfo({ reviewsID, profile, reviewTotal }) {
     setShowDeleteConfirmationE(true);
   };
 
-  const deleteEducation = async (ID) => {
-    // try {
-    //   const response = await axios.post('http://localhost:5000/education/add', {
-    //     eIDD,
-    //   });
-    //   setShowDeleteConfirmationE(false);
-    // } catch (error) {
-    //   console.error('Error removing education', error);
-    // }
+  const deleteEducation = async () => {
+    try {
+      const response = await axios.delete(`http://localhost:5000/education/delete/${eIDD}`, {
+      });
+      setShowDeleteConfirmationE(false);
+    } catch (error) {
+      console.error('Error removing education', error);
+    }
   }
 
   return (
@@ -140,26 +183,23 @@ function ProfileInfo({ reviewsID, profile, reviewTotal }) {
         </div>
         <div className="section">
           <div className="section-header">
-            <h2>Education {username == sessionUsername && <button className="add-icon" onClick={() => setShowAddEducation(true)}>
+            <h2>Education {username == sessionUsername && <button className="add-icon" onClick={() => { setShowAddEducation(true); setEditingEducation(false) }}>
               <FaPlus />
             </button>}</h2>
           </div>
           {education.length && education.map((line) =>
-            <div key={line.educationid}>
-              <li>{line.degree} {line.school}
-                {username == sessionUsername && <><button onClick={() => editEducation(line.educationid)}>Edit</button>
+            <li key={line.educationid}>{line.degree} {line.school}
+              {username == sessionUsername && <><button onClick={() => handleEditEducation(line.school, line.degree, line.educationid)}>Edit</button>
                 <button onClick={() => handleDeleteEducation(line.educationid, line.school, line.degree)}>Delete</button></>}</li>
-              
-            </div>
           )}
           {showDeleteConfirmationE && (
-                <div className="confirmation-popup">
-                  <p>Are you sure you want to delete this entry?</p>
-                  <p>{degreeD} {schoolD}</p>
-                  <button onClick={deleteEducation}>Yes</button>
-                  <button onClick={() => setShowDeleteConfirmationE(false)}>No</button>
-                </div>
-              )}
+            <div className="confirmation-popup">
+              <p>Are you sure you want to delete this entry?</p>
+              <p>{degreeD} {schoolD}</p>
+              <button onClick={deleteEducation}>Yes</button>
+              <button onClick={() => setShowDeleteConfirmationE(false)}>No</button>
+            </div>
+          )}
 
         </div>
         {showAddEducation && (
@@ -168,35 +208,35 @@ function ProfileInfo({ reviewsID, profile, reviewTotal }) {
             <input type="text" value={school} onChange={(e) => setSchool(e.target.value)} />
             <label htmlFor="qualification">Degree:</label>
             <input type="text" value={degree} onChange={(e) => setDegree(e.target.value)} />
-            <button onClick={addEducation}>Add Education</button>
+            <button onClick={addEducation}>Save Education</button>
             <button onClick={() => { setShowAddEducation(false); setSchool(''); setDegree('') }}>Cancel</button>
           </div>
         )}
         <div className="section">
           <div className="section-header">
-            <h2>Qualifications {username == sessionUsername && <button className="add-icon" onClick={() => setShowAddQualification(true)}>
+            <h2>Qualifications {username == sessionUsername && <button className="add-icon" onClick={() => { setShowAddQualification(true); setEditingQualifications(false) }}>
               <FaPlus />
             </button>}</h2>
           </div>
           {qualifications.length && qualifications.map((line) =>
-            <li>{line.skill}
-            {username == sessionUsername && <><button onClick={() => editQualification(line.qualificationid)}>Edit</button>
+            <li key={line.qualificationid}>{line.skill}
+              {username == sessionUsername && <><button onClick={() => handleEditQualification(line.skill, line.qualificationid)}>Edit</button>
                 <button onClick={() => handleDeleteQualification(line.qualificationid, line.skill)}>Delete</button></>}</li>
           )}
           {showDeleteConfirmationQ && (
-                <div className="confirmation-popup">
-                  <p>Are you sure you want to delete this entry?</p>
-                  <p>{skillD}</p>
-                  <button onClick={deleteQualification}>Yes</button>
-                  <button onClick={() => setShowDeleteConfirmationQ(false)}>No</button>
-                </div>
-              )}
+            <div className="confirmation-popup">
+              <p>Are you sure you want to delete this entry?</p>
+              <p>{skillD}</p>
+              <button onClick={deleteQualification}>Yes</button>
+              <button onClick={() => setShowDeleteConfirmationQ(false)}>No</button>
+            </div>
+          )}
         </div>
         {showAddQualification && (
           <div className="popup">
             <label htmlFor="qualification">Qualification:</label>
             <input type="text" value={skill} onChange={(e) => setSkill(e.target.value)} />
-            <button onClick={addQualification}>Add Qualification</button>
+            <button onClick={addQualification}>Save Qualification</button>
             <button onClick={() => { setShowAddQualification(false); setSkill('') }}>Cancel</button>
           </div>
         )}

@@ -109,3 +109,32 @@
   display: block;
   margin-bottom: 5px;
 }
+
+/* CSS for the confirmation popup */
+.confirmation-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.confirmation-popup p {
+  margin: 0 0 10px;
+}
+
+.confirmation-popup button {
+  margin-right: 10px;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.confirmation-popup button:hover {
+  background-color: #0056b3;
+}
