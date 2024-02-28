@@ -2,9 +2,12 @@ import React, { useState } from 'react';
 import './friend.css'; // Import CSS file
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Profile from '../User/Profile';
+import Chat from '../Messages/Chat';
 
 const Friends = () => {
   const [currentPage, setCurrentPage] = useState(null);
+  const [otherUser, setOtherUser] = useState("test");
+  
 
   // State to hold the list of friends
   const [friends, setFriends] = useState([
@@ -15,7 +18,8 @@ const Friends = () => {
 
   const handleSendMessage = (friendId) => {
     // Logic for sending a message to the friend with the given ID
-    console.log(`Sending message to ${friendId}`);
+    setOtherUser(friendId);
+    console.log(`Sending message to ${friendId}, ${otherUser}`);
   };
 
   return (
@@ -33,7 +37,8 @@ const Friends = () => {
               <div className="friend-info">
                 <h3>
                   <Link className='name' to={`/profile/${friend.id}`}>{friend.name}</Link>
-                  <button className ="message" onClick={() => handleSendMessage(friend.id)}>Message</button>
+                  
+                  <button className ="message" onClick={() => handleSendMessage(friend.id)}><Link to={`/messages/${friend.id}`}>Messages</Link></button>
                 </h3>
               </div>
             </li>
@@ -42,6 +47,7 @@ const Friends = () => {
       </div>
       <Routes>
         <Route path="/profile/:id" element={<Profile />} />
+        <Route path="/messages/:id" element={<Chat/>} />
       </Routes>
     </div>
   );
