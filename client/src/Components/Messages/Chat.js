@@ -69,7 +69,7 @@ const Chat = () => {
 	return (
 		<Flex w="100%" h="100vh" justify="center" align="center">
 		<Flex w="40%" h="90%" flexDir="column">
-			<Header />
+			<Header username={user}/>
 			<Messages messages={messages} user1={user} user2={friendId.id}/>
 			<Footer
 			inputMessage={inputMessage}
