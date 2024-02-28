@@ -13,7 +13,7 @@ router.post('/users', createUser);
 router.get('/users', getAllUsers);
 
 // Route to update a user by username
-router.patch('/users/:username', updateUser);
+router.patch('/users/update/:username', updateUser);
 
 // Route to login a user
 router.post('/users/login', loginUser);
@@ -23,7 +23,6 @@ router.get('/profile', getUserProfile);
 
 // Route to search users by username
 router.get('/users/search', searchUsersByUsername);
-
 
 // Define other user routes here
 
