@@ -42,6 +42,7 @@ const addFriend = async (req, res) => {
 // Function to get all the friends for user
 const getFriends = async (req, res) => {
   const { username } = req.body; // Assuming you're getting the username in the request body
+  console.log('Username:', username);
   try {
     // Getting all the friends where the user is user1id
     const friends1 = await db.query(`SELECT user2id AS friend FROM friends WHERE user1id = $1`, [username]);
