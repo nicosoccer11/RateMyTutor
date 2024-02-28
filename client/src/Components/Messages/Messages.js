@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { Avatar, Flex, Text } from "@chakra-ui/react";
 
-const Messages = ({ messages }) => {
+const Messages = ({ messages, user1, user2 }) => {
   const AlwaysScrollToBottom = () => {
 	const elementRef = useRef();
 	useEffect(() => elementRef.current.scrollIntoView());
@@ -11,7 +11,7 @@ const Messages = ({ messages }) => {
   return (
 	<Flex w="100%" h="80%" overflowY="scroll" flexDirection="column" p="3">
   	{messages.map((item, index) => {
-    	if (item.from === "me") {
+    	if (item.from === user1) {
       	return (
         	<Flex key={index} w="100%" justify="flex-end">
           	<Flex

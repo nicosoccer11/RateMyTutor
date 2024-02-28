@@ -16,11 +16,14 @@ const Friends = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.post('http://localhost:5000/friends/get', {
+        await axios.post('http://localhost:5000/friends/get', {
           username,
+        }).then((response) => {
+          console.log(response);
+          const data = response.data; // Assuming the data returned is an array of friends
+          setFriends(data.friends); 
         });
-        const data = response.data; // Assuming the data returned is an array of friends
-        setFriends(data.friends); 
+        
       } catch (error) {
         // Handle error, such as setting an error state
         console.error('Error fetching data:', error);
@@ -54,7 +57,7 @@ const Friends = () => {
                 <h3>
                   <Link className='name' to={`/profile/${friend.id}`}>{friend.name}</Link>
                   
-                  <button className ="message" onClick={() => handleSendMessage(friend.id)}><Link to={`/messages/${friend.id}`}>Messages</Link></button>
+                  <button className ="message" onClick={() => handleSendMessage(friend)}><Link to={`/messages/${friend}`}>Messages</Link></button>
                 </h3>
               </div>
             </li>
