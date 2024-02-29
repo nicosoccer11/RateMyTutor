@@ -29,7 +29,7 @@ function NavbarComp({ setIsLoggedIn }) {
                 <Navbar bg="light" expand="lg" className="bg-body-tertiary" sticky="top">
                     <Container>
                         <Navbar.Brand className={`me-auto`} as={Link} to="/">
-                            React-Bootstrap
+                            RateMyProfessor
                         </Navbar.Brand>
                         <Navbar.Toggle aria-controls="basic-navbar-nav" />
                         <Navbar.Collapse id="basic-navbar-nav">
@@ -43,13 +43,13 @@ function NavbarComp({ setIsLoggedIn }) {
                                 <Nav.Link as={Link} to="/profile">
                                     Profile
                                 </Nav.Link>
-                                <Nav.Link as={Link} to="/messages">
+                                {/* <Nav.Link as={Link} to="/messages">
                                     Messages
-                                </Nav.Link>
+                                </Nav.Link> */}
                                 <Nav.Link as={Link} to="/search">
                                     Search
                                 </Nav.Link>
-                                <NavDropdown title="Dropdown" id="basic-nav-dropdown">
+                                {/* <NavDropdown title="Dropdown" id="basic-nav-dropdown">
                                     <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
                                     <NavDropdown.Item href="#action/3.2">
                                         Another action
@@ -59,7 +59,7 @@ function NavbarComp({ setIsLoggedIn }) {
                                     <NavDropdown.Item href="#action/3.4">
                                         Separated link
                                     </NavDropdown.Item>
-                                </NavDropdown>
+                                </NavDropdown> */}
                             </Nav>
                             <Form inline>
                                 <Row>

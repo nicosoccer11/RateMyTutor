@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import './Search.css';
 import axios from 'axios';
 import Profile from '../User/Profile';
+import Chat from '../Messages/Chat';
 
 function Search() {
     const [query, setQuery] = useState('');
@@ -33,6 +34,11 @@ function Search() {
         }
     };
 
+    const handleSendMessage = (friendId) => {
+        // Logic for sending a message to the friend with the given ID
+        console.log(`Sending message to ${friendId}`);
+      };
+
     return (
         <div className="search-container">
             <form className="search-form" onSubmit={handleSearch}>
@@ -57,7 +63,10 @@ function Search() {
                             <div className="user-info">
                                 <h3>
                                     <Link className='name' to={`/profile/${user.username}`}>{user.username}</Link>
-                                    {!user.isFriend && <button className="add-friend" onClick={() => handleAddUser(user.username)}>Add Friend</button>}
+                                    {user.isFriend ? 
+                                        <button className="add-friend" onClick={() => handleSendMessage(user.username)}><Link to={`/messages/${user.username}`}>Message</Link></button> : 
+                                        <button className="add-friend" onClick={() => handleAddUser(user.username)}>Add Friend</button>
+                                    }
                                 </h3>
                             </div>
                         </li>
@@ -66,6 +75,7 @@ function Search() {
             </div>
             <Routes>
                 <Route path="/profile/:id" element={<Profile />} />
+                <Route path="/messages/:id" element={<Chat/>} />
             </Routes>
         </div>
     );

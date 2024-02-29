@@ -24,16 +24,16 @@ const Messages = ({ messages, user1, user2 }) => {
           	>
             	<Text>{item.text}</Text>
           	</Flex>
+			<Avatar
+			name="Computer"
+			src="https://avataaars.io/?avatarStyle=Transparent&topType=LongHairStraight&accessoriesType=Blank&hairColor=BrownDark&facialHairType=Blank&clotheType=BlazerShirt&eyeType=Default&eyebrowType=Default&mouthType=Default&skinColor=Light"
+			bg="blue.300">
+			</Avatar>
         	</Flex>
       	);
     	} else {
       	return (
         	<Flex key={index} w="100%">
-          	<Avatar
-            	name="Computer"
-            	src="https://avataaars.io/?avatarStyle=Transparent&topType=LongHairStraight&accessoriesType=Blank&hairColor=BrownDark&facialHairType=Blank&clotheType=BlazerShirt&eyeType=Default&eyebrowType=Default&mouthType=Default&skinColor=Light"
-            	bg="blue.300"
-          	></Avatar>
           	<Flex
             	bg="gray.100"
             	color="black"
