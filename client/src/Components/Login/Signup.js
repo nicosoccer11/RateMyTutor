@@ -12,11 +12,11 @@ function Signup({ onLogin, setIsSignup }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000', {
+      const response = await axios.post('http://localhost:5000/users', {
         username,
         password,
-        firstName,
-        lastName,
+        firstname: firstName,
+        lastname: lastName,
         email
       });
       console.log('User created:', response.data);
@@ -26,7 +26,7 @@ function Signup({ onLogin, setIsSignup }) {
           password,
         });
         console.log(response.data);
-        localStorage.setItem('user', response.data);
+        localStorage.setItem('user', response.data.username);
         onLogin();
       } catch (error) {
         console.error('Error logging in:', error);
