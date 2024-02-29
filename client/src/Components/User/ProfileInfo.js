@@ -219,7 +219,7 @@ function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue }) {
           ) : (
             <>
               <p>{shortDescription}</p>
-              <button onClick={handleEditShortDescription}><FaEdit /></button>
+              {username == sessionUsername &&<button onClick={handleEditShortDescription}><FaEdit /></button>}
             </>
           )}
         </div>
@@ -246,7 +246,7 @@ function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue }) {
           ) : (
             <>
               <p>{longDescription}</p>
-              <button onClick={handleEditLongDescription}><FaEdit /></button>
+              {username == sessionUsername && <button onClick={handleEditLongDescription}><FaEdit /></button>}
             </>
           )}
         </div>
