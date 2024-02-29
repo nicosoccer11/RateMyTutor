@@ -11,7 +11,9 @@ function Search() {
     const user2Username = localStorage.getItem('user');
 
     const handleSearch = async (e) => {
-        e.preventDefault();
+        if(e != null){
+            e.preventDefault();
+        }
         try {
             const response = await axios.get(`http://localhost:5000/users/search?username=${query}&requester=${user2Username}`, {
             });
@@ -29,6 +31,8 @@ function Search() {
                 user2Username,
             });
             console.log(response.data);
+            setResults([]);
+            handleSearch(null);
         } catch (error) {
             console.error('Error getting users:', error);
         }
