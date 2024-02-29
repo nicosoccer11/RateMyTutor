@@ -15,8 +15,8 @@ function Signup({ onLogin, setIsSignup }) {
       const response = await axios.post('http://localhost:5000/users', {
         username,
         password,
-        firstName,
-        lastName,
+        firstname: firstName,
+        lastname: lastName,
         email
       });
       console.log('User created:', response.data);
