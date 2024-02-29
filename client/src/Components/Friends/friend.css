@@ -77,6 +77,6 @@ label {
   border-radius: 10px; 
 }
 .name {
-  /* padding-right: 100px; */
-  max-width: 200px;
+  padding-right: 150px;
+  max-width: 150px;
 }
