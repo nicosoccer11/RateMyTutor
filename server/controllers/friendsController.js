@@ -39,6 +39,48 @@ const addFriend = async (req, res) => {
   }
 };
 
+const deleteFriend = async (req, res) => {
+  const { user1Username, user2Username } = req.body;
+
+  // Validate that user1Username and user2Username are different
+  if (user1Username === user2Username) {
+    return res.status(400).send('Users cannot be friends with themselves.');
+  }
+
+  try {
+    // Check if users already are friends to avoid duplicates
+    const existingFriendship = await db.query(
+      'SELECT * FROM friends WHERE (User1ID = $1 AND User2ID = $2) OR (User1ID = $2 AND User2ID = $1)',
+      [user1Username, user2Username]
+    );
+    // they are friends
+    if (existingFriendship.rows.length > 0) {
+     
+      // remove friendship 
+      const deleteFriendship = await db.query(
+        'DELETE FROM friends WHERE (User1ID = $1 AND User2ID = $2) OR (User1ID = $2 AND User2ID = $1)',
+        [user1Username, user2Username]
+      );
+    }
+    else{
+      return res.status(400).send('They are not a friend.');
+    }
+
+
+    res.json({
+      message: 'Friendship ended with ${user2Username}',
+
+    });
+  } catch (err) {
+    console.error(err.message);
+    if (err.code === "23503") { // PostgreSQL foreign key violation error code
+      res.status(400).send('One or both users do not exist.');
+    } else {
+      res.status(500).send('Server Error');
+    }
+  }
+};
+
 // Function to get all the friends for user
 const getFriends = async (req, res) => {
   const { username } = req.body; // Assuming you're getting the username in the request body
@@ -70,4 +112,5 @@ const getFriends = async (req, res) => {
 module.exports = {
   addFriend,
   getFriends,
+  deleteFriend,
 };

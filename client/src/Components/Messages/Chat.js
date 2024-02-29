@@ -21,9 +21,9 @@ const Chat = () => {
 	const friendId = useParams();
 	useEffect(() => {
 		const getPrevMessages = async () =>{
-			console.log(`user->${user} friend->${friendId.id}`);
+			//console.log(`user->${user} friend->${friendId.id}`);
 			//const receiver = friendID ? friendID : "computer";
-			//console.log(receiver);
+			console.log("polling");
 		
 			await axios.get(`http://localhost:5000/messages/history/${user}/${friendId.id}`).then((response) => {
 				//console.log(response.data.data);
@@ -35,11 +35,18 @@ const Chat = () => {
 											"text": msgData[msg].content
 											});
 				}
-				console.log(previous_messages)
+				//console.log(previous_messages)
 				setMessages(previous_messages)
 			})
 		}
 		getPrevMessages();
+
+		let interval;
+		if (!interval) {
+			interval = setInterval(getPrevMessages, 3000);
+		}
+
+		return () => clearInterval(interval);
 	}, [])
 	
 	const handleSendMessage = () => {
@@ -69,7 +76,7 @@ const Chat = () => {
 	return (
 		<Flex w="100%" h="100vh" justify="center" align="center">
 		<Flex w="40%" h="90%" flexDir="column">
-			<Header username={user}/>
+			<Header username={friendId.id}/>
 			<Messages messages={messages} user1={user} user2={friendId.id}/>
 			<Footer
 			inputMessage={inputMessage}

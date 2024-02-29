@@ -55,9 +55,9 @@ const Friends = () => {
               />
               <div className="friend-info">
                 <h3>
-                  <Link className='name' to={`/profile/${friend.id}`}>{friend.name}</Link>
+                  <Link className='name' to={`/profile/${friend}`}>{friend}</Link>
                   
-                  <button className ="message" onClick={() => handleSendMessage(friend)}><Link to={`/messages/${friend}`}>Messages</Link></button>
+                  <button className ="message" onClick={() => handleSendMessage(friend)}><Link to={`/messages/${friend}`}>Message</Link></button>
                 </h3>
               </div>
             </li>
