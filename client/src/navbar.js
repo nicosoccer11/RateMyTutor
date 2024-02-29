@@ -61,7 +61,7 @@ function NavbarComp({ setIsLoggedIn }) {
                                     </NavDropdown.Item>
                                 </NavDropdown> */}
                             </Nav>
-                            <Form inline>
+                            {/* <Form inline>
                                 <Row>
                                 <Col xs="auto">
                                     <Form.Control
@@ -74,7 +74,7 @@ function NavbarComp({ setIsLoggedIn }) {
                                     <Button type="submit">Submit</Button>
                                 </Col>
                                 </Row>
-                            </Form>
+                            </Form> */}
                             <Button variant="outline-danger" onClick={handleLogout}>Logout</Button>
                         </Navbar.Collapse>
                     </Container>
