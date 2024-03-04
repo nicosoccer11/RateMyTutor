@@ -33,9 +33,9 @@ async function fetchUserByUsername(username) {
   }
 
 // Updating user's profile picture
-const UserUploadPicture = async (imageName) => {
+const UserUploadPicture = async (imageName,username) => {
   try {
-    await db.query('UPDATE users SET profilepicture = $1 WHERE username = $2', [imageName, 'User test']);
+    await db.query('UPDATE users SET profilepicture = $1 WHERE username = $2', [imageName, username]);
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error, check console for logs');
@@ -43,7 +43,7 @@ const UserUploadPicture = async (imageName) => {
 };
 
 const getUserProfilePicture = async(req,res) => {
-  const { username } = req.query;
+  const { username } = req.params;
     try {
       const user = await fetchUserByUsername(username);
       const pictureName = user.profilepicture;
@@ -65,7 +65,8 @@ const getUserProfilePicture = async(req,res) => {
 const randomImageName = (bytes = 32) => crypto.randomBytes(16).toString('hex')
 const imageName = randomImageName()
 const createUserProfilePicture = async(req,res) => {
-  const user = await fetchUserByUsername("User test"); //TODO: currently hardcoded 
+  const { username } = req.params;
+  const user = await fetchUserByUsername(username); 
   if (!user) {
     
     return res.status(404).json({ error: 'User not found' });
@@ -90,13 +91,33 @@ const createUserProfilePicture = async(req,res) => {
   const command = new PutObjectCommand(params)
   await s3.send(command)
   // update database with image
-  await UserUploadPicture(imageName); 
+  await UserUploadPicture(imageName),username; 
   res.send({});
 };
 
+// delete user profile pic
+const deleteUserProfilePicture = async(req,res) => {
+  const { username } = req.params;
+  const user = await fetchUserByUsername(username); //TODO: currently hardcoded 
+  if (!user) {
+    
+    return res.status(404).json({ error: 'User not found' });
+  }
+  const pictureURL = user.profilepicture;
+  if (pictureURL != ""){
+    const params = {
+      Bucket: bucket_name,
+      Key:pictureURL,
+    } 
+    const command = new DeleteObjectCommand(params)
+    await s3.send(command);
+  }
+  res.send({});
+};
 // Export the functions
 module.exports = {
   UserUploadPicture,
   getUserProfilePicture,
   createUserProfilePicture,
+  deleteUserProfilePicture,
 };
