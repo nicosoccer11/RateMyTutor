@@ -4,6 +4,7 @@ import image from './user.jpeg';
 import axios from 'axios';
 import CreatePost from './CreatePost';
 
+
 const Post = ({ user, content }) => {
     return (
         <div className="post">
@@ -62,7 +63,13 @@ function Home() {
 
     return (
         <div>
-            <button className="add-post-button" onClick={handleAddPostClick}>Add Post</button>
+            <div className='new-post-container'>
+                <button className="add-post-button" onClick={handleAddPostClick}>
+                    <img src='images/plus.png'></img>
+                </button>
+                <div className="textbox">New Post</div>
+            </div>
+            
             {showCreatePost ? <CreatePost onClose={() => setShowCreatePost(false)} onSubmit={handleNewPost} /> : <></>}
             {posts != [] && posts.map((post, index) => (
 
