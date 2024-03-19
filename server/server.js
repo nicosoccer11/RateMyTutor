@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const { Server } = require('socket.io') // TODO: Move this
 require('dotenv').config();
 
 // Add Routes here
@@ -37,6 +38,31 @@ app.use(educationRoutes);
 app.use(imageRoutes);
 
 
-app.listen(5000, () => {
+const server = app.listen(5000, () => {
   console.log('Server is running on port 5000');
+});
+
+// Socket io instance
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"],
+  },
+});
+
+io.on("connection",(socket) =>{
+  console.log(socket.id);
+
+  socket.on("join_room", (data) =>{
+    socket.join(data); // id of room joined
+    console.log(`user with id: ${socket.id} joined room: ${data}`, )
+  });
+
+  socket.on("send_message", (data) => {
+    socket.to(data.room).emit("receive_message",data);
+  });
+
+  socket.on("disconnect", ()=>{
+    console.log("User disconnected", socket.id);
+  });
 });
