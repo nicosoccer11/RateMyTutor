@@ -15,6 +15,8 @@ import Profile from './Components/User/Profile';
 import Chat from './Components/Messages/Chat';
 import { ChakraProvider, theme } from '@chakra-ui/react';
 import Search from './Components/Search/Search';
+import "./navbar.css"
+
 
 function NavbarComp({ setIsLoggedIn }) {
 
@@ -25,60 +27,38 @@ function NavbarComp({ setIsLoggedIn }) {
     
     return (  
         <Router>
-            <>
-                <Navbar bg="light" expand="lg" className="bg-body-tertiary" sticky="top">
-                    <Container>
-                        <Navbar.Brand className={`me-auto`} as={Link} to="/">
-                            RateMyProfessor
-                        </Navbar.Brand>
-                        <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                        <Navbar.Collapse id="basic-navbar-nav">
-                            <Nav className="me-auto">
-                                <Nav.Link as={Link} to="/home">
-                                    Home
-                                </Nav.Link>
-                                <Nav.Link as={Link} to="/friends">
-                                    Friends
-                                </Nav.Link>
-                                <Nav.Link as={Link} to="/profile">
-                                    Profile
-                                </Nav.Link>
-                                {/* <Nav.Link as={Link} to="/messages">
-                                    Messages
-                                </Nav.Link> */}
-                                <Nav.Link as={Link} to="/search">
-                                    Search
-                                </Nav.Link>
-                                {/* <NavDropdown title="Dropdown" id="basic-nav-dropdown">
-                                    <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-                                    <NavDropdown.Item href="#action/3.2">
-                                        Another action
-                                    </NavDropdown.Item>
-                                    <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
-                                    <NavDropdown.Divider />
-                                    <NavDropdown.Item href="#action/3.4">
-                                        Separated link
-                                    </NavDropdown.Item>
-                                </NavDropdown> */}
-                            </Nav>
-                            {/* <Form inline>
-                                <Row>
-                                <Col xs="auto">
-                                    <Form.Control
-                                    type="text"
-                                    placeholder="Search"
-                                    className=" mr-sm-2"
-                                    />
-                                </Col>
-                                <Col xs="auto">
-                                    <Button type="submit">Submit</Button>
-                                </Col>
-                                </Row>
-                            </Form> */}
-                            <Button variant="outline-danger" onClick={handleLogout}>Logout</Button>
-                        </Navbar.Collapse>
-                    </Container>
-                </Navbar>
+            <Navbar expand="lg" className="bg-blur" sticky="top">
+                <Navbar.Brand as={Link} to="/" className="ms-auto">
+                    <img
+                        alt=""
+                        src="/images/logo512.png"
+                        width="30"
+                        height="30"
+                        className="d-inline-block align-top"
+                    />{' '}
+                    RateMyProfessor
+                </Navbar.Brand>
+                <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                <Navbar.Collapse id="basic-navbar-nav">
+                    <Nav className="me-auto">
+                        <Nav.Link as={Link} to="/home">
+                            Home
+                        </Nav.Link>
+                        <Nav.Link as={Link} to="/friends">
+                            Friends
+                        </Nav.Link>
+                        <Nav.Link as={Link} to="/profile">
+                            Profile
+                        </Nav.Link>
+                        <Nav.Link as={Link} to="/search">
+                            Search
+                        </Nav.Link>
+                    </Nav>
+                    <Button variant="outline-danger" onClick={handleLogout}>Logout</Button>
+                </Navbar.Collapse>
+            </Navbar>
+
+
                 <Routes>
                     <Route exact path='/' element={<Home />} />
                     <Route path='/home' element={<Home />} />
@@ -89,7 +69,6 @@ function NavbarComp({ setIsLoggedIn }) {
                     <Route path='/search/*' element={<Search />} />
                     <Route path='/messages/:id' element={<ChakraProvider theme={theme} resetCSS={false}> <Chat /> </ChakraProvider>} />
                 </Routes>
-            </>
         </Router>
     );
 }

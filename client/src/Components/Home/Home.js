@@ -8,11 +8,11 @@ import CreatePost from './CreatePost';
 const Post = ({ user, content }) => {
     return (
         <div className="post">
-            <div className='username'>
-                <img src={image} alt="user" className="user-image" />
-                {user}
+            <div class='username'>
+                <img src={image} alt="user" className="user-image"/>
+                <span className="username-text">user</span>
             </div>
-            <p>{content}</p>
+            <p className='post-content'>{content}</p>
 
             <div className="post-actions">
                 <button className='post_button'>Like</button>
