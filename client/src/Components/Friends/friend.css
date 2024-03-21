@@ -35,9 +35,11 @@
 
 
 .friend-list {
-  list-style-type: none;
+  list-style: none;
   padding: 0;
   margin: 0;
+  max-height: "60%"; /* Set the maximum height for the list */
+  overflow-y: auto; /* Enable vertical scrollbar when needed */
 }
 
 .friend-item {

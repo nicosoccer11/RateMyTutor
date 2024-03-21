@@ -4,6 +4,8 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Profile from '../User/Profile';
 import axios from 'axios';
 import Chat from '../Messages/Chat';
+import { Flex } from '@chakra-ui/react';
+import { ChakraProvider, theme } from '@chakra-ui/react';
 
 class Friends extends React.Component {
   constructor(props) {
@@ -75,7 +77,7 @@ class Friends extends React.Component {
             ))}
           </ul>
         </div>
-        {<Chat friend={this.state.otherUser}/>}
+        {this.state.otherUser && <Chat friend={this.state.otherUser}/>}
       </div>
         <Routes>
           <Route path="/profile/:id" element={<Profile />} />

@@ -62,7 +62,7 @@ function NavbarComp({ setIsLoggedIn }) {
                 <Routes>
                     <Route exact path='/' element={<Home />} />
                     <Route path='/home' element={<Home />} />
-                    <Route path='/friends/*' element={<Friends />} />
+                    <Route path='/friends/*' element={<ChakraProvider theme={theme} resetCSS={false}> <Friends /> </ChakraProvider>} />
                     <Route path='/profile' element={<Profile />} />
                     <Route path="/profile/:id" element={<Profile />} />
                     <Route path='/messages' element={<ChakraProvider theme={theme} resetCSS={false}> <Chat /> </ChakraProvider>} />
