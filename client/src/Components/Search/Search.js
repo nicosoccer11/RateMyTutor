@@ -4,6 +4,7 @@ import './Search.css';
 import axios from 'axios';
 import Profile from '../User/Profile';
 import Chat from '../Messages/Chat';
+import Post from '../Home/Post';
 
 function Search() {
     const navigate = useNavigate();
@@ -11,7 +12,8 @@ function Search() {
     const queryParams = new URLSearchParams(searchLocation.search);
     const [query, setQuery] = useState('');
     const [data, setData] = useState(queryParams.get('q'));
-    const [results, setResults] = useState([]);
+    const [users, setUsers] = useState([]);
+    const [posts, setPosts] = useState([]);
     const user2Username = localStorage.getItem('user');
     const [searchMessage, setSearchMessage] = useState('');
     const [searchType, setSearchType] = useState('users');
@@ -27,15 +29,40 @@ function Search() {
 
     }, []);
 
+    // const handleSearch = async (e, input) => {
+    //     if (e != null) {
+    //         e.preventDefault();
+    //     }
+    //     const searchData = input || query;
+    //     try {
+    //         const response = await axios.get(`http://localhost:5000/users/search?username=${searchData}&requester=${user2Username}`, {
+    //         });
+    //         setResults(response.data);
+    //         setSearchMessage(response.data.length === 0 ? 'No results found, try another search.' : '');
+    //         localStorage.setItem('searchQuery', searchData);
+    //         navigate(`?q=${searchData}`);
+    //     } catch (error) {
+    //         console.error('Error getting users:', error);
+    //     }
+    // };
+
     const handleSearch = async (e, input) => {
         if (e != null) {
             e.preventDefault();
         }
         const searchData = input || query;
         try {
-            const response = await axios.get(`http://localhost:5000/users/search?username=${searchData}&requester=${user2Username}`, {
+            const response = await axios.get(`http://localhost:5000/users/search`, {
+                params: {
+                    term: searchData,
+                    requesterUsername: user2Username,
+                },
             });
-            setResults(response.data);
+            console.log(response.data);
+            setUsers(response.data.usernames);
+            setPosts(response.data.posts);
+            //setResults(response.data);
+            console.log(users, posts);
             setSearchMessage(response.data.length === 0 ? 'No results found, try another search.' : '');
             localStorage.setItem('searchQuery', searchData);
             navigate(`?q=${searchData}`);
@@ -50,7 +77,7 @@ function Search() {
                 user1Username,
                 user2Username,
             });
-            setResults([]);
+            // setResults([]);
             setSearchMessage('');
             handleSearch(null);
         } catch (error) {
@@ -87,7 +114,7 @@ function Search() {
             </div>
             {searchType === 'users' && (<div className="user-list-box">
                 <ul className="user-list">
-                    {results.map((user) => (
+                    {users && users.length > 0 && users.map((user) => (
                         <li key={user.username} className="user-item">
                             <img
                                 className="user-avatar"
@@ -109,10 +136,8 @@ function Search() {
             </div>)}
             {searchType === 'posts' && (
                 <ul className="post-list">
-                    {results.map((post) => (
-                        <li key={post.id} className="post-item">
-                            {/* Render post information */}
-                        </li>
+                    {posts && posts.length > 0 && posts.map((post) => (
+                        <Post key={post.postid} content={post.content} user={post.userid} />
                     ))}
                 </ul>
             )}

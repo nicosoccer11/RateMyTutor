@@ -184,7 +184,7 @@ const searchUsersByUsername = async (req, res) => {
 // Unified search function
 const searchEverything = async (req, res) => {
   const { term, requesterUsername } = req.query;
-
+  console.log(term, requesterUsername);
   if (!term) {
     return res.status(400).send('A search term is required.');
   }

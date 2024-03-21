@@ -31,20 +31,34 @@ function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue }) {
   const [editingQualifications, setEditingQualifications] = useState(false);
   const [editingLongDescription, setEditingLongDescription] = useState(false);
   const [editingShortDescription, setEditingShortDescription] = useState(false);
+  const [profilePicture, setProfilePicture] = useState(null);
   const sessionUsername = localStorage.getItem('user');
 
   useEffect(() => {
-    if (profile) {
-      console.log(profile);
-      setUsername(profile.username);
-      setFirstName(profile.firstName);
-      setLastName(profile.lastName);
-      setAverageRating(profile.averageRating);
-      setShortDescription(profile.shortDescription);
-      setLongDescription(profile.longDescription);
-      setEducation(profile.education);
-      setQualifications(profile.qualifications);
+    async function fetchData() {
+      if (profile) {
+        console.log(profile);
+        setUsername(profile.username);
+        setFirstName(profile.firstName);
+        setLastName(profile.lastName);
+        setAverageRating(profile.averageRating);
+        setShortDescription(profile.shortDescription);
+        setLongDescription(profile.longDescription);
+        setEducation(profile.education);
+        setQualifications(profile.qualifications);
+        try {
+          const response = await axios.get(`http://localhost:5000/image/get/${username}`, {
+          });
+          console.log("returned", response.data);
+          setProfilePicture(response.data);
+        } catch (error) {
+          console.error('Error retrieving profile data:', error);
+        }
+      }
     }
+
+
+    fetchData();
   }, [profile]);
 
   const addQualification = async () => {
@@ -219,7 +233,7 @@ function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue }) {
         const formData = new FormData();
         formData.append('image', file);
 
-        await axios.post('http://localhost:5000/image/post', formData, {
+        await axios.post(`http://localhost:5000/image/post/${username}`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -238,13 +252,14 @@ function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue }) {
     <div className="profile-info-container">
       <div className="left-box">
         <div className="center" onClick={handleImageClick}>
-          <img src={Test} alt="Profile" className="profile-image" />
-          <input
-            type="file"
-            id="fileInput"
-            style={{ display: 'none' }}
-            onChange={handleFileInputChange}
-          />
+          <img src={profilePicture} alt="Profile" className="profile-image" />
+          {username === localStorage.getItem("user") &&
+            <input
+              type="file"
+              id="fileInput"
+              style={{ display: 'none' }}
+              onChange={handleFileInputChange}
+            />}
         </div>
         <div className="section">
           <h2 className="center">{username}</h2>
