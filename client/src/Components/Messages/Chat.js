@@ -76,8 +76,8 @@ const Chat = (props) => {
 	};
 
 	return (
-		<Flex w="50%" h="100vh" justify="center" align="center">
-		<Flex w="40%" h="90%" flexDir="column">
+		<Flex w="25%" h="100%" justify="left" align="center">
+		<Flex w="1000%" h="90%" flexDir="column">
 			<Header username={friend}/>
 			<Messages messages={messages} user1={user} user2={friend}/>
 			<Footer
