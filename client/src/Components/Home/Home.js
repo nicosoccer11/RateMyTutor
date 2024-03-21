@@ -3,6 +3,7 @@ import "./home.css";
 import image from './user.jpeg';
 import axios from 'axios';
 import CreatePost from './CreatePost';
+import SearchBar from './SearchBar';
 
 const Post = ({ user, content }) => {
     return (
@@ -62,9 +63,10 @@ function Home() {
 
     return (
         <div>
+            <SearchBar />
             <button className="add-post-button" onClick={handleAddPostClick}>Add Post</button>
             {showCreatePost ? <CreatePost onClose={() => setShowCreatePost(false)} onSubmit={handleNewPost} /> : <></>}
-            {posts != [] && posts.map((post, index) => (
+            {posts.length !== 0 && posts.map((post, index) => (
 
                 <Post key={index} user={post.userid} content={post.content} />
             ))}

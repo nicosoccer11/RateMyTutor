@@ -1,24 +1,43 @@
-import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom';
 import './Search.css';
 import axios from 'axios';
 import Profile from '../User/Profile';
 import Chat from '../Messages/Chat';
 
 function Search() {
-    const [query, setQuery] = useState('');
+    const navigate = useNavigate();
+    const searchLocation = useLocation();
+    const queryParams = new URLSearchParams(searchLocation.search);
+    const [query, setQuery] = useState(''); 
+    const [data, setData] = useState(queryParams.get('q'));
     const [results, setResults] = useState([]);
     const user2Username = localStorage.getItem('user');
+    const [searchMessage, setSearchMessage] = useState('');
 
-    const handleSearch = async (e) => {
-        if(e != null){
+    useEffect(() => {
+        if (data) {
+            handleSearch(null, data);
+        }
+        else if(localStorage.getItem('searchQuery')){
+            handleSearch(null, localStorage.getItem('searchQuery'));
+            setData(localStorage.getItem('searchQuery'));
+        }
+
+    }, []);
+
+    const handleSearch = async (e, input) => {
+        if (e != null) {
             e.preventDefault();
         }
+        const searchData = input || query;
         try {
-            const response = await axios.get(`http://localhost:5000/users/search?username=${query}&requester=${user2Username}`, {
+            const response = await axios.get(`http://localhost:5000/users/search?username=${searchData}&requester=${user2Username}`, {
             });
             setResults(response.data);
-            console.log(response.data);
+            setSearchMessage(response.data.length === 0 ? 'No results found, try another search.' : '');
+            localStorage.setItem('searchQuery', searchData);
+            navigate(`?q=${searchData}`);
         } catch (error) {
             console.error('Error getting users:', error);
         }
@@ -30,8 +49,8 @@ function Search() {
                 user1Username,
                 user2Username,
             });
-            console.log(response.data);
             setResults([]);
+            setSearchMessage('');
             handleSearch(null);
         } catch (error) {
             console.error('Error getting users:', error);
@@ -39,9 +58,8 @@ function Search() {
     };
 
     const handleSendMessage = (friendId) => {
-        // Logic for sending a message to the friend with the given ID
         console.log(`Sending message to ${friendId}`);
-      };
+    };
 
     return (
         <div className="search-container">
@@ -55,6 +73,7 @@ function Search() {
                 />
                 <button type="submit" className="search-button">Search</button>
             </form>
+            {searchMessage && <p className="search-message">{searchMessage}</p>}
             <div className="user-list-box">
                 <ul className="user-list">
                     {results.map((user) => (
@@ -67,8 +86,8 @@ function Search() {
                             <div className="user-info">
                                 <h3>
                                     <Link className='name' to={`/profile/${user.username}`}>{user.username}</Link>
-                                    {user.isFriend ? 
-                                        <button className="add-friend" onClick={() => handleSendMessage(user.username)}><Link to={`/messages/${user.username}`}>Message</Link></button> : 
+                                    {user.isFriend ?
+                                        <button className="add-friend" onClick={() => handleSendMessage(user.username)}><Link to={`/messages/${user.username}`}>Message</Link></button> :
                                         <button className="add-friend" onClick={() => handleAddUser(user.username)}>Add Friend</button>
                                     }
                                 </h3>
@@ -79,7 +98,7 @@ function Search() {
             </div>
             <Routes>
                 <Route path="/profile/:id" element={<Profile />} />
-                <Route path="/messages/:id" element={<Chat/>} />
+                <Route path="/messages/:id" element={<Chat />} />
             </Routes>
         </div>
     );
