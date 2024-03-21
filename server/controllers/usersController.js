@@ -221,11 +221,11 @@ const searchEverything = async (req, res) => {
     const education = await db.query(educationQuery, [searchValue]);
     const posts = await db.query(postsQuery, [searchValue]);
 
-    // Aggregate results
+    // Aggregate results without adding isFriend to education and posts
     const results = {
-      usernames: usersAndQualifications.rows,
-      education: education.rows.map(e => ({ ...e, isFriend: null })), // Placeholder for friendship status in education results
-      posts: posts.rows.map(p => ({ ...p, isFriend: null })) // Placeholder for friendship status in post results
+      usernames: usersAndQualifications.rows, // Only usernames and qualifications include isFriend
+      education: education.rows, // Education results as is
+      posts: posts.rows // Post results as is
     };
 
     res.json(results);
