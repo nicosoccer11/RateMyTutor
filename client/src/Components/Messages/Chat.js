@@ -6,7 +6,7 @@ import Messages from "./Messages";
 import { useParams } from 'react-router-dom';
 import axios from 'axios'
 
-const Chat = () => {
+const Chat = (props) => {
 	const [messages, setMessages] = useState([
 		// { from: "computer", text: "Hi, My Name is HoneyChat" },
 		// { from: "me", text: "Hey there" },
@@ -18,14 +18,16 @@ const Chat = () => {
 	]);
 	const [inputMessage, setInputMessage] = useState("");
 	let user = localStorage.getItem('user');
+	console.log(props);
 	const friendId = useParams();
+	const friend = props ? props.friend : friendId.id;
 	useEffect(() => {
 		const getPrevMessages = async () =>{
 			//console.log(`user->${user} friend->${friendId.id}`);
 			//const receiver = friendID ? friendID : "computer";
 			console.log("polling");
 		
-			await axios.get(`http://localhost:5000/messages/history/${user}/${friendId.id}`).then((response) => {
+			await axios.get(`http://localhost:5000/messages/history/${user}/${friend}`).then((response) => {
 				//console.log(response.data.data);
 				let msgData = response.data.data;
 				let previous_messages = [];
@@ -35,19 +37,19 @@ const Chat = () => {
 											"text": msgData[msg].content
 											});
 				}
-				//console.log(previous_messages)
+				console.log(previous_messages)
 				setMessages(previous_messages)
 			})
 		}
 		getPrevMessages();
 
-		let interval;
-		if (!interval) {
-			interval = setInterval(getPrevMessages, 3000);
-		}
+		// let interval;
+		// if (!interval) {
+		// 	interval = setInterval(getPrevMessages, 3000);
+		// }
 
-		return () => clearInterval(interval);
-	}, [])
+		// return () => clearInterval(interval);
+	}, [friend])
 	
 	const handleSendMessage = () => {
 		if (!inputMessage.trim().length) {
@@ -64,7 +66,7 @@ const Chat = () => {
 
 		axios.post('http://localhost:5000/messages/send', {
 			senderUsername: user,
-			receiverUsername: friendId.id,
+			receiverUsername: friend,
 			content: inputMessage
 		}).then((response) => {
 			console.log(response);
@@ -76,8 +78,8 @@ const Chat = () => {
 	return (
 		<Flex w="100%" h="100vh" justify="center" align="center">
 		<Flex w="40%" h="90%" flexDir="column">
-			<Header username={friendId.id}/>
-			<Messages messages={messages} user1={user} user2={friendId.id}/>
+			<Header username={friend}/>
+			<Messages messages={messages} user1={user} user2={friend}/>
 			<Footer
 			inputMessage={inputMessage}
 			setInputMessage={setInputMessage}
