@@ -8,6 +8,10 @@ const createUser = async (req, res) => {
   if (/\s/.test(username)) {
     return res.status(400).send('Username must not contain spaces.');
   }
+  // Validate that the password field is not empty
+  if (!password) {
+    return res.status(400).send('Password field  cannot be empty');
+  }
 
   try {
     const newUser = await db.query(
