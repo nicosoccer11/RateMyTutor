@@ -47,9 +47,28 @@ const getCommentsForPost = async (req, res) => {
     }
 };
 
+// Get the number of comments for a post
+const getCommentCountForPost = async (req, res) => {
+  const { postId } = req.params;
+
+  try {
+      const result = await db.query(
+          'SELECT COUNT(*) AS commentCount FROM comments WHERE PostID = $1',
+          [postId]
+      );
+      const commentCount = result.rows[0].commentcount; // Note: column names are typically lowercase in PostgreSQL results
+      
+      res.json({ postId: postId, commentCount: commentCount });
+  } catch (err) {
+      console.error(err.message);
+      res.status(500).send('Server Error, check console for logs');
+  }
+};
+
   module.exports = {
     addComment,
     deleteComment,
-    getCommentsForPost
+    getCommentsForPost,
+    getCommentCountForPost
   };
   
