@@ -206,7 +206,7 @@ const searchEverything = async (req, res) => {
 
     // Query to search posts
     const postsQuery = `
-      SELECT p.Content, p.UserID
+      SELECT p.PostID, p.UserID, p.Content
       FROM posts p
       WHERE p.Content ILIKE $1
     `;
