@@ -189,17 +189,62 @@ function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue }) {
       await axios.patch(`http://localhost:5000/users/update/${username}`, {
         ShortDescription: shortDescription
       });
-      setEditingShortDescription(false); 
+      setEditingShortDescription(false);
     } catch (error) {
       console.error('Error saving long description', error);
     }
   };
 
+  const [file, setFile] = useState(null);
+
+  const handleFileInputChange = (event) => {
+    const selectedFile = event.target.files[0];
+    setFile(selectedFile);
+    //handleSubmit();
+  };
+
+  const handleImageClick = () => {
+    document.getElementById('fileInput').click();
+  };
+
+
+  useEffect(() => {
+    async function uploadPicture() {
+      if (!file) {
+        console.error('No file selected');
+        return;
+      }
+      console.log(file);
+      try {
+        const formData = new FormData();
+        formData.append('image', file);
+
+        await axios.post('http://localhost:5000/image/post', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+
+        console.log('Image uploaded successfully');
+      } catch (error) {
+        console.error('Error uploading image:', error);
+      }
+    }
+    uploadPicture();
+  }, [file]);
+
+
   return (
     <div className="profile-info-container">
       <div className="left-box">
-        <div className='center'>
+        <div className="center" onClick={handleImageClick}>
           <img src={Test} alt="Profile" className="profile-image" />
+          <input
+            type="file"
+            id="fileInput"
+            style={{ display: 'none' }}
+            onChange={handleFileInputChange}
+          />
         </div>
         <div className="section">
           <h2 className="center">{username}</h2>
@@ -219,7 +264,7 @@ function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue }) {
           ) : (
             <>
               <p>{shortDescription}</p>
-              {username == sessionUsername &&<button onClick={handleEditShortDescription}><FaEdit /></button>}
+              {username == sessionUsername && <button onClick={handleEditShortDescription}><FaEdit /></button>}
             </>
           )}
         </div>

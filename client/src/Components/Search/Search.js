@@ -9,17 +9,18 @@ function Search() {
     const navigate = useNavigate();
     const searchLocation = useLocation();
     const queryParams = new URLSearchParams(searchLocation.search);
-    const [query, setQuery] = useState(''); 
+    const [query, setQuery] = useState('');
     const [data, setData] = useState(queryParams.get('q'));
     const [results, setResults] = useState([]);
     const user2Username = localStorage.getItem('user');
     const [searchMessage, setSearchMessage] = useState('');
+    const [searchType, setSearchType] = useState('users');
 
     useEffect(() => {
         if (data) {
             handleSearch(null, data);
         }
-        else if(localStorage.getItem('searchQuery')){
+        else if (localStorage.getItem('searchQuery')) {
             handleSearch(null, localStorage.getItem('searchQuery'));
             setData(localStorage.getItem('searchQuery'));
         }
@@ -61,6 +62,12 @@ function Search() {
         console.log(`Sending message to ${friendId}`);
     };
 
+    const handleTabChange = (type) => {
+        setSearchType(type);
+        // Perform search when tab changes
+        handleSearch(null, query);
+    };
+
     return (
         <div className="search-container">
             <form className="search-form" onSubmit={handleSearch}>
@@ -74,7 +81,11 @@ function Search() {
                 <button type="submit" className="search-button">Search</button>
             </form>
             {searchMessage && <p className="search-message">{searchMessage}</p>}
-            <div className="user-list-box">
+            <div className="search-tabs">
+                <button className={`search-tab ${searchType === 'users' ? 'active' : ''}`} onClick={() => handleTabChange('users')}>Users</button>
+                <button className={`search-tab ${searchType === 'posts' ? 'active' : ''}`} onClick={() => handleTabChange('posts')}>Posts</button>
+            </div>
+            {searchType === 'users' && (<div className="user-list-box">
                 <ul className="user-list">
                     {results.map((user) => (
                         <li key={user.username} className="user-item">
@@ -95,7 +106,16 @@ function Search() {
                         </li>
                     ))}
                 </ul>
-            </div>
+            </div>)}
+            {searchType === 'posts' && (
+                <ul className="post-list">
+                    {results.map((post) => (
+                        <li key={post.id} className="post-item">
+                            {/* Render post information */}
+                        </li>
+                    ))}
+                </ul>
+            )}
             <Routes>
                 <Route path="/profile/:id" element={<Profile />} />
                 <Route path="/messages/:id" element={<Chat />} />

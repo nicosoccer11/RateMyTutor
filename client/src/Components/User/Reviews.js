@@ -5,7 +5,6 @@ import axios from 'axios';
 
 function Reviews({ reviews, user, update, updateValue }) {
 
-    const [showAddReview, setShowAddReview] = useState(false);
     const [showCreateReview, setShowCreateReview] = useState(false);
     const [visibleReviews, setVisibleReviews] = useState(5);
     

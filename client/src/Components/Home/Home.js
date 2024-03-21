@@ -1,27 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import "./home.css";
-import image from './user.jpeg';
 import axios from 'axios';
 import CreatePost from './CreatePost';
 import SearchBar from './SearchBar';
+import Post from './Post';
 
-const Post = ({ user, content }) => {
-    return (
-        <div className="post">
-            <div className='username'>
-                <img src={image} alt="user" className="user-image" />
-                {user}
-            </div>
-            <p>{content}</p>
 
-            <div className="post-actions">
-                <button className='post_button'>Like</button>
-                <button className='post_button'>Comment</button>
-            </div>
-
-        </div>
-    );
-}
 
 function Home() {
 

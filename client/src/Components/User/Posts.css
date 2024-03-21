@@ -1,0 +1,17 @@
+.posts-container {
+    margin-top: 20px;
+  }
+  
+  .post {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+  }
+  
+  .post p {
+    margin: 0;
+  }
+  
+  /* Add more styles as needed */
+  
