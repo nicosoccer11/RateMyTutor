@@ -4,15 +4,15 @@ const { getUserProfilePicture,createUserProfilePicture,deleteUserProfilePicture 
 const router = express.Router();
 
 // Route to get user's profile picture
-router.get('/image/get', getUserProfilePicture);
+router.get('/image/get/:username', getUserProfilePicture);
 
 // Route to delete user's profile picture
-router.post('/image/delete', deleteUserProfilePicture);
+router.post('/image/delete/:username', deleteUserProfilePicture);
 
 // Route to post user's profile picture
 const multer = require('multer');
 const storage = multer.memoryStorage()
 const upload = multer({storage: storage})
-router.post('/image/post', upload.single('image'), createUserProfilePicture);
+router.post('/image/post/:username', upload.single('image'), createUserProfilePicture);
 
 module.exports = router;

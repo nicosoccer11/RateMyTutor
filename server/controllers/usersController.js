@@ -8,6 +8,10 @@ const createUser = async (req, res) => {
   if (/\s/.test(username)) {
     return res.status(400).send('Username must not contain spaces.');
   }
+  // Validate that the password field is not empty
+  if (!password) {
+    return res.status(400).send('Password field  cannot be empty');
+  }
 
   try {
     const newUser = await db.query(
@@ -177,6 +181,59 @@ const searchUsersByUsername = async (req, res) => {
   }
 };
 
+// Unified search function
+const searchEverything = async (req, res) => {
+  const { term, requesterUsername } = req.query; // Including requester for friendship status check
+  if (!term) {
+    return res.status(400).send('A search term is required.');
+  }
+
+  try {
+    // Search users and qualifications with friendship status
+    const userQualificationsQuery = `
+      SELECT DISTINCT u.Username,
+      EXISTS (
+        SELECT 1 FROM friends
+        WHERE (User1ID = $2 AND User2ID = u.Username) OR (User1ID = u.Username AND User2ID = $2)
+      ) AS "isFriend"
+      FROM users u
+      LEFT JOIN qualifications q ON u.Username = q.Username
+      WHERE (u.Username ILIKE $1 OR q.Skill ILIKE $1) AND u.Username <> $2
+    `;
+    
+    // Search education
+    const educationQuery = `
+      SELECT e.School, e.Username, e.Degree
+      FROM education e
+      WHERE e.School ILIKE $1 OR e.Degree ILIKE $1
+    `;
+    
+    // Search posts
+    const postsQuery = `
+      SELECT p.Content, p.UserID
+      FROM posts p
+      WHERE p.Content ILIKE $1
+    `;
+    
+    // Perform the searches
+    const searchValue = `%${term}%`;
+    const usersAndQualifications = await db.query(userQualificationsQuery, [searchValue, requesterUsername]);
+    const education = await db.query(educationQuery, [searchValue]);
+    const posts = await db.query(postsQuery, [searchValue]);
+
+    // Aggregate results without adding isFriend to education and posts
+    const results = {
+      usernames: usersAndQualifications.rows, // Only usernames and qualifications include isFriend
+      education: education.rows, // Education results as is
+      posts: posts.rows // Post results as is
+    };
+
+    res.json(results);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server error');
+  }
+};
 
 // Export the functions
 module.exports = {
@@ -185,5 +242,6 @@ module.exports = {
   loginUser,
   getUserProfile,
   updateUser,
-  searchUsersByUsername
+  searchUsersByUsername,
+  searchEverything
 };

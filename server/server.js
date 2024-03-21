@@ -11,6 +11,8 @@ const messageRoutes = require('./routes/messageRoutes');
 const qualificationRoutes = require('./routes/qualificationRoutes');
 const educationRoutes = require('./routes/educationRoutes');
 const imageRoutes = require('./routes/imageRoutes');
+const likeRoutes = require('./routes/likeRoutes');
+const commentRoutes = require('./routes/commentRoutes');
 //Add Routes here
 
 const app = express();
@@ -35,7 +37,10 @@ app.use(qualificationRoutes);
 app.use(educationRoutes);
 // Use the image routes
 app.use(imageRoutes);
-
+// Use the like routes
+app.use(likeRoutes);
+// Use the comment routes
+app.use(commentRoutes);
 
 app.listen(5000, () => {
   console.log('Server is running on port 5000');
