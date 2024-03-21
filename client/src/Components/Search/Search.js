@@ -15,7 +15,8 @@ function Search() {
     const [users, setUsers] = useState([]);
     const [posts, setPosts] = useState([]);
     const user2Username = localStorage.getItem('user');
-    const [searchMessage, setSearchMessage] = useState('');
+    const [postsMessage, setPostsMessage] = useState('');
+    const [usersMessage, setUsersMessage] = useState('');
     const [searchType, setSearchType] = useState('users');
 
     useEffect(() => {
@@ -29,23 +30,6 @@ function Search() {
 
     }, []);
 
-    // const handleSearch = async (e, input) => {
-    //     if (e != null) {
-    //         e.preventDefault();
-    //     }
-    //     const searchData = input || query;
-    //     try {
-    //         const response = await axios.get(`http://localhost:5000/users/search?username=${searchData}&requester=${user2Username}`, {
-    //         });
-    //         setResults(response.data);
-    //         setSearchMessage(response.data.length === 0 ? 'No results found, try another search.' : '');
-    //         localStorage.setItem('searchQuery', searchData);
-    //         navigate(`?q=${searchData}`);
-    //     } catch (error) {
-    //         console.error('Error getting users:', error);
-    //     }
-    // };
-
     const handleSearch = async (e, input) => {
         if (e != null) {
             e.preventDefault();
@@ -58,12 +42,10 @@ function Search() {
                     requesterUsername: user2Username,
                 },
             });
-            console.log(response.data);
             setUsers(response.data.usernames);
             setPosts(response.data.posts);
-            //setResults(response.data);
-            console.log(users, posts);
-            setSearchMessage(response.data.length === 0 ? 'No results found, try another search.' : '');
+            setPostsMessage(response.data.length === 0 ? 'No results found, try looking at users or another search.' : '');
+            setUsersMessage(response.data.length === 0 ? 'No results found, try looking at posts or another search.' : '');
             localStorage.setItem('searchQuery', searchData);
             navigate(`?q=${searchData}`);
         } catch (error) {
@@ -78,7 +60,7 @@ function Search() {
                 user2Username,
             });
             // setResults([]);
-            setSearchMessage('');
+            //setSearchMessage('');
             handleSearch(null);
         } catch (error) {
             console.error('Error getting users:', error);
@@ -107,40 +89,46 @@ function Search() {
                 />
                 <button type="submit" className="search-button">Search</button>
             </form>
-            {searchMessage && <p className="search-message">{searchMessage}</p>}
             <div className="search-tabs">
                 <button className={`search-tab ${searchType === 'users' ? 'active' : ''}`} onClick={() => handleTabChange('users')}>Users</button>
                 <button className={`search-tab ${searchType === 'posts' ? 'active' : ''}`} onClick={() => handleTabChange('posts')}>Posts</button>
             </div>
-            {searchType === 'users' && (<div className="user-list-box">
-                <ul className="user-list">
-                    {users && users.length > 0 && users.map((user) => (
-                        <li key={user.username} className="user-item">
-                            <img
-                                className="user-avatar"
-                                src={`https://via.placeholder.com/50?text=${user.username}`}
-                                alt={user.name}
-                            />
-                            <div className="user-info">
-                                <h3>
-                                    <Link className='name' to={`/profile/${user.username}`}>{user.username}</Link>
-                                    {user.isFriend ?
-                                        <button className="add-friend" onClick={() => handleSendMessage(user.username)}><Link to={`/messages/${user.username}`}>Message</Link></button> :
-                                        <button className="add-friend" onClick={() => handleAddUser(user.username)}>Add Friend</button>
-                                    }
-                                </h3>
-                            </div>
-                        </li>
-                    ))}
-                </ul>
-            </div>)}
+            {searchType === 'users' && (
+                <div className="user-list-box">
+                    {usersMessage.length !== 0 && <p>{usersMessage}</p>
+                    }
+                    <ul className="user-list">
+
+                        {users && users.length > 0 && users.map((user) => (
+                            <li key={user.username} className="user-item">
+                                <img
+                                    className="user-avatar"
+                                    src={`https://via.placeholder.com/50?text=${user.username}`}
+                                    alt={user.name}
+                                />
+                                <div className="user-info">
+                                    <h3>
+                                        <Link className='name' to={`/profile/${user.username}`}>{user.username}</Link>
+                                        {user.isFriend ?
+                                            <button className="add-friend" onClick={() => handleSendMessage(user.username)}><Link to={`/messages/${user.username}`}>Message</Link></button> :
+                                            <button className="add-friend" onClick={() => handleAddUser(user.username)}>Add Friend</button>
+                                        }
+                                    </h3>
+                                </div>
+                            </li>
+                        ))}
+                    </ul>
+                </div>)}
             {searchType === 'posts' && (
-                <ul className="post-list">
-                    {posts && posts.length > 0 && posts.map((post) => (
-                        <Post key={post.postid} content={post.content} user={post.userid} />
-                    ))}
-                </ul>
-            )}
+                <div>
+                    {usersMessage.length !== 0 && <p>No results found, try looking in posts or another search.</p>
+                    }
+                    <ul className="post-list">
+                        {posts && posts.length > 0 && posts.map((post) => (
+                            <Post key={post.postid} content={post.content} user={post.userid} />
+                        ))}
+                    </ul>
+                </div>)}
             <Routes>
                 <Route path="/profile/:id" element={<Profile />} />
                 <Route path="/messages/:id" element={<Chat />} />

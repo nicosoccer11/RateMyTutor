@@ -46,14 +46,16 @@ function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue }) {
         setLongDescription(profile.longDescription);
         setEducation(profile.education);
         setQualifications(profile.qualifications);
-        try {
-          const response = await axios.get(`http://localhost:5000/image/get/${username}`, {
-          });
-          console.log("returned", response.data);
-          setProfilePicture(response.data);
-        } catch (error) {
-          console.error('Error retrieving profile data:', error);
+        if (username) {
+          try {
+            const response = await axios.get(`http://localhost:5000/image/get/${username}`, {
+            });
+            setProfilePicture(response.data.imageUrl);
+          } catch (error) {
+            console.error('Error retrieving profile data:', error);
+          }
         }
+
       }
     }
 
@@ -240,6 +242,13 @@ function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue }) {
         });
 
         console.log('Image uploaded successfully');
+        try {
+          const response = await axios.get(`http://localhost:5000/image/get/${username}`, {
+          });
+          setProfilePicture(response.data.imageUrl);
+        } catch (error) {
+          console.error('Error retrieving profile data:', error);
+        }
       } catch (error) {
         console.error('Error uploading image:', error);
       }
