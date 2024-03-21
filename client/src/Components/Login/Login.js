@@ -27,8 +27,9 @@ function Login({ onLogin }) {
           theme: "outline",
           size: "large",
         });
-
+      google.accounts.id.prompt();
     }, []);
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
