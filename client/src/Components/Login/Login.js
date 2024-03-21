@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import './Login.css';
 import Signup from './Signup';
+import { jwtDecode } from "jwt-decode";
 import axios from 'axios';
 
 function Login({ onLogin }) {
@@ -8,6 +9,27 @@ function Login({ onLogin }) {
     const [password, setPassword] = useState('');
     const [isSignup, setIsSignup] = useState(false);
     
+  function handleCallback(response) {
+    console.log("Encoded JMT ID tokenL : "  + response.credential);
+    const decoded = jwtDecode(response.credential);
+    console.log(decoded);
+  }
+
+    useEffect(() => {
+      /* global google */
+      google.accounts.id.initialize({
+        client_id: "935901601860-sa1j0f6rsrp9b9gqmfc4vgtke6ad0r0r.apps.googleusercontent.com",
+        callback: handleCallback
+      })
+      google.accounts.id.renderButton(
+        document.getElementById("signInDiv"),
+        {
+          theme: "outline",
+          size: "large",
+        });
+
+    }, []);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
     
@@ -56,6 +78,7 @@ function Login({ onLogin }) {
                 </form>
                 <p>Don't have an account? <button className="signup-button" onClick={handleToggleSignup}>Sign up</button></p>
             </div>}
+            <div id="signInDiv"></div>
         </div>
     );
 }
