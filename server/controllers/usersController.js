@@ -181,6 +181,59 @@ const searchUsersByUsername = async (req, res) => {
   }
 };
 
+// Unified search function
+const searchEverything = async (req, res) => {
+  const { term, requesterUsername } = req.query; // Including requester for friendship status check
+  if (!term) {
+    return res.status(400).send('A search term is required.');
+  }
+
+  try {
+    // Search users and qualifications with friendship status
+    const userQualificationsQuery = `
+      SELECT DISTINCT u.Username,
+      EXISTS (
+        SELECT 1 FROM friends
+        WHERE (User1ID = $2 AND User2ID = u.Username) OR (User1ID = u.Username AND User2ID = $2)
+      ) AS "isFriend"
+      FROM users u
+      LEFT JOIN qualifications q ON u.Username = q.Username
+      WHERE (u.Username ILIKE $1 OR q.Skill ILIKE $1) AND u.Username <> $2
+    `;
+    
+    // Search education
+    const educationQuery = `
+      SELECT e.School, e.Username, e.Degree
+      FROM education e
+      WHERE e.School ILIKE $1 OR e.Degree ILIKE $1
+    `;
+    
+    // Search posts
+    const postsQuery = `
+      SELECT p.Content, p.UserID
+      FROM posts p
+      WHERE p.Content ILIKE $1
+    `;
+    
+    // Perform the searches
+    const searchValue = `%${term}%`;
+    const usersAndQualifications = await db.query(userQualificationsQuery, [searchValue, requesterUsername]);
+    const education = await db.query(educationQuery, [searchValue]);
+    const posts = await db.query(postsQuery, [searchValue]);
+
+    // Aggregate results
+    const results = {
+      usernames: usersAndQualifications.rows,
+      education: education.rows.map(e => ({ ...e, isFriend: null })), // Placeholder for friendship status in education results
+      posts: posts.rows.map(p => ({ ...p, isFriend: null })) // Placeholder for friendship status in post results
+    };
+
+    res.json(results);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server error');
+  }
+};
 
 // Export the functions
 module.exports = {
@@ -189,5 +242,6 @@ module.exports = {
   loginUser,
   getUserProfile,
   updateUser,
-  searchUsersByUsername
+  searchUsersByUsername,
+  searchEverything
 };
