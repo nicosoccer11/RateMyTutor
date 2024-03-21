@@ -94,7 +94,7 @@ const createUserProfilePicture = async(req,res) => {
   const command = new PutObjectCommand(params)
   await s3.send(command)
   // update database with image
-  await UserUploadPicture(imageName),username; 
+  await UserUploadPicture(imageName,username); 
   res.send({});
 };
 
