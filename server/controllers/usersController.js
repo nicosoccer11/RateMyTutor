@@ -229,7 +229,6 @@ const searchEverything = async (req, res) => {
   }
 };
 
-
 // Export the functions
 module.exports = {
   createUser,
