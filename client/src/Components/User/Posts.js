@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import './Posts.css';
 import CreatePost from '../Home/CreatePost';
+import Post from '../Home/Post';
 
-function Posts({ posts }) {
+function Posts({ posts, user }) {
     const [showCreatePost, setShowCreatePost] = useState(false);
 
     const handleAddPostClick = () => {
@@ -10,14 +11,12 @@ function Posts({ posts }) {
     };
 
     return (
-        <div className="posts-container">
+        <div className="posts">
             <h2>Posts</h2>
-            <button className="add-post" onClick={handleAddPostClick}>Add Post</button>
+            {localStorage.getItem('user') === user && <button className="add-post" onClick={handleAddPostClick}>Add Post</button>}
             {showCreatePost && <CreatePost onClose={() => setShowCreatePost(false)} />}
             {posts && posts.length !== 0 && posts.map((post, index) => (
-                <div key={index} className="post">
-                    <p>{post.content}</p>
-                </div>
+                <Post key={index} user={post.userid} content={post.content} />
             ))}
         </div>
     );
