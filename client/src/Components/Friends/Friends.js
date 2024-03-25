@@ -19,27 +19,29 @@ class Friends extends React.Component {
   }
 
   componentDidMount() {
-    const fetchData = async () => {
-      try {
-        let username = this.state.username;
-        await axios.post('http://localhost:5000/friends/get', {
-          username,
-        }).then((response) => {
-          console.log(response);
-          const data = response.data; // Assuming the data returned is an array of friends
-          this.setState({
-            friends: data.friends,
-          });
-        });
-        
-      } catch (error) {
-        // Handle error, such as setting an error state
-        console.error('Error fetching data:', error);
-      }
-    }
-    
-    fetchData()
+    this.fetchData()
   };
+
+  fetchData = async () => {
+    try {
+      let username = this.state.username;
+      await axios.post('http://localhost:5000/friends/get', {
+        username,
+      }).then((response) => {
+        console.log(response);
+        const data = response.data; // Assuming the data returned is an array of friends
+        const first_friend = data.friends[0]
+        this.setState({
+          friends: data.friends,
+          otherUser: first_friend,
+        });
+      });
+      
+    } catch (error) {
+      // Handle error, such as setting an error state
+      console.error('Error fetching data:', error);
+    }
+  }
 
   handleSendMessage = (friend) => {
     // Logic for sending a message to the friend with the given ID
