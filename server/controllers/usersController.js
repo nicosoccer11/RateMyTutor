@@ -15,8 +15,8 @@ const createUser = async (req, res) => {
 
   try {
     const newUser = await db.query(
-      'INSERT INTO users (Username, Password, FirstName, LastName, Email) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-      [username, password, firstname, lastname, email]
+      'INSERT INTO users (Username, Password, FirstName, LastName, Email, profilepicture) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+      [username, password, firstname, lastname, email, "Test.jpg"]
     );
     res.json(newUser.rows[0]);
   } catch (err) {
