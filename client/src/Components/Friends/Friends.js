@@ -6,6 +6,7 @@ import axios from 'axios';
 import Chat from '../Messages/Chat';
 import { Flex } from '@chakra-ui/react';
 import { ChakraProvider, theme } from '@chakra-ui/react';
+import ProfileCard from '../User/ProfileCard';
 
 class Friends extends React.Component {
   constructor(props) {
@@ -53,13 +54,15 @@ class Friends extends React.Component {
   render() { 
     return (
       <>
-      <label>Friends</label>
+      <ProfileCard username={this.state.username} email={`${this.state.username}@mail.com`} name={this.state.username} avatar="/images/logo512.png"/>
+      
       <div className="friend-list-container">
-        
+       
         <div className="friend-list-wrapper">
+        <h3></h3>
           <ul className="friend-list">
             {this.state.friends.map((friend) => (
-              <li key={friend} onClick={() => this.handleSendMessage(friend)} className="friend-item">
+              <li key={friend} onClick={() => this.handleSendMessage(friend)} className={`friend-item ${this.state.otherUser === friend ? 'selected' : ''}`}>
                 <img
                   className="friend-avatar"
                   src={`https://via.placeholder.com/50?text=${friend}`}
@@ -68,9 +71,10 @@ class Friends extends React.Component {
                 <div className="friend-info">
                   <h3>
                     {/* <Link className='name' to={`/profile/${friend}`}>{friend}</Link> Use Link component */}
-                    <button className="message" onClick={() => this.handleSendMessage(friend)}>
-                      <Link to={`/messages/${friend}`}>Message</Link> {/* Use Link component */}
-                    </button>
+                    {friend}
+                    {/* <button className="message" onClick={() => this.handleSendMessage(friend)}>
+                      <Link to={`/messages/${friend}`}>Message</Link> {/* Use Link component }
+                    </button> */}
                   </h3>
                 </div>
               </li>

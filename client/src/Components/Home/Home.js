@@ -3,6 +3,8 @@ import "./home.css";
 import image from './user.jpeg';
 import axios from 'axios';
 import CreatePost from './CreatePost';
+import ProfileCard from '../User/ProfileCard';
+import SuggestedUsersList from '../User/SuggestedUsers';
 
 
 const Post = ({ user, content }) => {
@@ -62,7 +64,9 @@ function Home() {
     };
 
     return (
-        <div>
+        <div className='full-container'>
+            <SuggestedUsersList users={[{id:1, name:"test", username:"test", avatar:"/images/logo512.png"}, {id:2, name:"test", username:"test", avatar:"/images/logo512.png"}]}/>
+            <ProfileCard username={username} email={`${username}@mail.com`} name={username} avatar="/images/logo512.png"/>
             <div className='new-post-container'>
                 <button className="add-post-button" onClick={handleAddPostClick}>
                     <img src='images/plus.png'></img>

@@ -84,7 +84,8 @@
     display: flex;
     align-items: center;
     background-color: transparent;
-    border-radius: 10px
+    border-radius: 10px;
+    justify-content: left;
   }
 
   .textbox {
@@ -97,3 +98,5 @@
   .post-content {
     font-family: 'Montserrat', sans-serif;  
   }
+
+ 
