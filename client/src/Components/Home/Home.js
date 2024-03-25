@@ -12,7 +12,7 @@ const Post = ({ user, content }) => {
         <div className="post">
             <div class='username'>
                 <img src={image} alt="user" className="user-image"/>
-                <span className="username-text">user</span>
+                <span className="username-text">{user}</span>
             </div>
             <p className='post-content'>{content}</p>
 
