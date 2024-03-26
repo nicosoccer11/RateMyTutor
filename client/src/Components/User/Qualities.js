@@ -14,7 +14,6 @@ function Qualities({ qualities, setQualities, user }) {
         try {
             const updatedQualities = [...qualities];
             if(updatedQualities[qualityIndex - 1].hasquality === 0){
-                console.log("ADDING", qualityIndex);
                 const response = await axios.post('http://localhost:5000/user-qualities/add', {
                     username: user,
                     qualityId: qualityIndex
@@ -22,8 +21,6 @@ function Qualities({ qualities, setQualities, user }) {
                 updatedQualities[qualityIndex - 1].hasquality = 1;
             }
             else {
-                console.log("removing", qualityIndex);
-                console.log(user, qualityIndex);
                 const response = await axios.delete('http://localhost:5000/user-qualities/remove', {
                     data: {
                         username: user,

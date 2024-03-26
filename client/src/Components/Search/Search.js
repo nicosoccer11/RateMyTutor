@@ -35,6 +35,7 @@ function Search() {
             e.preventDefault();
         }
         const searchData = input || query;
+        console.log(searchData, user2Username);
         try {
             const response = await axios.get(`http://localhost:5000/users/search`, {
                 params: {
@@ -44,8 +45,8 @@ function Search() {
             });
             setUsers(response.data.usernames);
             setPosts(response.data.posts);
-            setPostsMessage(response.data.length === 0 ? 'No results found, try looking at users or another search.' : '');
-            setUsersMessage(response.data.length === 0 ? 'No results found, try looking at posts or another search.' : '');
+            setPostsMessage(response.data.posts.length === 0 ? 'No results found, try looking at users or another search.' : '');
+            setUsersMessage(response.data.usernames.length === 0 ? 'No results found, try looking at posts or another search.' : '');
             localStorage.setItem('searchQuery', searchData);
             navigate(`?q=${searchData}`);
         } catch (error) {
@@ -59,8 +60,6 @@ function Search() {
                 user1Username,
                 user2Username,
             });
-            // setResults([]);
-            //setSearchMessage('');
             handleSearch(null);
         } catch (error) {
             console.error('Error getting users:', error);
@@ -73,8 +72,6 @@ function Search() {
 
     const handleTabChange = (type) => {
         setSearchType(type);
-        // Perform search when tab changes
-        handleSearch(null, query);
     };
 
     return (
@@ -83,7 +80,7 @@ function Search() {
                 <input
                     type="text"
                     className="search-input"
-                    placeholder="Search..."
+                    placeholder="Enter one or multiple search terms (e.g., Python, Houston, Calculus)..."
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                 />
@@ -94,34 +91,36 @@ function Search() {
                 <button className={`search-tab ${searchType === 'posts' ? 'active' : ''}`} onClick={() => handleTabChange('posts')}>Posts</button>
             </div>
             {searchType === 'users' && (
-                <div className="user-list-box">
+                <div>
                     {usersMessage.length !== 0 && <p>{usersMessage}</p>
                     }
-                    <ul className="user-list">
+                    <div className="user-list-box">
+                        <ul className="user-list">
 
-                        {users && users.length > 0 && users.map((user) => (
-                            <li key={user.username} className="user-item">
-                                <img
-                                    className="user-avatar"
-                                    src={`https://via.placeholder.com/50?text=${user.username}`}
-                                    alt={user.name}
-                                />
-                                <div className="user-info">
-                                    <h3>
-                                        <Link className='name' to={`/profile/${user.username}`}>{user.username}</Link>
-                                        {user.isFriend ?
-                                            <button className="add-friend" onClick={() => handleSendMessage(user.username)}><Link to={`/messages/${user.username}`}>Message</Link></button> :
-                                            <button className="add-friend" onClick={() => handleAddUser(user.username)}>Add Friend</button>
-                                        }
-                                    </h3>
-                                </div>
-                            </li>
-                        ))}
-                    </ul>
+                            {users && users.length > 0 && users.map((user) => (
+                                <li key={user.username} className="user-item">
+                                    <img
+                                        className="user-avatar"
+                                        src={`https://via.placeholder.com/50?text=${user.username}`}
+                                        alt={user.name}
+                                    />
+                                    <div className="user-info">
+                                        <h3>
+                                            <Link className='name' to={`/profile/${user.username}`}>{user.username}</Link>
+                                            {user.isFriend ?
+                                                <button className="add-friend" onClick={() => handleSendMessage(user.username)}><Link to={`/messages/${user.username}`}>Message</Link></button> :
+                                                <button className="add-friend" onClick={() => handleAddUser(user.username)}>Add Friend</button>
+                                            }
+                                        </h3>
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
                 </div>)}
             {searchType === 'posts' && (
                 <div>
-                    {usersMessage.length !== 0 && <p>No results found, try looking in posts or another search.</p>
+                    {postsMessage.length !== 0 && <p>{postsMessage}</p>
                     }
                     <ul className="post-list">
                         {posts && posts.length > 0 && posts.map((post) => (

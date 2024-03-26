@@ -76,7 +76,7 @@ function Profile() {
     <div>
       <ProfileInfo reviewsID="reviews" profile={profileInfo} reviewTotal={reviewTotal} update={setUpdate} updateValue={update} />
       <Qualities qualities={qualities} setQualities={setQualities} user={userProfileID} />
-      <Posts posts={posts} user={userProfileID} />
+      <Posts posts={posts} user={userProfileID} update={setUpdate} updateValue={update}/>
       <Reviews reviews={reviews} user={userProfileID} update={setUpdate} updateValue={update} />
     </div>
   );

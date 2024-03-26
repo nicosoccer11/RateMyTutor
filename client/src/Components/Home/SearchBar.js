@@ -10,7 +10,7 @@ function SearchBar() {
             <form className="search-bar-form">
                 <input
                     type="text"
-                    placeholder="Search..."
+                    placeholder="Enter one or multiple search terms (e.g., Python, Houston, Calculus)..."
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     className="search-input"
