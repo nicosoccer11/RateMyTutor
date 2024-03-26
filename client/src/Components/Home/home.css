@@ -99,4 +99,13 @@
     font-family: 'Montserrat', sans-serif;  
   }
 
+  .post-photo {
+    width: 10%;
+    height: 100%;
+  }
+
+  .post-photo img {
+    height: 100%;
+    width: 70%;
+  }
  

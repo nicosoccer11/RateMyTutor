@@ -15,23 +15,38 @@ class Friends extends React.Component {
                     otherUser: null,
                     friends: [],
                     username: localStorage.getItem('user'),
+                    friend_urls: [],
                  };
   }
 
   componentDidMount() {
     this.fetchData()
+    // this.fetchURLs()
   };
 
-  // fetchURLs = async (friends) => {
-  //   let URLs = []
-  //   for (let f in friends) {
-  //     await axios.get(`http://localhost:5000/image/get/${friends[f]}`).then((response) => {
-  //       URLs.push(response.data.imageUrl);
-  //     })
-  //   }
-  //   console.log(URLs);
+  fetchURLs = async (friends) => {
+    let URLs = []
+    for (let f in friends) {
+      await axios.get(`http://localhost:5000/image/get/${friends[f]}`).then((response) => {
+        URLs.push(response.data.imageUrl);
+      })
+    }
     
-  // }
+    // let urls = []
+    // url_promise.then((result) => {urls.concat(result)})
+    // console.log(urls)
+    // let url_dict = {}
+    // friends.forEach((el, ind) => {
+    //   url_dict[el] = URLs[ind];
+    // });
+    // console.log(url_dict);
+    this.setState({
+      friend_urls: URLs,
+    });
+    return URLs
+  }
+
+  
 
   fetchData = async () => {
     try {
@@ -42,7 +57,15 @@ class Friends extends React.Component {
         console.log(response);
         const data = response.data; // Assuming the data returned is an array of friends
         const first_friend = data.friends[0]
-        //let urls = this.fetchURLs(data.friends);
+        this.fetchURLs(data.friends);
+        // let urls = []
+        // url_promise.then((result) => {urls.concat(result)})
+        // console.log(urls)
+        // let url_dict = {}
+        // data.friends.forEach((el, ind) => {
+        //   url_dict[el] = urls[ind];
+        // });
+        // console.log(url_dict);
         this.setState({
           friends: data.friends,
           otherUser: first_friend,
@@ -75,11 +98,11 @@ class Friends extends React.Component {
         <div className="friend-list-wrapper">
         <h3></h3>
           <ul className="friend-list">
-            {this.state.friends.map((friend) => (
+            {this.state.friends.map((friend, ind) => (
               <li key={friend} onClick={() => this.handleSendMessage(friend)} className={`friend-item ${this.state.otherUser === friend ? 'selected' : ''}`}>
                 <img
                   className="friend-avatar"
-                  src={`https://via.placeholder.com/50?text=${friend}`}
+                  src={this.state.friend_urls[ind]}
                   alt={friend}
                 />
                 <div className="friend-info">

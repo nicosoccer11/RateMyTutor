@@ -50,7 +50,7 @@ function Home() {
         <div className='full-container'>
             <SearchBar />
             <SuggestedUsersList users={[{id:1, name:"test", username:"test", avatar:"/images/logo512.png"}, {id:2, name:"test", username:"test", avatar:"/images/logo512.png"}]}/>
-            <ProfileCard username={username} email={`${username}@mail.com`} name={username} avatar="/images/logo512.png"/>
+            <ProfileCard username={username} email={`${username}@mail.com`} name={username}/>
             <div className='new-post-container'>
                 <button className="add-post-button" onClick={handleAddPostClick}>
                     <img src='images/plus.png'></img>
