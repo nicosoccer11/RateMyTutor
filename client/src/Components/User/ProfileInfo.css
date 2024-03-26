@@ -37,10 +37,20 @@
 }
 
 .profile-image {
-  width: 200px;
-  height: 200px;
+  position: relative;
+  width: 150px;
+  height: 150px;
   border-radius: 50%;
-  overflow: hidden;
+  cursor: pointer;
+}
+
+.profile-image:hover {
+  content: 'Upload';
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  font-size: 16px;
+  padding: 5px 10px;
+  border-radius: 5px;
 }
 
 .section-header {

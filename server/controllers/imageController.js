@@ -82,7 +82,7 @@ const createUserProfilePicture = async(req,res) => {
     const command = new DeleteObjectCommand(params)
     await s3.send(command);
   }
-
+  
   // Posting new image
   const params = {
     Bucket: bucket_name,

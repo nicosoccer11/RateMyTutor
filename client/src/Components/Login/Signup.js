@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './Signup.css';
+import ErrorPopup from './ErrorPopup';
 import axios from 'axios';
 
 function Signup({ onLogin, setIsSignup }) {
@@ -8,6 +9,7 @@ function Signup({ onLogin, setIsSignup }) {
   const [email, setEmail] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
+  const [error, setError] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,6 +35,7 @@ function Signup({ onLogin, setIsSignup }) {
       }
     } catch (error) {
       console.error('Error creating user:', error);
+      setError('Error occurred while signing up, please try again.');
     }
   };
 
@@ -41,8 +44,13 @@ function Signup({ onLogin, setIsSignup }) {
     setIsSignup(false);
   };
 
+  const handleCloseError = () => {
+    setError(null);
+  };
+
   return (
     <div className="signup-container">
+      {error && <ErrorPopup message={error} onClose={handleCloseError} />}
       <h2>Sign Up</h2>
       <form onSubmit={handleSubmit}>
         <div>

@@ -22,6 +22,17 @@ class Friends extends React.Component {
     this.fetchData()
   };
 
+  // fetchURLs = async (friends) => {
+  //   let URLs = []
+  //   for (let f in friends) {
+  //     await axios.get(`http://localhost:5000/image/get/${friends[f]}`).then((response) => {
+  //       URLs.push(response.data.imageUrl);
+  //     })
+  //   }
+  //   console.log(URLs);
+    
+  // }
+
   fetchData = async () => {
     try {
       let username = this.state.username;
@@ -31,6 +42,7 @@ class Friends extends React.Component {
         console.log(response);
         const data = response.data; // Assuming the data returned is an array of friends
         const first_friend = data.friends[0]
+        //let urls = this.fetchURLs(data.friends);
         this.setState({
           friends: data.friends,
           otherUser: first_friend,
