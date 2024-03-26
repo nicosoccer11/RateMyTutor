@@ -5,8 +5,6 @@ import CreatePost from './CreatePost';
 import SearchBar from './SearchBar';
 import Post from './Post';
 
-
-
 function Home() {
 
     const [posts, setPosts] = useState([]);
@@ -24,7 +22,6 @@ function Home() {
             }
         };
         fetchPostsInfo();
-
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -45,6 +42,7 @@ function Home() {
         setShowCreatePost(true);
     };
 
+
     return (
         <div>
             <SearchBar />
@@ -52,7 +50,7 @@ function Home() {
             {showCreatePost ? <CreatePost onClose={() => setShowCreatePost(false)} onSubmit={handleNewPost} /> : <></>}
             {posts.length !== 0 && posts.map((post, index) => (
 
-                <Post key={index} user={post.userid} content={post.content} />
+                <Post key={index} user={post.userid} content={post.content} postid  = {post.postid}/>
             ))}
         </div>
     );
