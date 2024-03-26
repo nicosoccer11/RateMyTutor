@@ -31,20 +31,36 @@ function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue }) {
   const [editingQualifications, setEditingQualifications] = useState(false);
   const [editingLongDescription, setEditingLongDescription] = useState(false);
   const [editingShortDescription, setEditingShortDescription] = useState(false);
+  const [profilePicture, setProfilePicture] = useState(null);
   const sessionUsername = localStorage.getItem('user');
 
   useEffect(() => {
-    if (profile) {
-      console.log(profile);
-      setUsername(profile.username);
-      setFirstName(profile.firstName);
-      setLastName(profile.lastName);
-      setAverageRating(profile.averageRating);
-      setShortDescription(profile.shortDescription);
-      setLongDescription(profile.longDescription);
-      setEducation(profile.education);
-      setQualifications(profile.qualifications);
+    async function fetchData() {
+      if (profile) {
+        console.log(profile);
+        setUsername(profile.username);
+        setFirstName(profile.firstName);
+        setLastName(profile.lastName);
+        setAverageRating(profile.averageRating);
+        setShortDescription(profile.shortDescription);
+        setLongDescription(profile.longDescription);
+        setEducation(profile.education);
+        setQualifications(profile.qualifications);
+        if (username) {
+          try {
+            const response = await axios.get(`http://localhost:5000/image/get/${username}`, {
+            });
+            setProfilePicture(response.data.imageUrl);
+          } catch (error) {
+            console.error('Error retrieving profile data:', error);
+          }
+        }
+
+      }
     }
+
+
+    fetchData();
   }, [profile]);
 
   const addQualification = async () => {
@@ -189,17 +205,70 @@ function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue }) {
       await axios.patch(`http://localhost:5000/users/update/${username}`, {
         ShortDescription: shortDescription
       });
-      setEditingShortDescription(false); 
+      setEditingShortDescription(false);
     } catch (error) {
       console.error('Error saving long description', error);
     }
   };
 
+  const [file, setFile] = useState(null);
+
+  const handleFileInputChange = (event) => {
+    const selectedFile = event.target.files[0];
+    setFile(selectedFile);
+    //handleSubmit();
+  };
+
+  const handleImageClick = () => {
+    document.getElementById('fileInput').click();
+  };
+
+
+  useEffect(() => {
+    async function uploadPicture() {
+      if (!file) {
+        console.error('No file selected');
+        return;
+      }
+      console.log(file);
+      try {
+        const formData = new FormData();
+        formData.append('image', file);
+
+        await axios.post(`http://localhost:5000/image/post/${username}`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+
+        console.log('Image uploaded successfully');
+        try {
+          const response = await axios.get(`http://localhost:5000/image/get/${username}`, {
+          });
+          setProfilePicture(response.data.imageUrl);
+        } catch (error) {
+          console.error('Error retrieving profile data:', error);
+        }
+      } catch (error) {
+        console.error('Error uploading image:', error);
+      }
+    }
+    uploadPicture();
+  }, [file]);
+
+
   return (
     <div className="profile-info-container">
       <div className="left-box">
-        <div className='center'>
-          <img src={Test} alt="Profile" className="profile-image" />
+        <div className="center" onClick={handleImageClick}>
+          <img src={profilePicture} alt="Profile" className="profile-image" />
+          {username === localStorage.getItem("user") &&
+            <input
+              type="file"
+              id="fileInput"
+              style={{ display: 'none' }}
+              onChange={handleFileInputChange}
+            />}
         </div>
         <div className="section">
           <h2 className="center">{username}</h2>
@@ -219,7 +288,7 @@ function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue }) {
           ) : (
             <>
               <p>{shortDescription}</p>
-              {username == sessionUsername &&<button onClick={handleEditShortDescription}><FaEdit /></button>}
+              {username == sessionUsername && <button onClick={handleEditShortDescription}><FaEdit /></button>}
             </>
           )}
         </div>

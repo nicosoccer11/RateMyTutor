@@ -1,87 +1,72 @@
 import React, { useState,useEffect } from 'react';
 import './Login.css';
 import Signup from './Signup';
-import { jwtDecode } from "jwt-decode";
+import ErrorPopup from './ErrorPopup';
 import axios from 'axios';
 
 function Login({ onLogin }) {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [isSignup, setIsSignup] = useState(false);
-    
-  function handleCallback(response) {
-    console.log("Encoded JMT ID tokenL : "  + response.credential);
-    const decoded = jwtDecode(response.credential);
-    console.log(decoded);
-  }
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [isSignup, setIsSignup] = useState(false);
+  const [error, setError] = useState(false);
 
-    useEffect(() => {
-      /* global google */
-      google.accounts.id.initialize({
-        client_id: "127410190553-p0cbq1a04i9u4gkush6olhkop9u4a773.apps.googleusercontent.com",
-        callback: handleCallback
-      })
-      google.accounts.id.renderButton(
-        document.getElementById("signInDiv"),
-        {
-          theme: "outline",
-          size: "large",
-        });
-      google.accounts.id.prompt();
-    }, []);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
+    try {
+      const response = await axios.post('http://localhost:5000/users/login', {
+        username,
+        password,
+      });
+      localStorage.setItem('user', response.data.username);
+      console.log("setting local storage \'user\' to:", response.data.username)
+      onLogin();
+    } catch (error) {
+      console.error('Error logging in:', error);
+      setError('Incorrect username or password');
+      setPassword('');
+    }
+  };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-    
-        try {
-          const response = await axios.post('http://localhost:5000/users/login', {
-            username,
-            password,
-          });
-          localStorage.setItem('user', response.data.username);
-          console.log("setting local storage \'user\' to:", response.data.username)
-          onLogin();
-        } catch (error) {
-          console.error('Error logging in:', error);
-        }
-      };
+  const handleToggleSignup = () => {
+    setIsSignup(true);
+  };
 
-    const handleToggleSignup = () => {
-        setIsSignup(true);
-      };
+  const handleCloseError = () => {
+    setError(null);
+  };
 
-    return (
-        <div className="login-container">
-            {isSignup ? <Signup onLogin={onLogin} setIsSignup={setIsSignup}/> : <div>
-                <form onSubmit={handleSubmit}>
-                    <div>
-                        <label className="login-label" htmlFor="username">Username:</label>
-                        <input
-                            className="login-input"
-                            type="text"
-                            id="username"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                        />
-                    </div>
-                    <div>
-                        <label className="login-label" htmlFor="password">Password:</label>
-                        <input
-                            className="login-input"
-                            type="password"
-                            id="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
-                    </div>
-                    <button className="login-button" type="submit">Login</button>
-                </form>
-                <p>Don't have an account? <button className="signup-button" onClick={handleToggleSignup}>Sign up</button></p>
-            </div>}
-            <div id="signInDiv"></div>
-        </div>
-    );
+  return (
+    <div className="login-container">
+      {error && <ErrorPopup message={error} onClose={handleCloseError} />}
+      {isSignup ? <Signup onLogin={onLogin} setIsSignup={setIsSignup} /> : <div>
+        <form onSubmit={handleSubmit}>
+          <div>
+            <label className="login-label" htmlFor="username">Username:</label>
+            <input
+              className="login-input"
+              type="text"
+              id="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
+          </div>
+          <div>
+            <label className="login-label" htmlFor="password">Password:</label>
+            <input
+              className="login-input"
+              type="password"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+          <button className="login-button" type="submit">Login</button>
+        </form>
+        <p>Don't have an account? <button className="signup-button" onClick={handleToggleSignup}>Sign up</button></p>
+      </div>}
+    </div>
+  );
 }
 
 export default Login;
