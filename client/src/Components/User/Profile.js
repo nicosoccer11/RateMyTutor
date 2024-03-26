@@ -5,12 +5,14 @@ import Reviews from './Reviews';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import Posts from './Posts';
+import Qualities from './Qualities';
 function Profile() {
 
   const [profileInfo, setProfileInfo] = useState(null);
   const [reviewsOriginal, setReviewsOriginal] = useState(null);
   const [reviews, setReviews] = useState(null);
   const [posts, setPosts] = useState(null);
+  const [qualities, setQualities] = useState(null);
   const [reviewTotal, setReviewTotal] = useState(0);
   const user = useParams();
   const [userProfileID, setUserProfileID] = useState(null);
@@ -33,8 +35,9 @@ function Profile() {
         setProfileInfo(response.data.user);
         setReviewsOriginal(response.data.reviews);
         setReviewTotal(response.data.reviews.length);
-        //setPosts(response.data.posts);
+        setPosts(response.data.user.posts);
         setUserProfileID(response.data.user.username);
+        setQualities(response.data.user.qualities);
       } catch (error) {
         console.error('Error retrieving profile data:', error);
       }
@@ -72,6 +75,7 @@ function Profile() {
   return (
     <div>
       <ProfileInfo reviewsID="reviews" profile={profileInfo} reviewTotal={reviewTotal} update={setUpdate} updateValue={update} />
+      <Qualities qualities={qualities}/>
       <Posts posts={posts} user={userProfileID} />
       <Reviews reviews={reviews} user={userProfileID} update={setUpdate} updateValue={update} />
     </div>
