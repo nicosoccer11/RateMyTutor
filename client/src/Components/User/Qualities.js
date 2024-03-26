@@ -4,48 +4,57 @@ import React, { useState, useEffect } from 'react';
 import './Qualities.css';
 import axios from 'axios';
 
-function Qualities({ qualities }) {
-  const [editMode, setEditMode] = useState(false);
+function Qualities({ qualities, setQualities, user }) {
+    const isCurrentUser = (user === localStorage.getItem('user'));
 
-  const toggleEditMode = () => {
-    setEditMode(!editMode);
-  };
+    const handleQualityToggle = async (qualityIndex) => {
+        if (!isCurrentUser) {
+            return;
+        }
+        try {
+            const updatedQualities = [...qualities];
+            if(updatedQualities[qualityIndex - 1].hasquality === 0){
+                console.log("ADDING", qualityIndex);
+                const response = await axios.post('http://localhost:5000/user-qualities/add', {
+                    username: user,
+                    qualityId: qualityIndex
+                });
+                updatedQualities[qualityIndex - 1].hasquality = 1;
+            }
+            else {
+                console.log("removing", qualityIndex);
+                console.log(user, qualityIndex);
+                const response = await axios.delete('http://localhost:5000/user-qualities/remove', {
+                    data: {
+                        username: user,
+                        qualityId: qualityIndex
+                    }
+                });
+                updatedQualities[qualityIndex - 1].hasquality = 0;
+            }
+            setQualities(updatedQualities);
+        } catch (error) {
+            console.error('Error updating quality:', error);
+        }
+    };
 
-  const handleQualityToggle = async (qualityIndex) => {
-    // Update user quality
-    try {
-      const updatedQualities = [...qualities];
-      updatedQualities[qualityIndex] = !updatedQualities[qualityIndex]; // Toggle value
-      setQualities(updatedQualities);
-      await axios.patch(`http://localhost:5000/qualities/${username}`, { qualities: updatedQualities });
-    } catch (error) {
-      console.error('Error updating user quality:', error);
-    }
-  };
-
-  return (
-    <div className="qualities-container">
-      <h3>Qualities</h3>
-      {editMode && isCurrentUser && (
-        <button onClick={toggleEditMode}>Save</button>
-      )}
-      {!editMode && isCurrentUser && (
-        <button onClick={toggleEditMode}>Edit</button>
-      )}
-      <div className="qualities-list">
-        {qualities.map((quality, index) => (
-          <div
-            key={index}
-            className={`quality-item ${quality ? 'active' : ''} ${isCurrentUser ? 'editable' : ''}`}
-            onClick={() => editMode && isCurrentUser && handleQualityToggle(index)}
-          >
-            {quality && <span className="checkmark">&#10003;</span>}
-            <span>{quality ? 'Yes' : 'No'}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
+    return (
+        <div className="qualities-container">
+            <h3>Qualities</h3>
+            <div className="qualities-list">
+                {qualities && qualities.length > 0 && qualities.map((quality) => (
+                    <button
+                        key={quality.qualityid}
+                        className={`quality-item ${quality.hasquality ? 'active' : ''}`}
+                        onClick={() => handleQualityToggle(quality.qualityid)}
+                    >
+                        {quality.hasquality ? (<span className="checkmark">&#10003;{quality.qualityname}</span>) :
+                            (<span>{quality.qualityname}</span>)}
+                    </button>
+                ))}
+            </div>
+        </div>
+    );
 }
 
 export default Qualities;
