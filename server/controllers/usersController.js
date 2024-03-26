@@ -204,8 +204,16 @@ const searchEverything = async (req, res) => {
     return res.status(400).send('A search term is required.');
   }
 
+  const terms = term.split(',').map(t => t.trim()).filter(t => t);
+
+  if (terms.length === 0) {
+    return res.status(400).send('A search term is required.');
+  }
+
   try {
-    // Modified query to also fetch usernames related to education
+    const searchPatterns = terms.map(t => `%${t}%`);
+
+    // Use ANY to match any of the search patterns
     const userQuery = `
       SELECT DISTINCT u.Username,
       EXISTS (
@@ -215,25 +223,24 @@ const searchEverything = async (req, res) => {
       FROM users u
       LEFT JOIN qualifications q ON u.Username = q.Username
       LEFT JOIN education e ON u.Username = e.Username
-      WHERE (u.Username ILIKE $1 OR q.Skill ILIKE $1 OR e.School ILIKE $1 OR e.Degree ILIKE $1) 
+      WHERE (u.Username ILIKE ANY($1::text[]) OR q.Skill ILIKE ANY($1::text[]) OR e.School ILIKE ANY($1::text[]) OR e.Degree ILIKE ANY($1::text[]))
       AND u.Username <> $2
     `;
 
-    // Query to search posts
+    // Perform the searches
+    const users = await db.query(userQuery, [searchPatterns, requesterUsername]);
+
     const postsQuery = `
       SELECT p.PostID, p.UserID, p.Content
       FROM posts p
-      WHERE p.Content ILIKE $1
+      WHERE p.Content ILIKE ANY($1::text[])
     `;
 
-    // Perform the searches
-    const searchValue = `%${term}%`;
-    const users = await db.query(userQuery, [searchValue, requesterUsername]);
-    const posts = await db.query(postsQuery, [searchValue]);
+    const posts = await db.query(postsQuery, [searchPatterns]);
 
-    // Aggregate results
+    // Aggregate results without needing to remove duplicates
     const results = {
-      usernames: users.rows, // Including usernames related to qualifications and education
+      usernames: users.rows,
       posts: posts.rows
     };
 
