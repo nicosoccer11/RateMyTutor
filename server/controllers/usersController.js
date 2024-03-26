@@ -70,7 +70,10 @@ const getUserProfile = async (req, res) => {
     // Fetch user's own posts
     const postsResult = await db.query('SELECT * FROM posts WHERE UserID = $1 ORDER BY Time DESC', [username]);
     const posts = postsResult.rows;
-
+    
+    // Fetch user's qualities
+    const qualityResult = await db.query('SELECT uq.QualityID FROM user_qualities uq WHERE uq.Username = $1', [username]);
+    const qualities = qualityResult.rows;
     // Combine user info, reviews, education, qualifications, and average rating in the response
     res.json({
       user: {
@@ -85,7 +88,8 @@ const getUserProfile = async (req, res) => {
         longDescription: user.longdescription,
         education,
         qualifications,
-        posts
+        posts,
+        qualities
       },
       reviews
     });
