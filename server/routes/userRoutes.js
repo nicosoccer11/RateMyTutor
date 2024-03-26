@@ -4,7 +4,8 @@ const router = express.Router();
 
 //Update here when add new route
 const { createUser, getAllUsers, 
-        loginUser, getUserProfile, updateUser, searchUsersByUsername } = require('../controllers/usersController');
+        loginUser, getUserProfile, updateUser, 
+        searchUsersByUsername, searchEverything } = require('../controllers/usersController');
 
 // Route to create a new user
 router.post('/users', createUser);
@@ -22,7 +23,10 @@ router.post('/users/login', loginUser);
 router.get('/profile', getUserProfile);
 
 // Route to search users by username
-router.get('/users/search', searchUsersByUsername);
+router.get('/users/search/username', searchUsersByUsername);
+
+// Route to search everything
+router.get('/users/search', searchEverything);
 
 // Define other user routes here
 

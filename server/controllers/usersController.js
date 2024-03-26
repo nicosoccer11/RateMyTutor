@@ -8,11 +8,15 @@ const createUser = async (req, res) => {
   if (/\s/.test(username)) {
     return res.status(400).send('Username must not contain spaces.');
   }
+  // Validate that the password field is not empty
+  if (!password) {
+    return res.status(400).send('Password field  cannot be empty');
+  }
 
   try {
     const newUser = await db.query(
-      'INSERT INTO users (Username, Password, FirstName, LastName, Email) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-      [username, password, firstname, lastname, email]
+      'INSERT INTO users (Username, Password, FirstName, LastName, Email, profilepicture) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+      [username, password, firstname, lastname, email, "Test.jpg"]
     );
     res.json(newUser.rows[0]);
   } catch (err) {
@@ -63,6 +67,10 @@ const getUserProfile = async (req, res) => {
     const qualificationsResult = await db.query('SELECT * FROM qualifications WHERE Username = $1', [username]);
     const qualifications = qualificationsResult.rows;
 
+    // Fetch user's own posts
+    const postsResult = await db.query('SELECT * FROM posts WHERE UserID = $1 ORDER BY Time DESC', [username]);
+    const posts = postsResult.rows;
+
     // Combine user info, reviews, education, qualifications, and average rating in the response
     res.json({
       user: {
@@ -76,7 +84,8 @@ const getUserProfile = async (req, res) => {
         shortDescription: user.shortdescription,
         longDescription: user.longdescription,
         education,
-        qualifications
+        qualifications,
+        posts
       },
       reviews
     });
@@ -85,7 +94,6 @@ const getUserProfile = async (req, res) => {
     res.status(500).send('Server Error, check console for logs');
   }
 };
-
 
 // Login a user
 const loginUser = async (req, res) => {
@@ -177,6 +185,53 @@ const searchUsersByUsername = async (req, res) => {
   }
 };
 
+// Unified search function
+const searchEverything = async (req, res) => {
+  const { term, requesterUsername } = req.query;
+
+  if (!term) {
+    return res.status(400).send('A search term is required.');
+  }
+
+  try {
+    // Modified query to also fetch usernames related to education
+    const userQuery = `
+      SELECT DISTINCT u.Username,
+      EXISTS (
+        SELECT 1 FROM friends
+        WHERE (User1ID = $2 AND User2ID = u.Username) OR (User1ID = u.Username AND User2ID = $2)
+      ) AS "isFriend"
+      FROM users u
+      LEFT JOIN qualifications q ON u.Username = q.Username
+      LEFT JOIN education e ON u.Username = e.Username
+      WHERE (u.Username ILIKE $1 OR q.Skill ILIKE $1 OR e.School ILIKE $1 OR e.Degree ILIKE $1) 
+      AND u.Username <> $2
+    `;
+
+    // Query to search posts
+    const postsQuery = `
+      SELECT p.PostID, p.UserID, p.Content
+      FROM posts p
+      WHERE p.Content ILIKE $1
+    `;
+
+    // Perform the searches
+    const searchValue = `%${term}%`;
+    const users = await db.query(userQuery, [searchValue, requesterUsername]);
+    const posts = await db.query(postsQuery, [searchValue]);
+
+    // Aggregate results
+    const results = {
+      usernames: users.rows, // Including usernames related to qualifications and education
+      posts: posts.rows
+    };
+
+    res.json(results);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server error');
+  }
+};
 
 // Export the functions
 module.exports = {
@@ -185,5 +240,6 @@ module.exports = {
   loginUser,
   getUserProfile,
   updateUser,
-  searchUsersByUsername
+  searchUsersByUsername,
+  searchEverything
 };
