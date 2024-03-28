@@ -1,10 +1,24 @@
 import React from "react";
 import { Flex, Avatar, AvatarBadge, Text } from "@chakra-ui/react";
+import { useEffect, useState } from 'react'
+import axios from "axios";
 
 const Header = ({username}) => {
+	const [image, setImage] = useState("");
+	useEffect(() => {
+		const fetchPicture = async (user) => {
+			await axios.get(`http://localhost:5000/image/get/${user}`).then((response) => {
+				setImage(response.data.imageUrl);
+			})
+			}
+		
+		fetchPicture(username);
+
+	})
+
   return (
 	<Flex w="100%">
-  	<Avatar name="username" size="md" src="https://bit.ly/dan-abramov">
+  	<Avatar name="username" size="md" src={image}>
     	<AvatarBadge boxSize="1.25em" bg="green.500" />
   	</Avatar>
   	<Flex flexDirection="column" mx="5" >
