@@ -27,13 +27,12 @@ const createUser = async (req, res) => {
 
 const createUserWithGoogle = async (req, res) => {
   const { email, given_name, family_name, picture } = req.body;
-
   // Check if the user already exists
   const existingUserResponse = await db.query('SELECT * FROM users WHERE Email = $1', [email]);
   if (existingUserResponse.rows.length > 0) {
     // User already exists, so log them in
     const user = existingUserResponse.rows[0];
-    res.json({ message: 'Login successful', username: user.Username });
+    res.json({ message: 'Login successful', username: user.username });
   } else {
     // No existing user, create a new one
     try {
@@ -42,7 +41,7 @@ const createUserWithGoogle = async (req, res) => {
         [email.split('@')[0], given_name, family_name, email, picture] // Generates username from email (we can and should change this)
       );
       const newUser = newUserResponse.rows[0];
-      res.json({ message: 'User created successfully.', username: newUser.Username });
+      res.json({ message: 'User created successfully.', username: newUser.username });
     } catch (err) {
       console.error(err.message);
       res.status(500).send('Server Error, check console for logs');
