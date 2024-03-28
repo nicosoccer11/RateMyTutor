@@ -56,8 +56,26 @@ const addLike = async (req, res) => {
     }
   };
 
+  const checkUserLike = async (req, res) => {
+    const { postId, username } = req.params;
+
+    try {
+        const queryResult = await db.query(
+            'SELECT 1 FROM likes WHERE PostID = $1 AND UserID = $2',
+            [postId, username]
+        );
+
+        const hasLiked = queryResult.rowCount > 0;
+        res.json({ hasLiked });
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error, check console for logs');
+    }
+  };
+
   module.exports = {
     addLike,
     removeLike,
-    getLikesForPost
+    getLikesForPost,
+    checkUserLike
   }
