@@ -18,14 +18,12 @@ const Chat = (props) => {
 	]);
 	const [inputMessage, setInputMessage] = useState("");
 	let user = localStorage.getItem('user');
-	console.log(props);
 	const friendId = useParams();
 	const friend = props ? props.friend : friendId.id;
 	useEffect(() => {
 		const getPrevMessages = async () =>{
 			//console.log(`user->${user} friend->${friendId.id}`);
-			//const receiver = friendID ? friendID : "computer";
-			console.log("polling");
+			
 		
 			await axios.get(`http://localhost:5000/messages/history/${user}/${friend}`).then((response) => {
 				//console.log(response.data.data);
@@ -37,7 +35,6 @@ const Chat = (props) => {
 											"text": msgData[msg].content
 											});
 				}
-				console.log(previous_messages)
 				setMessages(previous_messages)
 			})
 		}
@@ -69,9 +66,8 @@ const Chat = (props) => {
 			receiverUsername: friend,
 			content: inputMessage
 		}).then((response) => {
-			console.log(response);
 		}, (error) => {
-			console.log(error);
+			console.error(error);
 		});
 	};
 
