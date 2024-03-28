@@ -5,10 +5,13 @@ const router = express.Router();
 //Update here when add new route
 const { createUser, getAllUsers, 
         loginUser, getUserProfile, updateUser, 
-        searchUsersByUsername, searchEverything } = require('../controllers/usersController');
+        searchUsersByUsername, searchEverything, createUserWithGoogle } = require('../controllers/usersController');
 
 // Route to create a new user
 router.post('/users', createUser);
+
+// Route to create a new user
+router.post('/users/google-auth', createUserWithGoogle);
 
 //Route to get all users    
 router.get('/users', getAllUsers);
