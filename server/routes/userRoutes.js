@@ -5,7 +5,8 @@ const router = express.Router();
 //Update here when add new route
 const { createUser, getAllUsers, 
         loginUser, getUserProfile, updateUser, 
-        searchUsersByUsername, searchEverything, createUserWithGoogle } = require('../controllers/usersController');
+        searchUsersByUsername, searchEverything, createUserWithGoogle, 
+        getSuggestedFriends} = require('../controllers/usersController');
 
 // Route to create a new user
 router.post('/users', createUser);
@@ -30,6 +31,9 @@ router.get('/users/search/username', searchUsersByUsername);
 
 // Route to search everything
 router.get('/users/search', searchEverything);
+
+// Route to get suggested friends
+router.get('/users/suggested-friends/:username', getSuggestedFriends);
 
 // Define other user routes here
 

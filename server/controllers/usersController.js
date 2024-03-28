@@ -275,6 +275,63 @@ const searchEverything = async (req, res) => {
   }
 };
 
+const getSuggestedFriends = async (req, res) => {
+  const { username } = req.params;
+
+  try {
+    // Retrieve the current user's qualities as an array of IDs
+    const currentUserQualitiesResult = await db.query(
+      'SELECT QualityID FROM user_qualities WHERE Username = $1',
+      [username]
+    );
+    const currentUserQualities = currentUserQualitiesResult.rows.map(q => q.QualityID);
+
+    let suggestedFriends = [];
+    if (currentUserQualities.length > 0) {
+      // Use the ANY function for array comparison in PostgreSQL
+      const suggestedFriendsQuery = `
+        SELECT u.Username, COUNT(*) AS sharedQualitiesCount
+        FROM users u
+        JOIN user_qualities uq ON u.Username = uq.Username
+        WHERE uq.QualityID = ANY($1::int[])
+        AND u.Username <> $2
+        AND NOT EXISTS (
+          SELECT 1 FROM friends
+          WHERE (User1ID = u.Username AND User2ID = $2) OR (User1ID = $2 AND User2ID = u.Username)
+        )
+        GROUP BY u.Username
+        ORDER BY sharedQualitiesCount DESC
+        LIMIT 3
+      `;
+      const suggestedFriendsResult = await db.query(suggestedFriendsQuery, [currentUserQualities, username]);
+      suggestedFriends = suggestedFriendsResult.rows;
+    }
+
+    // If there are fewer than 3 suggested friends based on shared qualities, add random users
+    if (suggestedFriends.length < 3) {
+      const fillCount = 3 - suggestedFriends.length;
+      const additionalUsersQuery = `
+        SELECT Username FROM users
+        WHERE Username <> $1
+        AND Username NOT IN (
+          SELECT User1ID FROM friends WHERE User2ID = $1
+          UNION
+          SELECT User2ID FROM friends WHERE User1ID = $1
+        )
+        ORDER BY RANDOM()
+        LIMIT $2
+      `;
+      const additionalUsersResult = await db.query(additionalUsersQuery, [username, fillCount]);
+      suggestedFriends.push(...additionalUsersResult.rows);
+    }
+
+    res.json(suggestedFriends);
+  } catch (err) {
+    console.error("Error:", err.message);
+    res.status(500).send('Server Error, check console for logs');
+  }
+};
+
 // Export the functions
 module.exports = {
   createUser,
@@ -284,5 +341,6 @@ module.exports = {
   updateUser,
   searchUsersByUsername,
   searchEverything,
-  createUserWithGoogle
+  createUserWithGoogle,
+  getSuggestedFriends
 };
