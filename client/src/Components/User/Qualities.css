@@ -30,4 +30,9 @@
   .checkmark {
     margin-right: 5px;
   }
+
+  .quality-item.match {
+    background-color: #6495ED;
+  }
+
   
