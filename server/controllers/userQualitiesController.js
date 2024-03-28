@@ -32,7 +32,15 @@ const getUserQualities = async (req, res) => {
   const { username } = req.params;
 
   try {
-    const result = await db.query('SELECT uq.QualityID FROM user_qualities uq WHERE uq.Username = $1', [username]);
+        // Fetch user's qualities
+        const result = await db.query(
+            `SELECT q.QualityID, q.QualityName, 
+            CASE WHEN uq.Username IS NULL THEN 0 ELSE 1 END AS HasQuality
+            FROM qualities q
+            LEFT JOIN user_qualities uq ON q.QualityID = uq.QualityID AND uq.Username = $1
+            ORDER BY q.QualityID`, 
+            [username]
+          );
     res.json(result.rows);
   } catch (err) {
     console.error(err.message);
