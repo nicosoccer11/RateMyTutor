@@ -99,8 +99,41 @@ const getMeetingRequests = async (req, res) => {
   }
 };
 
+// Function to get check if a student/user had the tutor before (so they can write reviews)
+const hadMeeting = async (req, res) => {
+  const { student, tutor } = req.body; 
+  try {
+    const meetingRequest = await db.query(
+      'SELECT * FROM schedule WHERE sender = $1 AND receiver = $2 AND status = 1 LIMIT 1',
+      [student, tutor]
+    );
+
+    if (meetingRequest.rows.length > 0) {
+      res.json({
+        message: 'Meeting request found',
+        hadMeeting: true
+      });
+    } else {
+      res.json({
+        message: 'No meeting request found',
+        hadMeeting: false
+      });
+    }
+
+  } catch (err) {
+    console.error(err.message);
+    if (err.code === "23503") { // PostgreSQL foreign key violation error code
+      res.status(400).send('One or both users do not exist.');
+    } else {
+      res.status(500).send('Server Error');
+    }
+  }
+};
+
+
 module.exports = {
  getMeetingRequests,
  rejectMeetingRequest,
  sendMeeting,
+ hadMeeting,
 };

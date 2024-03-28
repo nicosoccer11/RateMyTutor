@@ -3,14 +3,19 @@ import axios from 'axios';
 
 const Schedule = () => {
   const [meetingRequests, setMeetingRequests] = useState([]);
+  const username = localStorage.getItem('user'); // Retrieve the current user's username
 
   useEffect(() => {
-    fetchMeetingRequests();
-  }, []);
+    if (username) { // Check if username is available
+      fetchMeetingRequests(username);
+    }
+  }, [username]); // Trigger the effect whenever username changes
 
-  const fetchMeetingRequests = async () => {
+  const fetchMeetingRequests = async (username) => {
     try {
-      const response = await axios.get('http://localhost:5000/schedule/get');
+      const response = await axios.get('http://localhost:5000/schedule/get', {
+        params: { username: username }
+      });
       setMeetingRequests(response.data.meetingRequests);
     } catch (error) {
       console.error('Error fetching meeting requests:', error);
@@ -23,7 +28,7 @@ const Schedule = () => {
         scheduleId: scheduleId
       });
       // After responding, fetch meeting requests again to update the list
-      fetchMeetingRequests();
+      fetchMeetingRequests(username); // Pass the username
     } catch (error) {
       console.error('Error responding to meeting request:', error);
     }
