@@ -37,7 +37,6 @@ function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue }) {
   useEffect(() => {
     async function fetchData() {
       if (profile) {
-        console.log(profile);
         setUsername(profile.username);
         setFirstName(profile.firstName);
         setLastName(profile.lastName);
@@ -46,9 +45,9 @@ function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue }) {
         setLongDescription(profile.longDescription);
         setEducation(profile.education);
         setQualifications(profile.qualifications);
-        if (username) {
+        if (profile.username) {
           try {
-            const response = await axios.get(`http://localhost:5000/image/get/${username}`, {
+            const response = await axios.get(`http://localhost:5000/image/get/${profile.username}`, {
             });
             setProfilePicture(response.data.imageUrl);
           } catch (error) {
@@ -227,10 +226,9 @@ function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue }) {
   useEffect(() => {
     async function uploadPicture() {
       if (!file) {
-        console.error('No file selected');
+        //console.error('No file selected');
         return;
       }
-      console.log(file);
       try {
         const formData = new FormData();
         formData.append('image', file);
@@ -240,8 +238,6 @@ function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue }) {
             'Content-Type': 'multipart/form-data',
           },
         });
-
-        console.log('Image uploaded successfully');
         try {
           const response = await axios.get(`http://localhost:5000/image/get/${username}`, {
           });

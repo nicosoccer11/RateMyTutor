@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Login.css';
 import Signup from './Signup';
 import ErrorPopup from './ErrorPopup';
@@ -39,19 +39,20 @@ function Login({ onLogin }) {
       family_name: decoded.family_name,
       picture: decoded.picture
     })
-    .then(response => {
-      // Set the username in local storage and perform login actions
-      console.log("data ", response.data);
-      localStorage.setItem('user', response.data.username);
-      onLogin();
-    })
-    .catch(error => {
-      console.error('Error during Google OAuth login:', error);
-    });
+      .then(response => {
+        // Set the username in local storage and perform login actions
+        console.log("data ", response.data);
+        localStorage.setItem('user', response.data.username);
+        onLogin();
+      })
+      .catch(error => {
+        console.error('Error during Google OAuth login:', error);
+      });
   }
 
-    useEffect(() => {
-      /* global google */
+  useEffect(() => {
+    /* global google */
+    if (window.google && window.google.accounts && window.google.accounts.id) {
       google.accounts.id.initialize({
         client_id: "127410190553-p0cbq1a04i9u4gkush6olhkop9u4a773.apps.googleusercontent.com",
         callback: handleCallback
@@ -62,7 +63,8 @@ function Login({ onLogin }) {
           theme: "outline",
           size: "large",
         });
-    }, []);
+    }
+  }, []);
 
   const handleToggleSignup = () => {
     setIsSignup(true);

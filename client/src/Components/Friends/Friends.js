@@ -54,7 +54,6 @@ class Friends extends React.Component {
       await axios.post('http://localhost:5000/friends/get', {
         username,
       }).then((response) => {
-        console.log(response);
         const data = response.data; // Assuming the data returned is an array of friends
         const first_friend = data.friends[0]
         this.fetchURLs(data.friends);
@@ -79,9 +78,6 @@ class Friends extends React.Component {
   }
 
   handleSendMessage = (friend) => {
-    // Logic for sending a message to the friend with the given ID
-    console.log(this.state.friends);
-    console.log(`Sending message to ${friend}`);
     this.setState({
       otherUser: friend,
     })

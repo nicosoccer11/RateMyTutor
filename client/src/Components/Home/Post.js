@@ -40,7 +40,6 @@ const Post = ({ user, content,postid,num_likes}) => {
             try {
                 const response = await axios.get(`http://localhost:5000/likes/${postId}`);
                 setNumLikes(response.data.count);
-                console.log("Number of Likes:", response.data.count);
             } catch (error) {
                 console.error('Error retrieving profile data:', error);
             }
@@ -53,7 +52,6 @@ const Post = ({ user, content,postid,num_likes}) => {
         const fetchNumCom = async (postId) => {
             try {
                 const response = await axios.get(`http://localhost:5000/comments/count/${postId}`);
-                console.log("Number of Comments:", response.data.commentCount);
                 setcomment(response.data.commentCount);
             } catch (error) {
                 console.error('Error retrieving profile data:', error);
@@ -64,7 +62,6 @@ const Post = ({ user, content,postid,num_likes}) => {
         const fetchLiked = async (postId) => {
             try {
                 const response = await axios.get(`http://localhost:5000/likes/${postId}/${localStorage.getItem('user')}`);
-                console.log("check Liked:", response.data.hasLiked);
                 setLiked(response.data.hasLiked);
             } catch (error) {
                 console.error('Error retrieving profile data:', error);
@@ -93,20 +90,16 @@ const Post = ({ user, content,postid,num_likes}) => {
     useEffect(() => {
         const fetchComments = async (postId) => {
             try {
-                console.log("Fetching comments for post:", postId);
                 const response = await axios.get(`http://localhost:5000/comments/${postId}`);
                 setAllComments(response.data);
             } catch (error) {
                 console.error('Error retrieving profile data:', error);
             }
         };
-    
-        // Call fetchComments with the current postid
         fetchComments(postid);
     }, [update,postid]);
 
     function toggleCommentsBox(event) {
-        console.log("comment button pressed")
         var post = event.target.closest(".post");
         var commentsBox = post.querySelector(".comments-box");
     
@@ -124,9 +117,6 @@ const Post = ({ user, content,postid,num_likes}) => {
         var commentText = input.value.trim();
         if (commentText !== "") {
             submit(commentText);
-            // You can handle the comment submission here
-            console.log("New comment:", commentText);
-            // Clear the input after submitting
             input.value = "";
 
         } else {
@@ -136,7 +126,6 @@ const Post = ({ user, content,postid,num_likes}) => {
 
     const [showAllComments, setShowAllComments] = useState(false);
     function get_all_comment(event) {
-        console.log("number of comments button pressed");
         setShowAllComments(!showAllComments);
     }
 
@@ -146,8 +135,6 @@ const Post = ({ user, content,postid,num_likes}) => {
     }
 
     function handleLike() {
-        console.log("like button pressed");
-        console.log("current liked status:", liked)
         if (liked) {
             axios.delete(`http://localhost:5000/likes`, {
                 data: {
@@ -156,7 +143,6 @@ const Post = ({ user, content,postid,num_likes}) => {
                 }
             });
             setLiked(false);
-            console.log("current liked status:", liked)
             setNumLikes(numLikes - 1);
         } else {
             axios.post('http://localhost:5000/likes', {
@@ -166,8 +152,6 @@ const Post = ({ user, content,postid,num_likes}) => {
             setLiked(true);
             setNumLikes(numLikes + 1);
         }
-        // setupdate(!update);
-        // You can handle the like button press here
     }
 
     return (
@@ -188,9 +172,9 @@ const Post = ({ user, content,postid,num_likes}) => {
                 <button className='post_button' onClick={toggleCommentsBox}> Comment</button>
             </div>
             <div className="comments-box">
-                <div class="comment-input-container">
-                    <input type="text" placeholder="Add a comment..." class="comment-input" />
-                    <button class="comment-submit" onClick={submitComment}>Post</button>
+                <div className="comment-input-container">
+                    <input type="text" placeholder="Add a comment..." className="comment-input" />
+                    <button className="comment-submit" onClick={submitComment}>Post</button>
                 </div>
             </div>
             <div className="comments">

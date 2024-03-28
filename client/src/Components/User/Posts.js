@@ -35,7 +35,7 @@ function Posts({ posts, user, update, updateValue }) {
             {showCreatePost && <CreatePost onClose={() => setShowCreatePost(false)} onSubmit={handleNewPost} />}
             {posts && posts.length > 0 ? (<>
                 {posts.slice(0, visiblePosts).map((post, index) => (
-                    <Post key={index} user={post.userid} content={post.content} />
+                    <Post key={index} user={post.userid} content={post.content} postid={post.postid} />
                 ))}
                 {posts.length > visiblePosts && (
                     <div className="show-more-button-container">
