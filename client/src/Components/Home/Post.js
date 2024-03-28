@@ -110,7 +110,7 @@ const Post = ({ user, content,postid,num_likes}) => {
         var post = event.target.closest(".post");
         var commentsBox = post.querySelector(".comments-box");
     
-        if (commentsBox.style.display === "none") {
+        if (commentsBox.style.display === "none" || commentsBox.style.display === "") {
             commentsBox.style.display = "block";
         } else {
             commentsBox.style.display = "none";
