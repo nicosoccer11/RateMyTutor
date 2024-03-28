@@ -12,7 +12,6 @@
 //         fetchPicture(user);
 //     }, [])
 
-import image from './user.jpeg';
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom';
 import "./home.css";
@@ -26,6 +25,7 @@ const Post = ({ user, content,postid,num_likes}) => {
     const [numComment, setcomment] = useState(0);
     const [allcomments, setAllComments] = useState([]);
     const [image,setImage] = useState("");
+    const [liked, setLiked] = useState(false);
 
     useEffect(() => {
         const fetchPicture = async (user) => {
@@ -46,7 +46,7 @@ const Post = ({ user, content,postid,num_likes}) => {
             }
         };
         fetchNumLikes(postid);
-    }, [postid]);
+    }, [postid,update]);
 
     
     useEffect(() => {
@@ -60,6 +60,18 @@ const Post = ({ user, content,postid,num_likes}) => {
             }
         };
         fetchNumCom(postid);
+
+        const fetchLiked = async (postId) => {
+            try {
+                const response = await axios.get(`http://localhost:5000/likes/${postId}/${localStorage.getItem('user')}`);
+                console.log("check Liked:", response.data.hasLiked);
+                setLiked(response.data.hasLiked);
+            } catch (error) {
+                console.error('Error retrieving profile data:', error);
+            }
+        }
+        fetchLiked(postid);
+
     }, [postid,update]);
 
     
@@ -98,7 +110,7 @@ const Post = ({ user, content,postid,num_likes}) => {
         var post = event.target.closest(".post");
         var commentsBox = post.querySelector(".comments-box");
     
-        if (commentsBox.style.display === "none") {
+        if (commentsBox.style.display === "none" || commentsBox.style.display === "") {
             commentsBox.style.display = "block";
         } else {
             commentsBox.style.display = "none";
@@ -133,6 +145,31 @@ const Post = ({ user, content,postid,num_likes}) => {
         el.style.height = (el.scrollHeight) + "px";
     }
 
+    function handleLike() {
+        console.log("like button pressed");
+        console.log("current liked status:", liked)
+        if (liked) {
+            axios.delete(`http://localhost:5000/likes`, {
+                data: {
+                    postId: postid, 
+                    username: localStorage.getItem('user')
+                }
+            });
+            setLiked(false);
+            console.log("current liked status:", liked)
+            setNumLikes(numLikes - 1);
+        } else {
+            axios.post('http://localhost:5000/likes', {
+                postId: postid,
+                username: localStorage.getItem('user')
+            });
+            setLiked(true);
+            setNumLikes(numLikes + 1);
+        }
+        // setupdate(!update);
+        // You can handle the like button press here
+    }
+
     return (
         <div className="post">
             <div className='username'>
@@ -147,7 +184,7 @@ const Post = ({ user, content,postid,num_likes}) => {
                 <button className= "numcomments" onClick={get_all_comment}>{numComment} Comments</button>
             </div>
             <div className="post-actions">
-                <button className='post_button'>Like</button>
+                <button className= {`like_button ${liked === true ? 'selected': ''}`} onClick={handleLike}>Like</button>
                 <button className='post_button' onClick={toggleCommentsBox}> Comment</button>
             </div>
             <div className="comments-box">

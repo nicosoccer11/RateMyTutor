@@ -31,9 +31,23 @@ function Login({ onLogin }) {
   };
 
   function handleCallback(response) {
-    console.log("Encoded JMT ID tokenL : "  + response.credential);
     const decoded = jwtDecode(response.credential);
-    console.log(decoded);
+    // Send the decoded information to your backend
+    axios.post('http://localhost:5000/users/google-auth', {
+      email: decoded.email,
+      given_name: decoded.given_name,
+      family_name: decoded.family_name,
+      picture: decoded.picture
+    })
+    .then(response => {
+      // Set the username in local storage and perform login actions
+      console.log("data ", response.data);
+      localStorage.setItem('user', response.data.username);
+      onLogin();
+    })
+    .catch(error => {
+      console.error('Error during Google OAuth login:', error);
+    });
   }
 
     useEffect(() => {
@@ -48,7 +62,6 @@ function Login({ onLogin }) {
           theme: "outline",
           size: "large",
         });
-        google.accounts.id.prompt();
     }, []);
 
   const handleToggleSignup = () => {
