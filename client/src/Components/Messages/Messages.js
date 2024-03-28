@@ -1,7 +1,20 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Avatar, Flex, Text } from "@chakra-ui/react";
+import axios from "axios";
 
 const Messages = ({ messages, user1, user2 }) => {
+
+	const [image, setImage] = useState("")
+	useEffect(() => {
+		const fetchPicture = async (user) => {
+			await axios.get(`http://localhost:5000/image/get/${user}`).then((response) => {
+				setImage(response.data.imageUrl);
+			})
+			}
+		
+		fetchPicture(user1);
+	})
+
   const AlwaysScrollToBottom = () => {
 	const elementRef = useRef();
 	useEffect(() => elementRef.current.scrollIntoView());
@@ -26,7 +39,7 @@ const Messages = ({ messages, user1, user2 }) => {
           	</Flex>
 			<Avatar
 			name="Computer"
-			src="https://avataaars.io/?avatarStyle=Transparent&topType=LongHairStraight&accessoriesType=Blank&hairColor=BrownDark&facialHairType=Blank&clotheType=BlazerShirt&eyeType=Default&eyebrowType=Default&mouthType=Default&skinColor=Light"
+			src={image}
 			bg="blue.300">
 			</Avatar>
         	</Flex>
