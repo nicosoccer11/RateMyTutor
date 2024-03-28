@@ -13,8 +13,7 @@ function Qualities({ qualities, setQualities, user }) {
         }
         try {
             const updatedQualities = [...qualities];
-            if(updatedQualities[qualityIndex - 1].hasquality === 0){
-                console.log("ADDING", qualityIndex);
+            if (updatedQualities[qualityIndex - 1].hasquality === 0) {
                 const response = await axios.post('http://localhost:5000/user-qualities/add', {
                     username: user,
                     qualityId: qualityIndex
@@ -22,8 +21,6 @@ function Qualities({ qualities, setQualities, user }) {
                 updatedQualities[qualityIndex - 1].hasquality = 1;
             }
             else {
-                console.log("removing", qualityIndex);
-                console.log(user, qualityIndex);
                 const response = await axios.delete('http://localhost:5000/user-qualities/remove', {
                     data: {
                         username: user,
@@ -45,11 +42,26 @@ function Qualities({ qualities, setQualities, user }) {
                 {qualities && qualities.length > 0 && qualities.map((quality) => (
                     <button
                         key={quality.qualityid}
-                        className={`quality-item ${quality.hasquality ? 'active' : ''}`}
+                        className={`quality-item ${quality.hasquality ? (quality.hasmatch && !isCurrentUser ? 'match' : 'active ') : ''}`}
                         onClick={() => handleQualityToggle(quality.qualityid)}
                     >
-                        {quality.hasquality ? (<span className="checkmark">&#10003;{quality.qualityname}</span>) :
-                            (<span>{quality.qualityname}</span>)}
+                        {isCurrentUser ? (
+                            quality.hasquality ? (
+                                <span className="checkmark">{quality.qualityname}</span>
+                            ) : (
+                                <span>{quality.qualityname}</span>
+                            )
+                        ) : (
+                            quality.hasmatch ? (
+                                <span className="matched-quality">{quality.qualityname} &#10003;</span>
+                            ) : (
+                                quality.hasquality ? (
+                                    <span className="checkmark">{quality.qualityname}</span>
+                                ) : (
+                                    <span>{quality.qualityname}</span>
+                                )
+                            )
+                        )}
                     </button>
                 ))}
             </div>

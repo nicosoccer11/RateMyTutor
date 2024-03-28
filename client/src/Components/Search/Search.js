@@ -49,6 +49,7 @@ function Search() {
             e.preventDefault();
         }
         const searchData = input || query;
+        console.log(searchData, user2Username);
         try {
             const response = await axios.get(`http://localhost:5000/users/search`, {
                 params: {
@@ -58,8 +59,8 @@ function Search() {
             });
             setUsers(response.data.usernames);
             setPosts(response.data.posts);
-            setPostsMessage(response.data.length === 0 ? 'No results found, try looking at users or another search.' : '');
-            setUsersMessage(response.data.length === 0 ? 'No results found, try looking at posts or another search.' : '');
+            setPostsMessage(response.data.posts.length === 0 ? 'No results found, try looking at users or another search.' : '');
+            setUsersMessage(response.data.usernames.length === 0 ? 'No results found, try looking at posts or another search.' : '');
             localStorage.setItem('searchQuery', searchData);
             navigate(`?q=${searchData}`);
         } catch (error) {
@@ -85,8 +86,6 @@ function Search() {
 
     const handleTabChange = (type) => {
         setSearchType(type);
-        // Perform search when tab changes
-        handleSearch(null, query);
     };
 
     const fetchPicture = async (user) => {
@@ -105,7 +104,7 @@ function Search() {
                 <input
                     type="text"
                     className="search-input"
-                    placeholder="Search..."
+                    placeholder="Enter one or multiple search terms (e.g., Python, Houston, Calculus)..."
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                 />

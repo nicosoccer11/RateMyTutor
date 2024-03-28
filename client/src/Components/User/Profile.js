@@ -12,9 +12,11 @@ function Profile() {
   const [reviewsOriginal, setReviewsOriginal] = useState(null);
   const [reviews, setReviews] = useState(null);
   const [posts, setPosts] = useState(null);
+  const [tempQualities, setTempQualities] = useState(null);
   const [qualities, setQualities] = useState(null);
   const [reviewTotal, setReviewTotal] = useState(0);
   const user = useParams();
+  const loggedInUser = localStorage.getItem('user');
   const [userProfileID, setUserProfileID] = useState(null);
   const [update, setUpdate] = useState(false);
 
@@ -37,7 +39,7 @@ function Profile() {
         setReviewTotal(response.data.reviews.length);
         setPosts(response.data.user.posts);
         setUserProfileID(response.data.user.username);
-        setQualities(response.data.user.qualities);
+        setTempQualities(response.data.user.qualities);
       } catch (error) {
         console.error('Error retrieving profile data:', error);
       }
@@ -46,6 +48,27 @@ function Profile() {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, update]);
+
+  useEffect(() => {
+
+    const fetchQualities = async () => {
+      if(tempQualities){
+        try {
+          const response = await axios.get(`http://localhost:5000/user-qualities/${loggedInUser}`, {
+          });
+          for(var i = 0; i < tempQualities.length; i++){
+            tempQualities[i].hasmatch = response.data[i].hasquality && tempQualities[i].hasquality;
+          }
+          setQualities(tempQualities);
+        } catch (error) {
+          console.error('Error retrieving qualities data:', error);
+        }
+      }
+    }
+
+    fetchQualities();
+    
+  }, [tempQualities])
 
   useEffect(() => {
 
@@ -76,7 +99,7 @@ function Profile() {
     <div>
       <ProfileInfo reviewsID="reviews" profile={profileInfo} reviewTotal={reviewTotal} update={setUpdate} updateValue={update} />
       <Qualities qualities={qualities} setQualities={setQualities} user={userProfileID} />
-      <Posts posts={posts} user={userProfileID} />
+      <Posts posts={posts} user={userProfileID} update={setUpdate} updateValue={update}/>
       <Reviews reviews={reviews} user={userProfileID} update={setUpdate} updateValue={update} />
     </div>
   );
