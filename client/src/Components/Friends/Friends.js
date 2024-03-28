@@ -100,14 +100,16 @@ class Friends extends React.Component {
           <ul className="friend-list">
             {this.state.friends.map((friend, ind) => (
               <li key={friend} onClick={() => this.handleSendMessage(friend)} className={`friend-item ${this.state.otherUser === friend ? 'selected' : ''}`}>
-                <img
-                  className="friend-avatar"
-                  src={this.state.friend_urls[ind]}
-                  alt={friend}
-                />
+                <Link to={`/profile/${friend}`}>
+                  <img
+                    className="friend-avatar"
+                    src={this.state.friend_urls[ind]}
+                    alt={friend}
+                  />
+                </Link>
+                
                 <div className="friend-info">
                   <h3>
-                    {/* <Link className='name' to={`/profile/${friend}`}>{friend}</Link> Use Link component */}
                     {friend}
                     {/* <button className="message" onClick={() => this.handleSendMessage(friend)}>
                       <Link to={`/messages/${friend}`}>Message</Link> {/* Use Link component }
