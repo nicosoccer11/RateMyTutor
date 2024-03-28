@@ -41,9 +41,36 @@
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+.like_button{
+    margin-right: 20px;
+    width: 20%;
+    background-color: black;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
 .post_button:hover{
     background-color: white;
     color: black;
+}
+.like_button:hover{
+    background-color: white;
+    color: black;
+}
+
+.like_button.selected{
+    background-color: blue;
+    color: white;
+}
+
+.like_button.selected:hover{
+    background-color: red;
+    color: white;
+
 }
 
 .user-image{
