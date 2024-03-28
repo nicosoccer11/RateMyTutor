@@ -1,26 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import "./home.css";
-import image from './user.jpeg';
 import axios from 'axios';
 import CreatePost from './CreatePost';
-
-const Post = ({ user, content }) => {
-    return (
-        <div className="post">
-            <div className='username'>
-                <img src={image} alt="user" className="user-image" />
-                {user}
-            </div>
-            <p>{content}</p>
-
-            <div className="post-actions">
-                <button className='post_button'>Like</button>
-                <button className='post_button'>Comment</button>
-            </div>
-
-        </div>
-    );
-}
+import ProfileCard from '../User/ProfileCard';
+import SuggestedUsersList from '../User/SuggestedUsers';
+import SearchBar from './SearchBar'
+import Post from './Post';
 
 function Home() {
 
@@ -39,7 +24,6 @@ function Home() {
             }
         };
         fetchPostsInfo();
-
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -60,13 +44,23 @@ function Home() {
         setShowCreatePost(true);
     };
 
-    return (
-        <div>
-            <button className="add-post-button" onClick={handleAddPostClick}>Add Post</button>
-            {showCreatePost ? <CreatePost onClose={() => setShowCreatePost(false)} onSubmit={handleNewPost} /> : <></>}
-            {posts != [] && posts.map((post, index) => (
 
-                <Post key={index} user={post.userid} content={post.content} />
+    return (
+        <div className='full-container'>
+            <SearchBar />
+            <SuggestedUsersList users={[{id:1, name:"test", username:"test", avatar:"/images/logo512.png"}, {id:2, name:"test", username:"test", avatar:"/images/logo512.png"}]}/>
+            <ProfileCard username={username} email={`${username}@mail.com`} name={username}/>
+            <div className='new-post-container'>
+                <button className="add-post-button" onClick={handleAddPostClick}>
+                    <img src='images/plus.png'></img>
+                </button>
+                <div className="textbox">New Post</div>
+            </div>
+            
+            {showCreatePost ? <CreatePost onClose={() => setShowCreatePost(false)} onSubmit={handleNewPost} /> : <></>}
+            {posts.length !== 0 && posts.map((post, index) => (
+
+                <Post key={index} user={post.userid} content={post.content} postid  = {post.postid}/>
             ))}
         </div>
     );

@@ -1,8 +1,17 @@
 .friend-list-container {
-    width: 350px;
+    height: 100%;
+    width: auto;
     margin: 0 auto;
     font-family: Arial, sans-serif;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 20px;
   }
+
+.friend-list-wrapper {
+  padding: 30px;
+}
   
 /* .friend-list-box {
   border: 1px solid #ccc;
@@ -28,12 +37,12 @@
   margin: 0;
 }
 
-
-
 .friend-list {
-  list-style-type: none;
+  list-style: none;
   padding: 0;
   margin: 0;
+  max-height: "60%"; /* Set the maximum height for the list */
+  overflow-y: auto; /* Enable vertical scrollbar when needed */
 }
 
 .friend-item {
@@ -41,6 +50,12 @@
   align-items: center;
   padding: 10px;
   border-bottom: 1px solid #ccc;
+  border: 1px solid transparent;
+  height: 100px;
+}
+
+.friend-item:hover{
+  cursor: pointer;
 }
 
 .friend-avatar {
@@ -79,4 +94,9 @@ label {
 .name {
   padding-right: 150px;
   max-width: 150px;
+}
+
+.friend-item.selected {
+  /* Highlight the border for selected items */
+  border-color: #007bff; /* You can change the color as needed */
 }

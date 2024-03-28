@@ -1,0 +1,38 @@
+/* Qualities.css */
+
+.qualities-container {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .qualities-list {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .quality-item {
+    padding: 5px;
+    margin: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .quality-item.active {
+    background-color: lightgreen;
+  }
+  
+  .quality-item.editable:hover {
+    background-color: lightblue;
+  }
+  
+  .checkmark {
+    margin-right: 5px;
+  }
+
+  .quality-item.match {
+    background-color: #6495ED;
+  }
+
+  

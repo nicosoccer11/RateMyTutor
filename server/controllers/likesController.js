@@ -38,7 +38,6 @@ const addLike = async (req, res) => {
   
   const getLikesForPost = async (req, res) => {
     const { postId } = req.params;
-  
     try {
       const likes = await db.query(
         'SELECT UserID FROM likes WHERE PostID = $1',

@@ -112,3 +112,26 @@
 .name {
   max-width: 200px;
 }
+
+.search-tabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.search-tab {
+  padding: 10px 20px;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 5px 5px 0 0;
+  cursor: pointer;
+}
+
+.search-tab.active {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.search-tab:not(:last-child) {
+  margin-right: 5px;
+}

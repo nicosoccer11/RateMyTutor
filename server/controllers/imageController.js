@@ -54,7 +54,7 @@ const getUserProfilePicture = async(req,res) => {
       
       const command = new GetObjectCommand(getObjectParams);
       
-      const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
+      const url = await getSignedUrl(s3, command, { expiresIn: 36000 });
       res.json({ imageUrl: url });
     } catch (error) {
       console.error('Error retrieving user data:', error);
@@ -74,7 +74,7 @@ const createUserProfilePicture = async(req,res) => {
   }
   
   const pictureURL = user.profilepicture;
-  if (pictureURL){
+  if (pictureURL && pictureURL !== 'Test.jpg'){
     const params = {
       Bucket: bucket_name,
       Key:pictureURL,
@@ -82,7 +82,7 @@ const createUserProfilePicture = async(req,res) => {
     const command = new DeleteObjectCommand(params)
     await s3.send(command);
   }
-
+  
   // Posting new image
   const params = {
     Bucket: bucket_name,

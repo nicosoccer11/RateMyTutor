@@ -1,0 +1,36 @@
+.profile-card {
+    position: fixed;
+    top: 100px;
+    left: 20px;
+    display: flex;
+    flex-direction: column; /* Adjust layout to column */
+    align-items: flex-start; /* Align items to start */
+    background-color: #f4f4f4;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 10%;
+    z-index: 999;
+  }
+  
+  .avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin-bottom: 10px; /* Add margin between avatar and profile info */
+  }
+  
+  .profile-info {
+    width: 100%; /* Ensure profile info takes full width */
+  }
+  
+  .profile-info h2 {
+    margin-top: 0;
+    margin-bottom: 5px;
+  }
+  
+  .profile-info p {
+    margin: 0;
+    color: #666;
+  }
+  

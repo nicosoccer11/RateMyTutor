@@ -26,9 +26,20 @@
 }
 
 .review-score {
-    background-color: green;
     font-size: 30px;
 }
+
+.review-rating.green .review-score {
+    background-color: green;
+  }
+  
+  .review-rating.orange .review-score {
+    background-color: orange;
+  }
+  
+  .review-rating.red .review-score {
+    background-color: red;
+  }
 
 .review-text {
     display: flex;
@@ -50,6 +61,21 @@
     background-color: #0056b3;
 }
 
+.show-more-button {
+    background-color: #0056b3;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+    margin-bottom: 20px;
+}
 
-
-
+.show-more-button:hover {
+    background-color: #004280;
+}

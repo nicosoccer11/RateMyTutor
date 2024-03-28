@@ -16,9 +16,9 @@ function App() {
   }, []);
 
   return (
-    <div>
+    <>
       {isLoggedIn ? <Navbar setIsLoggedIn={setIsLoggedIn} /> : <Login onLogin={() => setIsLoggedIn(true)} />}
-    </div>
+    </>
   );
 }
 
