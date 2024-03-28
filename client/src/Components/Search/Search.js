@@ -18,6 +18,7 @@ function Search() {
     const [postsMessage, setPostsMessage] = useState('');
     const [usersMessage, setUsersMessage] = useState('');
     const [searchType, setSearchType] = useState('users');
+    const [images, setImages] = useState({});
 
     useEffect(() => {
         if (data) {
@@ -27,8 +28,21 @@ function Search() {
             handleSearch(null, localStorage.getItem('searchQuery'));
             setData(localStorage.getItem('searchQuery'));
         }
-
     }, []);
+
+    useEffect(() => {
+        // Fetch and set images when users state updates
+        const fetchImages = async () => {
+            const newImages = {};
+            for (let user of users) {
+                const img = await fetchPicture(user.username);
+                newImages[user.username] = img;
+            }
+            setImages(newImages);
+        };
+
+        fetchImages();
+    }, [users]);
 
     const handleSearch = async (e, input) => {
         if (e != null) {
@@ -59,8 +73,6 @@ function Search() {
                 user1Username,
                 user2Username,
             });
-            // setResults([]);
-            //setSearchMessage('');
             handleSearch(null);
         } catch (error) {
             console.error('Error getting users:', error);
@@ -75,6 +87,16 @@ function Search() {
         setSearchType(type);
         // Perform search when tab changes
         handleSearch(null, query);
+    };
+
+    const fetchPicture = async (user) => {
+        try {
+            const response = await axios.get(`http://localhost:5000/image/get/${user}`);
+            return response.data.imageUrl;
+        } catch (error) {
+            console.error('Error fetching image:', error);
+            return null;
+        }
     };
 
     return (
@@ -95,17 +117,15 @@ function Search() {
             </div>
             {searchType === 'users' && (
                 <div className="user-list-box">
-                    {usersMessage.length !== 0 && <p>{usersMessage}</p>
-                    }
+                    {usersMessage.length !== 0 && <p>{usersMessage}</p>}
                     <ul className="user-list">
-
                         {users && users.length > 0 && users.map((user) => (
                             <li key={user.username} className="user-item">
-                                <img
+                                {images[user.username] && <img
                                     className="user-avatar"
-                                    src={`https://via.placeholder.com/50?text=${user.username}`}
+                                    src={images[user.username]}
                                     alt={user.name}
-                                />
+                                />}
                                 <div className="user-info">
                                     <h3>
                                         <Link className='name' to={`/profile/${user.username}`}>{user.username}</Link>
@@ -118,17 +138,18 @@ function Search() {
                             </li>
                         ))}
                     </ul>
-                </div>)}
+                </div>
+            )}
             {searchType === 'posts' && (
                 <div>
-                    {usersMessage.length !== 0 && <p>No results found, try looking in posts or another search.</p>
-                    }
+                    {usersMessage.length !== 0 && <p>No results found, try looking in posts or another search.</p>}
                     <ul className="post-list">
                         {posts && posts.length > 0 && posts.map((post) => (
                             <Post key={post.postid} content={post.content} user={post.userid} />
                         ))}
                     </ul>
-                </div>)}
+                </div>
+            )}
             <Routes>
                 <Route path="/profile/:id" element={<Profile />} />
                 <Route path="/messages/:id" element={<Chat />} />
