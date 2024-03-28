@@ -13,6 +13,7 @@ import Home from './Components/Home/Home';
 import Friends from './Components/Friends/Friends';
 import Profile from './Components/User/Profile';
 import Chat from './Components/Messages/Chat';
+import Schedule from './Components/Schedule/Schedule';
 import { ChakraProvider, theme } from '@chakra-ui/react';
 import Search from './Components/Search/Search';
 import "./navbar.css"
@@ -68,6 +69,7 @@ function NavbarComp({ setIsLoggedIn }) {
                     <Route path='/messages' element={<ChakraProvider theme={theme} resetCSS={false}> <Chat /> </ChakraProvider>} />
                     <Route path='/search/*' element={<Search />} />
                     <Route path='/messages/:id' element={<ChakraProvider theme={theme} resetCSS={false}> <Chat /> </ChakraProvider>} />
+                    <Route path='/Schedule' element={<Schedule />} />
                 </Routes>
         </Router>
     );
