@@ -31,12 +31,12 @@ function NavbarComp({ setIsLoggedIn }) {
                 <Navbar.Brand as={Link} to="/" className="ms-auto">
                     <img
                         alt=""
-                        src="/images/logo512.png"
-                        width="30"
-                        height="30"
+                        src="/images/logo.png"
+                        width="50"
+                        height="50"
                         className="d-inline-block align-top"
                     />{' '}
-                    RateMyProfessor
+                    RateMyTutor
                 </Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
