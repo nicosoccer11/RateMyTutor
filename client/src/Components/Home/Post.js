@@ -1,6 +1,6 @@
 
 // const Post = ({ user, content }) => {
-    
+
 
 //     useEffect(() => {
 //         const fetchPicture = async (user) => {
@@ -19,19 +19,19 @@ import axios from 'axios';
 import Comment from './comment';
 import { Avatar } from '@chakra-ui/react';
 
-const Post = ({ user, content,postid,num_likes}) => {
+const Post = ({ user, content, postid, num_likes }) => {
     const [update, setupdate] = useState(false);
     const [numLikes, setNumLikes] = useState(0);
     const [numComment, setcomment] = useState(0);
     const [allcomments, setAllComments] = useState([]);
-    const [image,setImage] = useState("");
+    const [image, setImage] = useState("");
     const [liked, setLiked] = useState(false);
 
     useEffect(() => {
         const fetchPicture = async (user) => {
-        await axios.get(`http://localhost:5000/image/get/${user}`).then((response) => {
-            setImage(response.data.imageUrl);
-        })
+            await axios.get(`http://localhost:5000/image/get/${user}`).then((response) => {
+                setImage(response.data.imageUrl);
+            })
         }
 
         fetchPicture(user);
@@ -45,9 +45,9 @@ const Post = ({ user, content,postid,num_likes}) => {
             }
         };
         fetchNumLikes(postid);
-    }, [postid,update]);
+    }, [postid, update]);
 
-    
+
     useEffect(() => {
         const fetchNumCom = async (postId) => {
             try {
@@ -69,9 +69,9 @@ const Post = ({ user, content,postid,num_likes}) => {
         }
         fetchLiked(postid);
 
-    }, [postid,update]);
+    }, [postid, update]);
 
-    
+
     const submit = async (content) => {
         try {
             const newComment = await axios.post('http://localhost:5000/comments', {
@@ -85,32 +85,36 @@ const Post = ({ user, content,postid,num_likes}) => {
         }
     };
 
-    
+
 
     useEffect(() => {
         const fetchComments = async (postId) => {
             try {
                 const response = await axios.get(`http://localhost:5000/comments/${postId}`);
                 setAllComments(response.data);
+                if (postid === 26) {
+                    console.log("all comments:", postid, response.data);
+                }
+
             } catch (error) {
                 console.error('Error retrieving profile data:', error);
             }
         };
         fetchComments(postid);
-    }, [update,postid]);
+    }, [update, postid]);
 
     function toggleCommentsBox(event) {
         var post = event.target.closest(".post");
         var commentsBox = post.querySelector(".comments-box");
-    
+
         if (commentsBox.style.display === "none" || commentsBox.style.display === "") {
             commentsBox.style.display = "block";
         } else {
             commentsBox.style.display = "none";
         }
     }
-    
-    
+
+
     function submitComment(event) {
         var post = event.target.closest(".post");
         var input = post.querySelector(".comment-input");
@@ -125,8 +129,9 @@ const Post = ({ user, content,postid,num_likes}) => {
     }
 
     const [showAllComments, setShowAllComments] = useState(false);
-    function get_all_comment(event) {
+    function get_all_comment() {
         setShowAllComments(!showAllComments);
+        console.log(showAllComments);
     }
 
     function adjustTextareaHeight(el) {
@@ -138,7 +143,7 @@ const Post = ({ user, content,postid,num_likes}) => {
         if (liked) {
             axios.delete(`http://localhost:5000/likes`, {
                 data: {
-                    postId: postid, 
+                    postId: postid,
                     username: localStorage.getItem('user')
                 }
             });
@@ -165,10 +170,10 @@ const Post = ({ user, content,postid,num_likes}) => {
             <p>{content}</p>
             <div className='info'>
                 <p>{numLikes} Likes</p>
-                <button className= "numcomments" onClick={get_all_comment}>{numComment} Comments</button>
+                <button className="numcomments" onClick={get_all_comment}>{numComment} Comments</button>
             </div>
             <div className="post-actions">
-                <button className= {`like_button ${liked === true ? 'selected': ''}`} onClick={handleLike}>Like</button>
+                <button className={`like_button ${liked === true ? 'selected' : ''}`} onClick={handleLike}>Like</button>
                 <button className='post_button' onClick={toggleCommentsBox}> Comment</button>
             </div>
             <div className="comments-box">
@@ -179,7 +184,7 @@ const Post = ({ user, content,postid,num_likes}) => {
             </div>
             <div className="comments">
                 {allcomments.length !== 0 && showAllComments && allcomments.map((comment, index) => (
-                    <Comment key={comment.commentid} commentid={comment.commentid} postid={postid} content={comment.content} time={comment.time} user = {comment.userid}/>
+                    <Comment key={comment.commentid} commentid={comment.commentid} postid={postid} content={comment.content} time={comment.time} user={comment.userid} />
                 ))}
             </div>
         </div>

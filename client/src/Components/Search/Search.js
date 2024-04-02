@@ -115,7 +115,7 @@ function Search() {
                 <button className={`search-tab ${searchType === 'posts' ? 'active' : ''}`} onClick={() => handleTabChange('posts')}>Posts</button>
             </div>
             {searchType === 'users' && (
-                <div className="user-list-box">
+                <div>
                     {usersMessage.length !== 0 && <p>{usersMessage}</p>}
                     <ul className="user-list">
                         {users && users.length > 0 && users.map((user) => (
@@ -141,7 +141,7 @@ function Search() {
             )}
             {searchType === 'posts' && (
                 <div>
-                    {usersMessage.length !== 0 && <p>No results found, try looking in posts or another search.</p>}
+                    {postsMessage.length !== 0 && <p>{postsMessage}</p>}
                     <ul className="post-list">
                         {posts && posts.length > 0 && posts.map((post) => (
                             <Post key={post.postid} content={post.content} user={post.userid} />
