@@ -20,17 +20,14 @@
     margin-bottom: 10px; /* Add margin between avatar and profile info */
   }
   
-  .profile-info {
+  .profile-card-info {
     width: 100%; /* Ensure profile info takes full width */
   }
   
-  .profile-info h2 {
-    margin-top: 0;
-    margin-bottom: 5px;
-  }
-  
-  .profile-info p {
-    margin: 0;
-    color: #666;
+  .profile-card-info h2,
+  .profile-card-info p {
+    white-space: nowrap; /* This will prevent the text from wrapping */
+    overflow: hidden; /* This will hide any content that overflows */
+    text-overflow: ellipsis; /* This will add an ellipsis (...) to indicate overflow */
   }
   

@@ -23,7 +23,7 @@ const ProfileCard = ({ name, username, email, avatar }) => {
         <Link to="/profile"> 
             <Avatar src={image} name="user" size="md" />
         </Link>
-        <div className="profile-info">
+        <div className="profile-card-info">
             <h2>{name}</h2>
             <p>@{username}</p>
         </div>
