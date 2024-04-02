@@ -1,6 +1,6 @@
 .suggested-users {
     position: fixed;
-    top: 100px;
+    top: 150px;
     right: 20px;
     /* background-color: #f4f4f4; */
     border-radius: 8px;
@@ -22,6 +22,7 @@
     display: flex;
     align-items: center;
     margin-bottom: 10px;
+    font-size: small;
   }
   
   .suggested-users img {
@@ -32,16 +33,18 @@
   }
   
   .suggested-users h3 {
+    font-size: small;
     margin: 0;
   }
   
   .suggested-users p {
     margin: 0;
     color: #666;
+    font-size: small;
   }
   
   .suggested_add_button{
-    margin-left: 40px;
+    margin-left: auto;
     width: 30%;
     height: auto;
     background-color: black;

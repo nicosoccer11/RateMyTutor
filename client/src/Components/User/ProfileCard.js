@@ -26,7 +26,6 @@ const ProfileCard = ({ name, username, email, avatar }) => {
         <div className="profile-info">
             <h2>{name}</h2>
             <p>@{username}</p>
-            <p>{email}</p>
         </div>
         </div>
     );
