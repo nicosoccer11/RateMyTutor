@@ -9,6 +9,8 @@ import { ChakraProvider, theme } from '@chakra-ui/react';
 import ProfileCard from '../User/ProfileCard';
 
 class Friends extends React.Component {
+
+
   constructor(props) {
     super(props);
     this.state = {
@@ -23,6 +25,16 @@ class Friends extends React.Component {
     this.fetchData()
     // this.fetchURLs()
   };
+  deleteFriend = async (friend) => {
+    await axios.post('http://localhost:5000/friends/delete', {
+      user1Username:this.state.username, 
+      user2Username:friend,
+    }).then((response) => {
+      console.log(response.data);
+      this.fetchData();
+    });
+    console.log('Deleted friend:', friend);
+  }
 
   fetchURLs = async (friends) => {
     let URLs = []
@@ -45,8 +57,6 @@ class Friends extends React.Component {
     });
     return URLs
   }
-
-  
 
   fetchData = async () => {
     try {
@@ -83,6 +93,18 @@ class Friends extends React.Component {
     })
     
   };
+  showmenu = (e) => {
+    e.preventDefault();
+    console.log('clicked')
+  };
+  handleDropdownToggle = (index) => {
+    this.setState(prevState => ({
+      dropdownIndex: prevState.dropdownIndex === index ? -1 : index,
+    }));
+  };
+
+  
+  
 
   render() { 
     return (
@@ -102,16 +124,15 @@ class Friends extends React.Component {
                     src={this.state.friend_urls[ind]}
                     alt={friend}
                   />
+  
                 </Link>
                 
                 <div className="friend-info">
                   <h3>
                     {friend}
-                    {/* <button className="message" onClick={() => this.handleSendMessage(friend)}>
-                      <Link to={`/messages/${friend}`}>Message</Link> {/* Use Link component }
-                    </button> */}
                   </h3>
                 </div>
+                <button className='delete' onClick={() => this.deleteFriend(friend)}>X</button>
               </li>
             ))}
           </ul>
@@ -126,19 +147,6 @@ class Friends extends React.Component {
     );
   }
 }
- 
-// export default Friends;
-// const Friends = () => {
-//   const [currentPage, setCurrentPage] = useState(null);
-//   const [otherUser, setOtherUser] = useState(null);
-  
 
-//   // State to hold the list of friends
-//   const [friends, setFriends] = useState([]);
-//   const[username,setUsername]=useState(localStorage.getItem('user'));
-  
-
-  
-// };
 
 export default Friends;
