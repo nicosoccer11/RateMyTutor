@@ -15,6 +15,7 @@ const likeRoutes = require('./routes/likeRoutes');
 const commentRoutes = require('./routes/commentRoutes');
 const qualityRoutes = require('./routes/qualityRoutes');
 const userQualityRoutes = require('./routes/userQualityRoutes');
+const scheduleRoutes = require('./routes/scheduleRoutes');
 //Add Routes here
 
 const app = express();
@@ -47,6 +48,8 @@ app.use(commentRoutes);
 app.use(qualityRoutes);
 // Use the userQuality routes
 app.use(userQualityRoutes);
+// Use the schedule routes
+app.use(scheduleRoutes);
 
 app.listen(5000, () => {
   console.log('Server is running on port 5000');
