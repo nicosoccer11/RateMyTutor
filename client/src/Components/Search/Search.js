@@ -80,9 +80,9 @@ function Search() {
         }
     };
 
-    const handleSendMessage = (friendId) => {
-        console.log(`Sending message to ${friendId}`);
-    };
+    // const handleSendMessage = (friendId) => {
+    //     console.log(`Sending message to ${friendId}`);
+    // };
 
     const handleTabChange = (type) => {
         setSearchType(type);
@@ -129,8 +129,8 @@ function Search() {
                                     <h3>
                                         <Link className='name' to={`/profile/${user.username}`}>{user.username}</Link>
                                         {user.isFriend ?
-                                            <button className="add-friend" onClick={() => handleSendMessage(user.username)}><Link to={`/messages/${user.username}`}>Message</Link></button> :
-                                            <button className="add-friend" onClick={() => handleAddUser(user.username)}>Add Friend</button>
+                                            <Link className='link-button' to={`/messages/${user.username}`}>Message</Link> :
+                                            <button className="link-button" onClick={() => handleAddUser(user.username)}>Add Friend</button>
                                         }
                                     </h3>
                                 </div>

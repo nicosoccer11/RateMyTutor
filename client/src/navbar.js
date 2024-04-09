@@ -54,6 +54,9 @@ function NavbarComp({ setIsLoggedIn }) {
                         <Nav.Link as={Link} to="/search">
                             Search
                         </Nav.Link>
+                        <Nav.Link as={Link} to="/schedule">
+                            Schedule
+                        </Nav.Link>
                     </Nav>
                     <Button variant="outline-danger" onClick={handleLogout}>Logout</Button>
                 </Navbar.Collapse>
@@ -69,7 +72,7 @@ function NavbarComp({ setIsLoggedIn }) {
                     <Route path='/messages' element={<ChakraProvider theme={theme} resetCSS={false}> <Chat /> </ChakraProvider>} />
                     <Route path='/search/*' element={<Search />} />
                     <Route path='/messages/:id' element={<ChakraProvider theme={theme} resetCSS={false}> <Chat /> </ChakraProvider>} />
-                    <Route path='/Schedule' element={<Schedule />} />
+                    <Route path='/schedule' element={<Schedule />} />
                 </Routes>
         </Router>
     );

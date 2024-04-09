@@ -7,7 +7,7 @@ function Reviews({ reviews, user, update, updateValue }) {
 
     const [showCreateReview, setShowCreateReview] = useState(false);
     const [visibleReviews, setVisibleReviews] = useState(5);
-    
+
 
     const handleNewReview = async (score, paragraph) => {
         try {
@@ -68,8 +68,6 @@ function Reviews({ reviews, user, update, updateValue }) {
             ) : (
                 <p>No reviews available.</p>
             )}
-
-
         </div>
     );
 }

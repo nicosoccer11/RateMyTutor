@@ -70,12 +70,6 @@
   border-bottom: 1px solid #ccc;
 }
 
-.add-friend {
-  position: absolute;
-  right: 10px;
-  border-radius: 10px;
-}
-
 .user-avatar {
   width: 50px;
   height: 50px;
@@ -111,6 +105,13 @@
 
 .name {
   max-width: 200px;
+  color: inherit;
+  text-decoration: none;
+  color: #333;
+}
+
+.name:hover {
+  text-decoration: underline;
 }
 
 .search-tabs {
@@ -134,4 +135,23 @@
 
 .search-tab:not(:last-child) {
   margin-right: 5px;
+}
+
+.link-button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  position: absolute;
+  right: 10px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: normal;
+}
+
+.link-button:hover {
+  background-color: #0056b3;
 }
