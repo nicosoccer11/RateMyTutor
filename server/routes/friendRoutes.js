@@ -14,7 +14,7 @@ router.post('/friends/decline', declineFriendRequest);
 // Route to get the list of incoming friend requests
 router.post('/friends/requests', getFriendRequests);
 
-// Route to add a new friend
+// Route to get all accepted friends
 router.post('/friends/get', getFriends);
 
 // Route to remove a friend

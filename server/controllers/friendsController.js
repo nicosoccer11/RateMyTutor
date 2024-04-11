@@ -72,23 +72,31 @@ const declineFriendRequest = async (req, res) => {
   }
 };
 
-// Function to get all the friend requests for a user
+// Function to get all the friend requests for a user, including requester's first and last name
 const getFriendRequests = async (req, res) => {
   const { username } = req.body; // The username of the user checking their friend requests
 
   try {
     // Query to find where the user is the target of a friend request
-    const result = await db.query(
-      'SELECT User1ID as requester FROM friends WHERE User2ID = $1 AND status = \'requested\'',
-      [username]
-    );
+    // Joining the 'users' table to get the first and last name of the requester
+    const query = `
+      SELECT u.username AS requester, u.firstname, u.lastname
+      FROM friends f
+      JOIN users u ON f.User1ID = u.username
+      WHERE f.User2ID = $1 AND f.status = 'requested'
+    `;
+    const result = await db.query(query, [username]);
 
     if (result.rows.length === 0) {
       return res.json({ message: 'You have no friend requests at this time.' });
     }
 
-    // Extracting the usernames of the requesters
-    const friendRequests = result.rows.map(row => row.requester);
+    // Extracting the usernames and names of the requesters
+    const friendRequests = result.rows.map(row => ({
+      username: row.requester,
+      firstName: row.firstname,
+      lastName: row.lastname
+    }));
 
     res.json({
       message: 'Friend requests retrieved successfully.',
@@ -99,7 +107,6 @@ const getFriendRequests = async (req, res) => {
     res.status(500).send('Server Error');
   }
 };
-
 
 const deleteFriend = async (req, res) => {
   const { user1Username, user2Username } = req.body;
