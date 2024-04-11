@@ -36,29 +36,26 @@ const sendMeeting = async (req, res) => {
 };
 
 const respondToRequest = async (req, res) => {
-  const { sender, receiver } = req.body;
+  const {meeting_id} = req.body;
   const {code} = req.params;
-  //console.log(code);
   try {
     // Check if the meeting request exists
     const existingRequest = await db.query(
-      'SELECT * FROM schedule WHERE sender = $1 AND receiver = $2 AND status = 2',
-      [sender, receiver]
+      'SELECT * FROM schedule WHERE schedule_id = $1',
+      [meeting_id]
     );
 
     // If the meeting request exists
     if (existingRequest.rows.length > 0) {
-      const requestId = existingRequest.rows[0].schedule_id;
       if (code === '0') { // If code is 0, delete the meeting request
-        await db.query('DELETE FROM schedule WHERE schedule_id = $1', [requestId]); // TODO: Change this later maybe
+        await db.query('DELETE FROM schedule WHERE schedule_id = $1', [meeting_id]); 
         return res.json({
-          message: `Meeting request with ID ${requestId} deleted successfully.`,
+          message: `Meeting request with ID ${meeting_id} deleted successfully.`,
         });
       } else if (code === '1') { // If code is 1, accept the meeting request
-        console.log("made in if code = 1");
-        await db.query('UPDATE schedule SET status = 1 WHERE schedule_id = $1', [requestId]);
+        await db.query('UPDATE schedule SET status = 1 WHERE schedule_id = $1', [meeting_id]);
         return res.json({
-          message: `Meeting request with ID ${requestId} accepted successfully.`,
+          message: `Meeting request with ID ${meeting_id} accepted successfully.`,
         });
       } else {
         return res.status(400).send('Invalid code provided.');
