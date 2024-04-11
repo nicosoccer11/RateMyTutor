@@ -143,15 +143,21 @@ const deleteFriend = async (req, res) => {
   }
 };
 
-// Function to get all the friends for user
+// Function to get all the accepted friends for a user
 const getFriends = async (req, res) => {
   const { username } = req.body; // Assuming you're getting the username in the request body
   console.log('Username:', username);
   try {
-    // Getting all the friends where the user is user1id
-    const friends1 = await db.query(`SELECT user2id AS friend FROM friends WHERE user1id = $1`, [username]);
-    // Corrected: Now getting all the friends where the user is user2id
-    const friends2 = await db.query(`SELECT user1id AS friend FROM friends WHERE user2id = $1`, [username]);
+    // Getting all the friends where the user is user1id and the friendship has been accepted
+    const friends1 = await db.query(
+      `SELECT user2id AS friend FROM friends WHERE user1id = $1 AND status = 'accepted'`,
+      [username]
+    );
+    // Getting all the friends where the user is user2id and the friendship has been accepted
+    const friends2 = await db.query(
+      `SELECT user1id AS friend FROM friends WHERE user2id = $1 AND status = 'accepted'`,
+      [username]
+    );
 
     // Combine both friend lists and remove duplicates
     const friends = [...friends1.rows.map(row => row.friend), ...friends2.rows.map(row => row.friend)];
@@ -170,6 +176,7 @@ const getFriends = async (req, res) => {
     }
   }
 };
+
 
 module.exports = {
   addFriend,
