@@ -36,3 +36,56 @@
     background-color: #0056b3;
   }
   
+  .pending-requests {
+    margin-top: 20px;
+  }
+  
+  .request-toggle {
+    margin-bottom: 10px;
+  }
+  
+  .request-toggle button {
+    margin-right: 10px;
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 14px;
+  }
+  
+  .request-toggle button:hover {
+    background-color: #0056b3;
+  }
+  
+  .pending-requests ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .pending-requests li {
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .pending-requests li span {
+    margin-right: 10px;
+  }
+  
+  .pending-requests li button {
+    margin-left: 10px;
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 14px;
+  }
+  
+  .pending-requests li button:hover {
+    background-color: #0056b3;
+  }

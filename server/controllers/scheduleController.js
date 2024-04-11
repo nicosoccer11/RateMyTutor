@@ -80,13 +80,13 @@ const respondToRequest = async (req, res) => {
 // TODO: do error checking for when there is nothing there (so it does not return null)
 const getMeetingRequests = async (req, res) => {
   const { username } = req.body; 
-  console.log(username);
+  //console.log(req.body);
   try {
     const meetingRequests = await db.query(
       'SELECT * FROM schedule WHERE receiver = $1 AND status = 2',
       [username]
     );
-    console.log(meetingRequests);
+    //console.log(meetingRequests);
     res.json({
       message: 'Meeting requests retrieved successfully',
       meetingRequests: meetingRequests.rows
@@ -169,13 +169,13 @@ const hadMeeting = async (req, res) => {
 // Function to get all the outgoing requests of student
 const getOutgoingRequests = async (req, res) => {
   const { username } = req.body; 
-  console.log(username);
+  //console.log(username);
   try {
     const outgoingRequests = await db.query(
       'SELECT * FROM schedule WHERE sender = $1',
       [username]
     );
-    console.log(outgoingRequests.rows);
+    //console.log(outgoingRequests.rows);
     res.json({
       message: 'Outgoing requests retrieved successfully',
       outgoingRequests: outgoingRequests.rows

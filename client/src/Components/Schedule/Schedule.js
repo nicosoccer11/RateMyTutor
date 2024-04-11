@@ -8,22 +8,25 @@ import 'react-dropdown/style.css';
 
 
 function Schedule() {
-    const [meetingRequests, setMeetingRequests] = useState([]);
+    const [incomingRequests, setIncomingRequests] = useState([]);
+    const [outgoingRequests, setOutgoingRequests] = useState([]);
     const [selectedUser, setSelectedUser] = useState(null);
     const [selectedDate, setSelectedDate] = useState(null);
     const [friends, setFriends] = useState([]);
     const [meetingDuration, setMeetingDuration] = useState(30);
+    const [showIncoming, setShowIncoming] = useState(true);
 
     const username = localStorage.getItem('user');
 
     useEffect(() => {
         console.log(selectedDate);
         if (username) {
-            fetchMeetingRequests(username);
+            fetchOutgoing();
+            fetchIncoming();
             getFriends();
         }
     }, [username]);
-    
+
     const getFriends = async () => {
         try {
             const response = await axios.post('http://localhost:5000/friends/get', {
@@ -36,14 +39,27 @@ function Schedule() {
     }
 
 
-    const fetchMeetingRequests = async (username) => {
+    const fetchOutgoing = async () => {
         try {
-            const response = await axios.get('http://localhost:5000/schedule/get', {
-                params: { username: username }
+            const response = await axios.post('http://localhost:5000/schedule/OutgoingRequests', {
+                username: username
             });
-            setMeetingRequests(response.data.meetingRequests);
+            setOutgoingRequests(response.data.outgoingRequests);
+            console.log("outgoing", response.data.outgoingRequests);
         } catch (error) {
-            console.error('Error fetching meeting requests:', error);
+            console.error('Error fetching outgoing meeting requests:', error);
+        }
+    };
+
+    const fetchIncoming = async () => {
+        try {
+            const response = await axios.post('http://localhost:5000/schedule/get', {
+                username: username
+            });
+            setIncomingRequests(response.data.meetingRequests);
+            console.log("incoming", response.data.meetingRequests);
+        } catch (error) {
+            console.error('Error fetching incoming meeting requests:', error);
         }
     };
 
@@ -52,7 +68,7 @@ function Schedule() {
             await axios.post(`http://localhost:5000/schedule/respond/${code}`, {
                 scheduleId: scheduleId
             });
-            fetchMeetingRequests(username);
+            fetchIncoming();
         } catch (error) {
             console.error('Error responding to meeting request:', error);
         }
@@ -64,12 +80,32 @@ function Schedule() {
                 const response = await axios.post('http://localhost:5000/schedule/post', {
                     user1Username: username,
                     user2Username: selectedUser,
-                    timeFrame: selectedDate
+                    start_time: selectedDate,
+                    minutes: meetingDuration
                 });
-                console.log(username, selectedUser, selectedDate);
+                console.log("Creating request:", username, selectedUser, selectedDate, meetingDuration);
             } catch (error) {
                 console.error('Error sending meeting requests:', error);
             }
+        }
+    };
+
+    const handleAcceptRequest = async (requestId) => {
+        try {
+            await axios.post(`http://localhost:5000/schedule/respond/1`, {
+            });
+            fetchIncoming();
+        } catch (error) {
+            console.error('Error accepting request:', error);
+        }
+    };
+
+    const handleDeclineRequest = async (requestId) => {
+        try {
+            await axios.post(`http://localhost:5000/schedule/respond/0`);
+            fetchIncoming();
+        } catch (error) {
+            console.error('Error declining request:', error);
         }
     };
 
@@ -107,6 +143,36 @@ function Schedule() {
                 <div className="button-container">
                     <button className='button' onClick={handleSendRequest}>Send Request</button>
                 </div>
+            </div>
+            <div className="pending-requests">
+                <h2>Pending Meeting Requests</h2>
+                <div className="request-toggle">
+                    <button onClick={() => setShowIncoming(true)}>Incoming</button>
+                    <button onClick={() => setShowIncoming(false)}>Outgoing</button>
+                </div>
+                {showIncoming ? (
+                    <ul>
+                        {incomingRequests.map(request => (
+                            <li key={request.schedule_id}>
+                                <span>{request.sender}</span>
+                                <span>Start: {request.start_time}</span>
+                                <span>End: {request.end_time}</span>
+                                <button onClick={() => handleAcceptRequest(request.schedule_id)}>Accept</button>
+                                <button onClick={() => handleDeclineRequest(request.schedule_id)}>Decline</button>
+                            </li>
+                        ))}
+                    </ul>
+                ) : (
+                    <ul>
+                        {outgoingRequests.map(request => (
+                            <li key={request.schedule_id}>
+                                <span>{request.receiver}</span>
+                                <span>Start: {request.start_time}</span>
+                                <span>End: {request.end_time}</span>
+                            </li>
+                        ))}
+                    </ul>
+                )}
             </div>
         </div>
     );
