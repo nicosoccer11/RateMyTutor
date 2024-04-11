@@ -1,9 +1,18 @@
 const express = require('express');
-const { addFriend, getFriends,deleteFriend } = require('../controllers/friendsController');
+const { addFriend, acceptFriendRequest, declineFriendRequest, getFriendRequests, getFriends,deleteFriend } = require('../controllers/friendsController');
 const router = express.Router();
 
 // Route to add a new friend
 router.post('/friends/add', addFriend);
+
+// Route to accept a friend request
+router.post('/friends/accept', acceptFriendRequest);
+
+// Route to decline a friend request
+router.post('/friends/decline', declineFriendRequest);
+
+// Route to get the list of incoming friend requests
+router.post('/friends/requests', getFriendRequests);
 
 // Route to add a new friend
 router.post('/friends/get', getFriends);
