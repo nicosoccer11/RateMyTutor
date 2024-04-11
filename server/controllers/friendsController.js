@@ -1,43 +1,105 @@
 const db = require('../config/db');
 
+// Function to send a friend request to another user
 const addFriend = async (req, res) => {
   const { user1Username, user2Username } = req.body;
 
-  // Validate that user1Username and user2Username are different
   if (user1Username === user2Username) {
     return res.status(400).send('Users cannot be friends with themselves.');
   }
 
   try {
-    // Check if users already are friends to avoid duplicates
-    const existingFriendship = await db.query(
+    const existingRelationship = await db.query(
       'SELECT * FROM friends WHERE (User1ID = $1 AND User2ID = $2) OR (User1ID = $2 AND User2ID = $1)',
       [user1Username, user2Username]
     );
 
-    if (existingFriendship.rows.length > 0) {
-      return res.status(400).send('These users are already friends.');
+    if (existingRelationship.rows.length > 0) {
+      return res.status(400).send('A friend request is already pending or you are already friends.');
     }
 
-    // Insert friendship into the friends table
-    const newFriendship = await db.query(
-      'INSERT INTO friends (User1ID, User2ID) VALUES ($1, $2) RETURNING *',
+    await db.query(
+      'INSERT INTO friends (User1ID, User2ID, status) VALUES ($1, $2, \'requested\') RETURNING *',
       [user1Username, user2Username]
     );
 
+    res.json({ message: 'Friend request sent successfully.' });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+};
+
+// Function to accept a friend request
+const acceptFriendRequest = async (req, res) => {
+  const { user1Username, user2Username } = req.body; // Assuming user1Username sent the request and user2Username is accepting
+
+  try {
+    const result = await db.query(
+      'UPDATE friends SET status = \'accepted\' WHERE User1ID = $1 AND User2ID = $2 AND status = \'requested\' RETURNING *',
+      [user1Username, user2Username]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(400).send('Friend request not found or already accepted.');
+    }
+
+    res.json({ message: 'Friend request accepted successfully', friendship: result.rows[0] });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+};
+
+// Function to decline a friend request
+const declineFriendRequest = async (req, res) => {
+  const { user1Username, user2Username } = req.body; // Assuming user1Username sent the request and user2Username is declining
+
+  try {
+    const result = await db.query(
+      'DELETE FROM friends WHERE ((User1ID = $1 AND User2ID = $2) OR (User1ID = $2 AND User2ID = $1)) AND status = \'requested\'',
+      [user1Username, user2Username]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(400).send('Friend request not found or already handled.');
+    }
+
+    res.json({ message: `Friend request from ${user1Username} to ${user2Username} declined successfully.` });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+};
+
+// Function to get all the friend requests for a user
+const getFriendRequests = async (req, res) => {
+  const { username } = req.body; // The username of the user checking their friend requests
+
+  try {
+    // Query to find where the user is the target of a friend request
+    const result = await db.query(
+      'SELECT User1ID as requester FROM friends WHERE User2ID = $1 AND status = \'requested\'',
+      [username]
+    );
+
+    if (result.rows.length === 0) {
+      return res.json({ message: 'You have no friend requests at this time.' });
+    }
+
+    // Extracting the usernames of the requesters
+    const friendRequests = result.rows.map(row => row.requester);
+
     res.json({
-      message: 'Friendship added successfully',
-      friendship: newFriendship.rows[0]
+      message: 'Friend requests retrieved successfully.',
+      friendRequests: friendRequests
     });
   } catch (err) {
     console.error(err.message);
-    if (err.code === "23503") { // PostgreSQL foreign key violation error code
-      res.status(400).send('One or both users do not exist.');
-    } else {
-      res.status(500).send('Server Error');
-    }
+    res.status(500).send('Server Error');
   }
 };
+
 
 const deleteFriend = async (req, res) => {
   const { user1Username, user2Username } = req.body;
@@ -111,6 +173,9 @@ const getFriends = async (req, res) => {
 
 module.exports = {
   addFriend,
+  acceptFriendRequest,
+  declineFriendRequest,
+  getFriendRequests,
   getFriends,
   deleteFriend,
 };
