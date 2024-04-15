@@ -12,13 +12,13 @@ const sendMeeting = async (req, res) => {
   if (user1Username === user2Username) {
     return res.status(400).send('Users cannot schedule with themselves.');
   }
-
   try {
     let endTime = new Date(start_time);
+    let startTime = new Date(start_time);
     endTime.setMinutes(endTime.getMinutes() + minutes);
     const newScheduleRequest = await db.query(
       'INSERT INTO schedule (sender, receiver, start_time, status, end_time) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-      [user1Username, user2Username, start_time, 2, endTime]
+      [user1Username, user2Username, startTime, 2, endTime]
     );
 
     res.json({
@@ -101,14 +101,13 @@ const getMeetingRequests = async (req, res) => {
 
 // Function to get all the schedules meetings for tutor
 const getAcceptedRequests = async (req, res) => {
-  const { username } = req.body; 
-  console.log(username);
+  const { username } = req.body;
   try {
     const meetingRequests = await db.query(
-      'SELECT * FROM schedule WHERE receiver = $1 AND status = ',
-      [username]
+      'SELECT * FROM schedule WHERE receiver = $1 AND status = $2',
+      [username, 1]
     );
-    console.log(meetingRequests);
+    // console.log(meetingRequests);
     res.json({
       message: 'Scheduled meetings retrieved successfully',
       meetingRequests: meetingRequests.rows
@@ -169,7 +168,7 @@ const getOutgoingRequests = async (req, res) => {
   //console.log(username);
   try {
     const outgoingRequests = await db.query(
-      'SELECT * FROM schedule WHERE sender = $1',
+      'SELECT * FROM schedule WHERE sender = $1 AND status = 2',
       [username]
     );
     //console.log(outgoingRequests.rows);

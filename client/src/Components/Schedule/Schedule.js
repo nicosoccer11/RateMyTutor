@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { BrowserRouter as Router, Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom';
 import './Schedule.css';
 import { DatePicker } from 'rsuite';
 import "rsuite/DatePicker/styles/index.css";
@@ -7,25 +8,79 @@ import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
 
 
+
 function Schedule() {
     const [incomingRequests, setIncomingRequests] = useState([]);
     const [outgoingRequests, setOutgoingRequests] = useState([]);
+    const [meetings, setMeetings] = useState([]);
     const [selectedUser, setSelectedUser] = useState(null);
     const [selectedDate, setSelectedDate] = useState(null);
     const [friends, setFriends] = useState([]);
     const [meetingDuration, setMeetingDuration] = useState(30);
-    const [showIncoming, setShowIncoming] = useState(true);
+    const [images, setImages] = useState({});
 
     const username = localStorage.getItem('user');
 
     useEffect(() => {
-        console.log(selectedDate);
         if (username) {
             fetchOutgoing();
             fetchIncoming();
+            fetchCurrent();
             getFriends();
         }
     }, [username]);
+
+    useEffect(() => {
+        const fetchImages = async () => {
+            const newImages = {};
+            for (let user of incomingRequests) {
+                const img = await fetchPicture(user.sender);
+                newImages[user.sender] = img;
+            }
+            for (let user of outgoingRequests) {
+                const img = await fetchPicture(user.receiver);
+                newImages[user.receiver] = img;
+            }
+            for (let user of meetings) {
+                const img = await fetchPicture(user.sender);
+                newImages[user.sender] = img;
+            }
+            setImages(newImages);
+        };
+
+        fetchImages();
+    }, [incomingRequests, outgoingRequests, meetings]);
+
+    const fetchPicture = async (user) => {
+        try {
+            const response = await axios.get(`http://localhost:5000/image/get/${user}`);
+            return response.data.imageUrl;
+        } catch (error) {
+            console.error('Error fetching image:', error);
+            return null;
+        }
+    };
+
+    const formatDateTime = (dateTimeString) => {
+        const options = {
+            year: 'numeric',
+            month: 'numeric',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+        };
+        const date = new Date(dateTimeString);
+        return date.toLocaleString(undefined, options);
+    };
+
+    const formatDateTimeHours = (dateTimeString) => {
+        const options = {
+            hour: 'numeric',
+            minute: 'numeric',
+        };
+        const date = new Date(dateTimeString);
+        return date.toLocaleString(undefined, options);
+    };
 
     const getFriends = async () => {
         try {
@@ -38,14 +93,12 @@ function Schedule() {
         }
     }
 
-
     const fetchOutgoing = async () => {
         try {
             const response = await axios.post('http://localhost:5000/schedule/OutgoingRequests', {
                 username: username
             });
             setOutgoingRequests(response.data.outgoingRequests);
-            console.log("outgoing", response.data.outgoingRequests);
         } catch (error) {
             console.error('Error fetching outgoing meeting requests:', error);
         }
@@ -57,20 +110,20 @@ function Schedule() {
                 username: username
             });
             setIncomingRequests(response.data.meetingRequests);
-            console.log("incoming", response.data.meetingRequests);
         } catch (error) {
             console.error('Error fetching incoming meeting requests:', error);
         }
     };
 
-    const handleResponse = async (scheduleId, code) => {
+    const fetchCurrent = async () => {
         try {
-            await axios.post(`http://localhost:5000/schedule/respond/${code}`, {
-                scheduleId: scheduleId
+            const response = await axios.post('http://localhost:5000/schedule/get/scheduledRequests', {
+                username: username
             });
-            fetchIncoming();
+            setMeetings(response.data.meetingRequests);
+            console.log("current", response.data.meetingRequests);
         } catch (error) {
-            console.error('Error responding to meeting request:', error);
+            console.error('Error fetching outgoing meeting requests:', error);
         }
     };
 
@@ -83,7 +136,10 @@ function Schedule() {
                     start_time: selectedDate,
                     minutes: meetingDuration
                 });
-                console.log("Creating request:", username, selectedUser, selectedDate, meetingDuration);
+                // console.log("Creating request:", username, selectedUser, selectedDate, meetingDuration);
+                if (response) {
+                    fetchOutgoing();
+                }
             } catch (error) {
                 console.error('Error sending meeting requests:', error);
             }
@@ -93,8 +149,10 @@ function Schedule() {
     const handleAcceptRequest = async (requestId) => {
         try {
             await axios.post(`http://localhost:5000/schedule/respond/1`, {
+                meeting_id: requestId
             });
             fetchIncoming();
+            fetchCurrent();
         } catch (error) {
             console.error('Error accepting request:', error);
         }
@@ -102,8 +160,11 @@ function Schedule() {
 
     const handleDeclineRequest = async (requestId) => {
         try {
-            await axios.post(`http://localhost:5000/schedule/respond/0`);
+            await axios.post(`http://localhost:5000/schedule/respond/0`, {
+                meeting_id: requestId
+            });
             fetchIncoming();
+            fetchOutgoing();
         } catch (error) {
             console.error('Error declining request:', error);
         }
@@ -111,7 +172,7 @@ function Schedule() {
 
     return (
         <div>
-            <h2>Schedule Request</h2>
+            <h2 className='header'>Schedule Request</h2>
             <div className="schedule-container">
                 <div className="user-select">
                     <Dropdown
@@ -131,49 +192,77 @@ function Schedule() {
                         placeholder="Select Duration"
                     />
                 </div>
-                <div className="date-picker">
-                    <DatePicker
-                        className='datepicker'
-                        value={selectedDate}
-                        onChange={(date) => setSelectedDate(date)}
-                        format="MM/dd/yyyy HH:mm"
-                        placeholder="Select Date"
-                    />
-                </div>
+                <DatePicker
+                    className='datepicker'
+                    value={selectedDate}
+                    onChange={(date) => setSelectedDate(date)}
+                    format="MM/dd/yyyy hh:mm aa"
+                    placeholder="Select Date"
+                    showMeridian
+                />
                 <div className="button-container">
                     <button className='button' onClick={handleSendRequest}>Send Request</button>
                 </div>
             </div>
+            <div className='current'>
+                <h2>Scheduled Meetings</h2>
+                <ul>
+                    {meetings.map(request => (
+                        <li key={request.schedule_id}>
+                            <div className="user-info">
+                                {images[request.sender] && (
+                                    <img
+                                        className="user-avatar"
+                                        src={images[request.sender]}
+                                        alt={request.sender}
+                                    />
+                                )}
+                                <span><Link className='name' to={`/profile/${request.sender}`}>{request.sender}</Link></span>
+                            </div>
+                            <span>{formatDateTime(request.start_time)}-{formatDateTimeHours(request.end_time)}</span>
+                            <button onClick={() => handleDeclineRequest(request.schedule_id)}>Remove</button>
+                        </li>
+                    ))}
+                </ul>
+            </div>
             <div className="pending-requests">
-                <h2>Pending Meeting Requests</h2>
-                <div className="request-toggle">
-                    <button onClick={() => setShowIncoming(true)}>Incoming</button>
-                    <button onClick={() => setShowIncoming(false)}>Outgoing</button>
-                </div>
-                {showIncoming ? (
+                <div className="incoming-requests">
+                    <h2>Incoming Meeting Requests</h2>
                     <ul>
                         {incomingRequests.map(request => (
                             <li key={request.schedule_id}>
-                                <span>{request.sender}</span>
-                                <span>Start: {request.start_time}</span>
-                                <span>End: {request.end_time}</span>
+                                {images[request.sender] && <img
+                                    className="user-avatar"
+                                    src={images[request.sender]}
+                                    alt={request.sender}
+                                />}
+                                <span><Link className='name' to={`/profile/${request.sender}`}>{request.sender}</Link></span>
+                                <span>{formatDateTime(request.start_time)}-{formatDateTimeHours(request.end_time)}</span>
                                 <button onClick={() => handleAcceptRequest(request.schedule_id)}>Accept</button>
                                 <button onClick={() => handleDeclineRequest(request.schedule_id)}>Decline</button>
                             </li>
                         ))}
                     </ul>
-                ) : (
+                </div>
+                <div className="outgoing-requests">
+                    <h2>Outgoing Meeting Requests</h2>
                     <ul>
                         {outgoingRequests.map(request => (
                             <li key={request.schedule_id}>
-                                <span>{request.receiver}</span>
-                                <span>Start: {request.start_time}</span>
-                                <span>End: {request.end_time}</span>
+                                {images[request.receiver] && <img
+                                    className="user-avatar"
+                                    src={images[request.receiver]}
+                                    alt={request.receiver}
+                                />}
+                                <span><Link className='name' to={`/profile/${request.receiver}`}>{request.receiver}</Link></span>
+                                <span>{formatDateTime(request.start_time)}-{formatDateTimeHours(request.end_time)}</span>
+                                <button onClick={() => handleDeclineRequest(request.schedule_id)}>Remove</button>
                             </li>
                         ))}
                     </ul>
-                )}
+                </div>
             </div>
+
         </div>
     );
 }
