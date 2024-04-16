@@ -1,5 +1,5 @@
 const express = require('express');
-const {getMeetingRequests,sendMeeting,respondToRequest,hadMeeting,getOutgoingRequests,getAcceptedRequests} = require('../controllers/scheduleController');
+const {getMeetingRequests,sendMeeting,respondToRequest,hadMeeting,getOutgoingRequests,getAcceptedSentRequests,getAcceptedReceivedRequests} = require('../controllers/scheduleController');
 const router = express.Router();
 
 
@@ -22,5 +22,8 @@ router.post('/schedule/flag', hadMeeting);
 router.post('/schedule/OutgoingRequests', getOutgoingRequests);
 
 // route to get tutor's scheduled meetings
-router.post('/schedule/get/scheduledRequests', getAcceptedRequests);
+router.post('/schedule/get/scheduledRequests', getAcceptedReceivedRequests);
+
+// route to get students's scheduled meetings
+router.post('/schedule/get/scheduledRequests', getAcceptedSentRequests);
 module.exports = router;
