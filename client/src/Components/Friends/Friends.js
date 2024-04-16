@@ -133,7 +133,7 @@ class Friends extends React.Component {
             ))}
           </ul>
         </div>
-        {this.state.otherUser && <Chat friend={this.state.otherUser}/>}
+        {(this.state.otherUser || this.state.friends.length === 1) && <Chat friend={this.state.otherUser ? this.state.otherUser : this.state.friends[0]}/>}
       </div>
         <Routes>
           <Route path="/profile/:id" element={<Profile />} />
