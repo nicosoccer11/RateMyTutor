@@ -184,6 +184,26 @@ const getFriends = async (req, res) => {
   }
 };
 
+const checkFriendshipStatus = async (req, res) => {
+  const { user1Username, user2Username } = req.params;
+
+  try {
+    const result = await db.query(
+      'SELECT status FROM friends WHERE (User1ID = $1 AND User2ID = $2) OR (User1ID = $2 AND User2ID = $1)',
+      [user1Username, user2Username]
+    );
+
+    if (result.rows.length > 0) {
+      const status = result.rows[0].status;
+      res.json({ status });
+    } else {
+      res.json({ status: 'none' }); // No request or friendship exists
+    }
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+};
 
 module.exports = {
   addFriend,
@@ -192,4 +212,5 @@ module.exports = {
   getFriendRequests,
   getFriends,
   deleteFriend,
+  checkFriendshipStatus
 };
