@@ -7,9 +7,9 @@ import Chat from '../Messages/Chat';
 import { Flex } from '@chakra-ui/react';
 import { ChakraProvider, theme } from '@chakra-ui/react';
 import ProfileCard from '../User/ProfileCard';
+import RequestFriends from './RequestFriends';
 
 class Friends extends React.Component {
-
 
   constructor(props) {
     super(props);
@@ -18,11 +18,13 @@ class Friends extends React.Component {
                     friends: [],
                     username: localStorage.getItem('user'),
                     friend_urls: [],
+                    friend_requests: [],
                  };
   }
 
   componentDidMount() {
     this.fetchData()
+    this.getFriendRequests()
     // this.fetchURLs()
   };
   deleteFriend = async (friend) => {
@@ -44,14 +46,6 @@ class Friends extends React.Component {
       })
     }
     
-    // let urls = []
-    // url_promise.then((result) => {urls.concat(result)})
-    // console.log(urls)
-    // let url_dict = {}
-    // friends.forEach((el, ind) => {
-    //   url_dict[el] = URLs[ind];
-    // });
-    // console.log(url_dict);
     this.setState({
       friend_urls: URLs,
     });
@@ -67,14 +61,6 @@ class Friends extends React.Component {
         const data = response.data; // Assuming the data returned is an array of friends
         const first_friend = data.friends[0]
         this.fetchURLs(data.friends);
-        // let urls = []
-        // url_promise.then((result) => {urls.concat(result)})
-        // console.log(urls)
-        // let url_dict = {}
-        // data.friends.forEach((el, ind) => {
-        //   url_dict[el] = urls[ind];
-        // });
-        // console.log(url_dict);
         this.setState({
           friends: data.friends,
           otherUser: first_friend,
@@ -103,8 +89,26 @@ class Friends extends React.Component {
     }));
   };
 
-  
-  
+  getFriendRequests = async () => {
+    try {
+      let username = this.state.username;
+      await axios.post('http://localhost:5000/friends/requests', {
+        username,
+      }).then((response) => {
+        const data = response.data; // Assuming the data returned is an array of friends
+        this.setState({
+          friend_requests:  data.friendRequests,
+        }, () => {
+          console.log('Friend requests:', this.state.friend_requests); // <-- Updated state here
+        });
+      });
+      
+    } catch (error) {
+      // Handle error, such as setting an error state
+      console.error('Error fetching data:', error);
+    }
+  }
+
 
   render() { 
     return (
@@ -143,6 +147,7 @@ class Friends extends React.Component {
           <Route path="/profile/:id" element={<Profile />} />
           <Route path="/messages/:id" element={<Chat/>} />
         </Routes>
+        {this.state.friend_requests && this.state.friend_requests.length > 0 && <RequestFriends users = {this.state.friend_requests} />}
         </>
     );
   }

@@ -104,8 +104,8 @@ const getAcceptedRequests = async (req, res) => {
   const { username } = req.body;
   try {
     const meetingRequests = await db.query(
-      'SELECT * FROM schedule WHERE receiver = $1 AND status = $2',
-      [username, 1]
+      'SELECT * FROM schedule WHERE (sender = $1 OR receiver = $1) AND status = 1',
+      [username]
     );
     // console.log(meetingRequests);
     res.json({
