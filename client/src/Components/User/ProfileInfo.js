@@ -290,8 +290,9 @@ function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue, set
           <div className="center">
             {username !== localStorage.getItem('user') ? (
               <Link className="schedule-button" to={`/schedule/?q=${username}`}>Schedule Meeting</Link>
-            ) : (<button className='edit-button' onClick={toggleEdit}>Edit</button>)}
-            <Button className='logout' variant="outline-danger" onClick={handleLogout}>Logout</Button>
+            ) : (<div><button className='edit-button' onClick={toggleEdit}>Edit</button>
+              <Button className='logout' variant="outline-danger" onClick={handleLogout}>Logout</Button></div>)}
+
           </div>
         </div>
         <div className="section">
