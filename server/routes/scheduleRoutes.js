@@ -22,8 +22,8 @@ router.post('/schedule/flag', hadMeeting);
 router.post('/schedule/OutgoingRequests', getOutgoingRequests);
 
 // route to get tutor's scheduled meetings
-router.post('/schedule/get/scheduledRequests', getAcceptedReceivedRequests);
+router.post('/schedule/get/scheduledRequest', getAcceptedReceivedRequests);
 
 // route to get students's scheduled meetings
-router.post('/schedule/get/scheduledRequests', getAcceptedSentRequests);
+router.post('/schedule/get/sentRequests', getAcceptedSentRequests);
 module.exports = router;
