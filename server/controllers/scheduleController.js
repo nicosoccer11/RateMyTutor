@@ -125,7 +125,8 @@ const getAcceptedRequests = async (req, res) => {
 
 // Function to check if a student/user had a meeting with the tutor before and if it has passed
 const hadMeeting = async (req, res) => {
-  const { student, tutor } = req.body; 
+  const { student, tutor } = req.body;
+  console.log(student, tutor);
   try {
     // Fetch all meetings between the student and tutor
     const meetings = await db.query(
@@ -135,6 +136,7 @@ const hadMeeting = async (req, res) => {
 
     // Check if any meeting has passed
     let hadMeeting = false;
+    let currentDate = new Date();
     for (const meeting of meetings.rows) {
       if (currentDate >= meeting.end_time) { 
         hadMeeting = true;

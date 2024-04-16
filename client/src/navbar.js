@@ -73,6 +73,7 @@ function NavbarComp({ setIsLoggedIn }) {
                     <Route path='/search/*' element={<Search />} />
                     <Route path='/messages/:id' element={<ChakraProvider theme={theme} resetCSS={false}> <Chat /> </ChakraProvider>} />
                     <Route path='/schedule' element={<Schedule />} />
+                    {/* <Route path='/schedule/:id' element={<Schedule />} /> */}
                 </Routes>
         </Router>
     );

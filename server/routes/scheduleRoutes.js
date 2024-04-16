@@ -16,7 +16,7 @@ router.post('/schedule/respond/:code', respondToRequest);
 
 // route to check if a user had the tutor before (for reviews)
 // it already calculates when the meeting ends
-router.get('/schedule/flag', hadMeeting);
+router.post('/schedule/flag', hadMeeting);
 
 // route to check if a user had the tutor before (for reviews)
 router.post('/schedule/OutgoingRequests', getOutgoingRequests);

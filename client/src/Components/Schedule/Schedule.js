@@ -10,10 +10,13 @@ import 'react-dropdown/style.css';
 
 
 function Schedule() {
+    const navigate = useNavigate();
+    const searchLocation = useLocation();
+    const queryParams = new URLSearchParams(searchLocation.search);
     const [incomingRequests, setIncomingRequests] = useState([]);
     const [outgoingRequests, setOutgoingRequests] = useState([]);
     const [meetings, setMeetings] = useState([]);
-    const [selectedUser, setSelectedUser] = useState(null);
+    const [selectedUser, setSelectedUser] = useState(queryParams.get('q') || null);
     const [selectedDate, setSelectedDate] = useState(null);
     const [friends, setFriends] = useState([]);
     const [meetingDuration, setMeetingDuration] = useState(30);
@@ -121,7 +124,7 @@ function Schedule() {
                 username: username
             });
             setMeetings(response.data.meetingRequests);
-            console.log("current", response.data.meetingRequests);
+            // console.log("current", response.data.meetingRequests);
         } catch (error) {
             console.error('Error fetching outgoing meeting requests:', error);
         }

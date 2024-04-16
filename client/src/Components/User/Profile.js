@@ -19,6 +19,7 @@ function Profile() {
   const loggedInUser = localStorage.getItem('user');
   const [userProfileID, setUserProfileID] = useState(null);
   const [update, setUpdate] = useState(false);
+  const [hadSession, setHadSession] = useState(false);
 
   useEffect(() => {
 
@@ -44,8 +45,24 @@ function Profile() {
         console.error('Error retrieving profile data:', error);
       }
     };
+    const fetchReviewStatus = async () => {
+      try {
+        var username = localStorage.getItem('user');
+        if (user.id !== undefined) {
+          username = user.id;
+        }
+        const response = await axios.post('http://localhost:5000/schedule/flag', {
+          student: localStorage.getItem('user'),
+          tutor: username
+        });
+        setHadSession(response.data.hadMeeting);
+        console.log(response.data.hadMeeting);
+      } catch (error) {
+        console.error('Error retrieving profile data:', error);
+      }
+    };
     fetchProfileInfo();
-
+    fetchReviewStatus();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, update]);
 
@@ -100,7 +117,7 @@ function Profile() {
       <ProfileInfo reviewsID="reviews" profile={profileInfo} reviewTotal={reviewTotal} update={setUpdate} updateValue={update} />
       <Qualities qualities={qualities} setQualities={setQualities} user={userProfileID} />
       <Posts posts={posts} user={userProfileID} update={setUpdate} updateValue={update}/>
-      <Reviews reviews={reviews} user={userProfileID} update={setUpdate} updateValue={update} />
+      <Reviews reviews={reviews} user={userProfileID} hadSession={hadSession} update={setUpdate} updateValue={update} />
     </div>
   );
 }

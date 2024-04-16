@@ -3,7 +3,7 @@ import './Reviews.css';
 import CreateReview from './CreateReview';
 import axios from 'axios';
 
-function Reviews({ reviews, user, update, updateValue }) {
+function Reviews({ reviews, user, hadSession, update, updateValue }) {
 
     const [showCreateReview, setShowCreateReview] = useState(false);
     const [visibleReviews, setVisibleReviews] = useState(5);
@@ -34,7 +34,7 @@ function Reviews({ reviews, user, update, updateValue }) {
     return (
         <div id="reviews" className="reviews">
             <h2>Reviews</h2>
-            {user != localStorage.getItem('user') && <div className="add-review-button-container">
+            {hadSession && user != localStorage.getItem('user') && <div className="add-review-button-container">
                 <button className="add-review-button" onClick={handleAddReviewClick}>
                     Add Review
                 </button>
