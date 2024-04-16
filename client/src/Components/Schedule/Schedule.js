@@ -45,15 +45,19 @@ function Schedule() {
                 const img = await fetchPicture(user.receiver);
                 newImages[user.receiver] = img;
             }
-            for (let user of meetings) {
-                const img = await fetchPicture(user.other);
-                newImages[user.other] = img;
+            for (let user of meetingsWithStudents) {
+                const img = await fetchPicture(user.sender);
+                newImages[user.sender] = img;
+            }
+            for (let user of meetingsWithTutors) {
+                const img = await fetchPicture(user.receiver);
+                newImages[user.receiver] = img;
             }
             setImages(newImages);
         };
 
         fetchImages();
-    }, [incomingRequests, outgoingRequests, meetings]);
+    }, [incomingRequests, outgoingRequests, meetingsWithTutors, meetingsWithStudents]);
 
     const fetchPicture = async (user) => {
         try {
@@ -121,7 +125,7 @@ function Schedule() {
 
     const fetchTutor = async () => {
         try {
-            const response = await axios.post('http://localhost:5000/schedule/get/scheduledRequests', {
+            const response = await axios.post('http://localhost:5000/schedule/get/sentRequests', {
                 username: username
             });
             setMeetingsWithTutors(response.data.meetingRequests);
@@ -133,7 +137,7 @@ function Schedule() {
 
     const fetchStudent = async () => {
         try {
-            const response = await axios.post('http://localhost:5000/schedule/get/scheduledRequests', {
+            const response = await axios.post('http://localhost:5000/schedule/get/scheduledRequest', {
                 username: username
             });
             setMeetingsWithStudents(response.data.meetingRequests);
@@ -226,14 +230,14 @@ function Schedule() {
                     {meetingsWithTutors.map(request => (
                         <li key={request.schedule_id}>
                             <div className="user-info">
-                                {images[request.other] && (
+                                {images[request.receiver] && (
                                     <img
                                         className="user-avatar"
-                                        src={images[request.other]}
-                                        alt={request.other}
+                                        src={images[request.receiver]}
+                                        alt={request.receiver}
                                     />
                                 )}
-                                <span><Link className='name' to={`/profile/${request.other}`}>{request.other}</Link></span>
+                                <span><Link className='name' to={`/profile/${request.receiver}`}>{request.receiver}</Link></span>
                             </div>
                             <span>{formatDateTime(request.start_time)}-{formatDateTimeHours(request.end_time)}</span>
                             <button onClick={() => handleDeclineRequest(request.schedule_id)}>Remove</button>
@@ -247,14 +251,14 @@ function Schedule() {
                     {meetingsWithStudents.map(request => (
                         <li key={request.schedule_id}>
                             <div className="user-info">
-                                {images[request.other] && (
+                                {images[request.sender] && (
                                     <img
                                         className="user-avatar"
-                                        src={images[request.other]}
-                                        alt={request.other}
+                                        src={images[request.sender]}
+                                        alt={request.sender}
                                     />
                                 )}
-                                <span><Link className='name' to={`/profile/${request.other}`}>{request.other}</Link></span>
+                                <span><Link className='name' to={`/profile/${request.sender}`}>{request.sender}</Link></span>
                             </div>
                             <span>{formatDateTime(request.start_time)}-{formatDateTimeHours(request.end_time)}</span>
                             <button onClick={() => handleDeclineRequest(request.schedule_id)}>Remove</button>
