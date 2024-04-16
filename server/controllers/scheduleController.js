@@ -15,10 +15,11 @@ const sendMeeting = async (req, res) => {
 
   try {
     let endTime = new Date(start_time);
+    let startTime = new Date(start_time);
     endTime.setMinutes(endTime.getMinutes() + minutes);
     const newScheduleRequest = await db.query(
       'INSERT INTO schedule (sender, receiver, start_time, status, end_time) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-      [user1Username, user2Username, start_time, 2, endTime]
+      [user1Username, user2Username, startTime, 2, endTime]
     );
 
     res.json({
@@ -105,7 +106,7 @@ const getAcceptedRequests = async (req, res) => {
   console.log(username);
   try {
     const meetingRequests = await db.query(
-      'SELECT * FROM schedule WHERE receiver = $1 AND status = ',
+      'SELECT * FROM schedule WHERE (sender = $1 OR receiver = $1) AND status = 1',
       [username]
     );
     console.log(meetingRequests);
