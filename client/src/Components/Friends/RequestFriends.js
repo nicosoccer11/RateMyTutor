@@ -2,9 +2,39 @@ import React, { useState, useEffect } from 'react';
 import './RequestFriend.css'; // Import CSS file
 import axios from 'axios';
 
-const RequestFriends = ({ users }) => {
+
+const RequestFriends = ({ username, handler, friends, urls, urlHandler }) => {
 
     const [images, setImages] = useState({});
+    const [users, setUsers] = useState([]);
+    useEffect(() => {
+      const getFriendRequests = async () => {
+        try {
+          await axios.post('http://localhost:5000/friends/requests', {
+            username,
+          }).then((response) => {
+            const msg = response.data.message;
+            if (msg === "Friend requests retrieved successfully.") {
+              const data = response.data.friendRequests; // Assuming the data returned is an array of friends
+              console.log(data);
+              setUsers(data);
+            }
+            
+            
+            // this.setState({
+            //   friend_requests:  data.friendRequests,
+            // }, () => {
+            //   console.log('Friend requests:', this.state.friend_requests); // <-- Updated state here
+            // });
+          });
+          
+        } catch (error) {
+          // Handle error, such as setting an error state
+          console.error('Error fetching data:', error);
+        }
+      }
+      getFriendRequests();
+    }, [])
 
   const fetchPicture = async (user) => {
     try {
@@ -19,11 +49,14 @@ const RequestFriends = ({ users }) => {
   useEffect(() => {
     const fetchImages = async () => {
       const newImages = {};
-      for (let user of users) {
-        const img = await fetchPicture(user.username);
-        newImages[user.username] = img;
+      if (users.length !== 0){
+        for (let user of users) {
+          const img = await fetchPicture(user.username);
+          newImages[user.username] = img;
+        }
+        setImages(newImages);
       }
-      setImages(newImages);
+      
     };
 
     fetchImages();
@@ -35,6 +68,23 @@ const RequestFriends = ({ users }) => {
         user1Username,
         user2Username: localStorage.getItem('user'),
       });
+      var temp = [];
+      for (let user of users) {
+        if (user.username != user1Username) {
+          temp.push(user);
+        }
+        else{
+          console.log(`Adding ${user.username}`);
+        }
+      }
+      friends.push(user1Username);
+      await axios.get(`http://localhost:5000/image/get/${user1Username}`).then((response) => {
+        urls.push(response.data.imageUrl);
+      })
+      urlHandler(urls);
+      setUsers(temp);
+      handler(friends);
+
     } catch (error) {
       console.error('Error adding friend:', error);
     }
@@ -45,6 +95,18 @@ const RequestFriends = ({ users }) => {
         user1Username,
         user2Username: localStorage.getItem('user'),
       });
+
+      var temp = [];
+      for (let user of users) {
+        if (user.username != user1Username) {
+          temp.push(user);
+        }
+        else{
+          console.log(`Removing ${user.username}`);
+        }
+      }
+      setUsers(temp);
+
     }
     catch (error) {
       console.error('Error declining friend:', error);

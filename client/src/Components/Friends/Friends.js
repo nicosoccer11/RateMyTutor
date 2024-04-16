@@ -20,11 +20,12 @@ class Friends extends React.Component {
                     friend_urls: [],
                     friend_requests: [],
                  };
+    this.setFriends = this.setFriends.bind(this);
+    this.setURLs = this.setURLs.bind(this);
   }
 
   componentDidMount() {
     this.fetchData()
-    this.getFriendRequests()
     // this.fetchURLs()
   };
   deleteFriend = async (friend) => {
@@ -73,6 +74,18 @@ class Friends extends React.Component {
     }
   }
 
+  setFriends(friends) {
+    this.setState({
+      friends: friends,
+    });
+  }
+
+  setURLs(urls) {
+    this.setState({
+      friend_urls: urls,
+    });
+  }
+
   handleSendMessage = (friend) => {
     this.setState({
       otherUser: friend,
@@ -88,27 +101,6 @@ class Friends extends React.Component {
       dropdownIndex: prevState.dropdownIndex === index ? -1 : index,
     }));
   };
-
-  getFriendRequests = async () => {
-    try {
-      let username = this.state.username;
-      await axios.post('http://localhost:5000/friends/requests', {
-        username,
-      }).then((response) => {
-        const data = response.data; // Assuming the data returned is an array of friends
-        this.setState({
-          friend_requests:  data.friendRequests,
-        }, () => {
-          console.log('Friend requests:', this.state.friend_requests); // <-- Updated state here
-        });
-      });
-      
-    } catch (error) {
-      // Handle error, such as setting an error state
-      console.error('Error fetching data:', error);
-    }
-  }
-
 
   render() { 
     return (
@@ -147,7 +139,7 @@ class Friends extends React.Component {
           <Route path="/profile/:id" element={<Profile />} />
           <Route path="/messages/:id" element={<Chat/>} />
         </Routes>
-        {this.state.friend_requests && this.state.friend_requests.length > 0 && <RequestFriends users = {this.state.friend_requests} />}
+        {<RequestFriends username = {this.state.username} handler={this.setFriends} friends={this.state.friends} urls={this.state.friend_urls} urlHandler={this.setURLs}/>}
         </>
     );
   }

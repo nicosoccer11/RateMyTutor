@@ -71,8 +71,8 @@ function Search() {
     const handleAddUser = async (user1Username) => {
         try {
             const response = await axios.post(`http://localhost:5000/friends/add`, {
-                user1Username,
-                user2Username,
+                user1Username:user2Username,
+                user2Username:user1Username,
             });
             handleSearch(null);
         } catch (error) {
