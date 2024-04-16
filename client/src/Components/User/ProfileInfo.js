@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import './ProfileInfo.css';
-import Test from './Test.jpg';
 import { FaPlus } from 'react-icons/fa';
 import axios from 'axios';
 import { FaEdit, FaTrash, FaSave } from 'react-icons/fa';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom';
+import Button from 'react-bootstrap/Button';
 
-function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue }) {
+function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue, setIsLoggedIn }) {
 
+  const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -35,6 +36,13 @@ function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue }) {
   const [profilePicture, setProfilePicture] = useState(null);
   const [editToggle, setEditToggle] = useState(false);
   const sessionUsername = localStorage.getItem('user');
+
+
+  const handleLogout = () => {
+    navigate('/home');
+    localStorage.removeItem('user');
+    setIsLoggedIn(false);
+  };
 
   useEffect(() => {
     async function fetchData() {
@@ -282,7 +290,8 @@ function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue }) {
           <div className="center">
             {username !== localStorage.getItem('user') ? (
               <Link className="schedule-button" to={`/schedule/?q=${username}`}>Schedule Meeting</Link>
-            ) : (<button onClick={toggleEdit}>Edit</button>)}
+            ) : (<button className='edit-button' onClick={toggleEdit}>Edit</button>)}
+            <Button className='logout' variant="outline-danger" onClick={handleLogout}>Logout</Button>
           </div>
         </div>
         <div className="section">

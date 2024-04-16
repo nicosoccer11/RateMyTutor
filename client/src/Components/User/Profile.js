@@ -6,7 +6,7 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import Posts from './Posts';
 import Qualities from './Qualities';
-function Profile() {
+function Profile({ setIsLoggedIn }) {
 
   const [profileInfo, setProfileInfo] = useState(null);
   const [reviewsOriginal, setReviewsOriginal] = useState(null);
@@ -114,7 +114,7 @@ function Profile() {
 
   return (
     <div>
-      <ProfileInfo reviewsID="reviews" profile={profileInfo} reviewTotal={reviewTotal} update={setUpdate} updateValue={update} />
+      <ProfileInfo reviewsID="reviews" profile={profileInfo} reviewTotal={reviewTotal} update={setUpdate} updateValue={update} setIsLoggedIn={setIsLoggedIn} />
       <Qualities qualities={qualities} setQualities={setQualities} user={userProfileID} />
       <Posts posts={posts} user={userProfileID} update={setUpdate} updateValue={update}/>
       <Reviews reviews={reviews} user={userProfileID} hadSession={hadSession} update={setUpdate} updateValue={update} />

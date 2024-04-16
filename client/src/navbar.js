@@ -19,14 +19,10 @@ import Search from './Components/Search/Search';
 import "./navbar.css"
 
 
+
 function NavbarComp({ setIsLoggedIn }) {
 
-    const handleLogout = () => {
-        localStorage.removeItem('user');
-        setIsLoggedIn(false);
-    };
-    
-    return (  
+    return (
         <Router>
             <Navbar expand="lg" className="bg-blur" sticky="top">
                 <Navbar.Brand as={Link} to="/" className="ms-auto">
@@ -58,23 +54,21 @@ function NavbarComp({ setIsLoggedIn }) {
                             Schedule
                         </Nav.Link>
                     </Nav>
-                    <Button className='logout' variant="outline-danger" onClick={handleLogout}>Logout</Button>
                 </Navbar.Collapse>
             </Navbar>
 
 
-                <Routes>
-                    <Route exact path='/' element={<Home />} />
-                    <Route path='/home' element={<Home />} />
-                    <Route path='/friends/*' element={<ChakraProvider theme={theme} resetCSS={false}> <Friends /> </ChakraProvider>} />
-                    <Route path='/profile' element={<Profile />} />
-                    <Route path="/profile/:id" element={<Profile />} />
-                    <Route path='/messages' element={<ChakraProvider theme={theme} resetCSS={false}> <Chat /> </ChakraProvider>} />
-                    <Route path='/search/*' element={<Search />} />
-                    <Route path='/messages/:id' element={<ChakraProvider theme={theme} resetCSS={false}> <Chat /> </ChakraProvider>} />
-                    <Route path='/schedule' element={<Schedule />} />
-                    {/* <Route path='/schedule/:id' element={<Schedule />} /> */}
-                </Routes>
+            <Routes>
+                <Route exact path='/' element={<Home />} />
+                <Route path='/home' element={<Home />} />
+                <Route path='/friends/*' element={<ChakraProvider theme={theme} resetCSS={false}> <Friends /> </ChakraProvider>} />
+                <Route path='/profile' element={<Profile setIsLoggedIn={setIsLoggedIn}/>} />
+                <Route path="/profile/:id" element={<Profile setIsLoggedIn={setIsLoggedIn}/>} />
+                <Route path='/messages' element={<ChakraProvider theme={theme} resetCSS={false}> <Chat /> </ChakraProvider>} />
+                <Route path='/search/*' element={<Search />} />
+                <Route path='/messages/:id' element={<ChakraProvider theme={theme} resetCSS={false}> <Chat /> </ChakraProvider>} />
+                <Route path='/schedule' element={<Schedule />} />
+            </Routes>
         </Router>
     );
 }
