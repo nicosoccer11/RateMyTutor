@@ -206,7 +206,7 @@ function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue }) {
       });
       setEditingShortDescription(false);
     } catch (error) {
-      console.error('Error saving long description', error);
+      console.error('Error saving short description', error);
     }
   };
 
