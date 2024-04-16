@@ -15,10 +15,11 @@ const sendMeeting = async (req, res) => {
 
   try {
     let endTime = new Date(start_time);
+    let startTime = new Date(start_time);
     endTime.setMinutes(endTime.getMinutes() + minutes);
     const newScheduleRequest = await db.query(
       'INSERT INTO schedule (sender, receiver, start_time, status, end_time) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-      [user1Username, user2Username, start_time, 2, endTime]
+      [user1Username, user2Username, startTime, 2, endTime]
     );
 
     res.json({
@@ -100,15 +101,42 @@ const getMeetingRequests = async (req, res) => {
 };
 
 // Function to get all the schedules meetings for tutor
-const getAcceptedRequests = async (req, res) => {
+const getAcceptedReceivedRequests = async (req, res) => {
   const { username } = req.body; 
-  console.log(username);
+  //console.log(username);
   try {
     const meetingRequests = await db.query(
-      'SELECT * FROM schedule WHERE receiver = $1 AND status = ',
+      'SELECT * FROM schedule WHERE receiver = $1 AND status = 1',
       [username]
     );
-    console.log(meetingRequests);
+    
+    //console.log(meetingRequests);
+    res.json({
+      message: 'Scheduled meetings retrieved successfully',
+      meetingRequests: meetingRequests.rows
+    });
+
+  } catch (err) {
+    console.error(err.message);
+    if (err.code === "23503") { // PostgreSQL foreign key violation error code
+      res.status(400).send('One or both users do not exist.');
+    } else {
+      res.status(500).send('Server Error');
+    }
+  }
+};
+
+// Function to get all the scheduled meetings for a student
+const getAcceptedSentRequests = async (req, res) => {
+  const { username } = req.body; 
+  //console.log(username);
+  try {
+    const meetingRequests = await db.query(
+      'SELECT * FROM schedule WHERE sender = $1 AND status = 1',
+      [username]
+    );
+    
+    //console.log(meetingRequests);
     res.json({
       message: 'Scheduled meetings retrieved successfully',
       meetingRequests: meetingRequests.rows
@@ -189,5 +217,6 @@ module.exports = {
  sendMeeting,
  hadMeeting,
  getOutgoingRequests,
- getAcceptedRequests,
+ getAcceptedReceivedRequests,
+ getAcceptedSentRequests,
 };

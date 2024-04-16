@@ -1,11 +1,11 @@
 const express = require('express');
-const {getMeetingRequests,sendMeeting,respondToRequest,hadMeeting,getOutgoingRequests,getAcceptedRequests} = require('../controllers/scheduleController');
+const {getMeetingRequests,sendMeeting,respondToRequest,hadMeeting,getOutgoingRequests,getAcceptedSentRequests,getAcceptedReceivedRequests} = require('../controllers/scheduleController');
 const router = express.Router();
 
 
 // route to get all meeting requests (array of the database rows)
 // this is for tutors to see anyone who wants their service
-router.get('/schedule/get', getMeetingRequests);
+router.post('/schedule/get', getMeetingRequests);
 
 // route to send a request to tutor for a meeting
 router.post('/schedule/post', sendMeeting);
@@ -16,11 +16,14 @@ router.post('/schedule/respond/:code', respondToRequest);
 
 // route to check if a user had the tutor before (for reviews)
 // it already calculates when the meeting ends
-router.get('/schedule/flag', hadMeeting);
+router.post('/schedule/flag', hadMeeting);
 
 // route to check if a user had the tutor before (for reviews)
-router.get('/schedule/OutgoingRequests', getOutgoingRequests);
+router.post('/schedule/OutgoingRequests', getOutgoingRequests);
 
 // route to get tutor's scheduled meetings
-router.get('/schedule/get/scheduledRequests', getAcceptedRequests);
+router.post('/schedule/get/scheduledRequest', getAcceptedReceivedRequests);
+
+// route to get students's scheduled meetings
+router.post('/schedule/get/sentRequests', getAcceptedSentRequests);
 module.exports = router;
