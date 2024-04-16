@@ -31,6 +31,7 @@ const SuggestedUsersList = ({ users }) => {
   }, [users]);
 
   const handleAddUser = async (user1Username) => {
+    console.log(user1Username);
     try {
       const response = await axios.post(`http://localhost:5000/friends/add`, {
         user1Username,
@@ -39,6 +40,7 @@ const SuggestedUsersList = ({ users }) => {
     } catch (error) {
       console.error('Error adding friend:', error);
     }
+
   };
 
   return (

@@ -1,0 +1,78 @@
+.suggested-users {
+    position: fixed;
+    top: 150px;
+    right: 20px;
+    /* background-color: #f4f4f4; */
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .suggested-users h2 {
+    margin-top: 0;
+    margin-bottom: 10px;
+  }
+  
+  .suggested-users ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .suggested-users li {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    font-size: small;
+  }
+  
+  .suggested-users img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
+  }
+  
+  .suggested-users h3 {
+    font-size: small;
+    margin: 0;
+  }
+  
+  .suggested-users p {
+    margin: 0;
+    color: #666;
+    font-size: small;
+  }
+  
+  .friend_request_add_button{
+    margin-left: auto;
+    height: auto;
+    background-color: transparent;
+    color: green;
+    border: none;
+    font-weight: bold;
+    font-size: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    text-align: right;
+}
+.friend_request_decline_button{
+    height: auto;
+    background-color: transparent;
+    color: red;
+    border: none;
+    font-weight: bold;
+    font-size: 20px;
+
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+
+}
+
+
+.friend_request_add_button:hover{
+    color:rgb(0, 64, 0);
+}
+
+.friend_request_decline_button:hover{
+    color:rgb(64, 0, 0);
+}
