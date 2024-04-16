@@ -4,6 +4,7 @@ import Test from './Test.jpg';
 import { FaPlus } from 'react-icons/fa';
 import axios from 'axios';
 import { FaEdit, FaTrash, FaSave } from 'react-icons/fa';
+import { BrowserRouter as Router, Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom';
 
 function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue }) {
 
@@ -32,6 +33,7 @@ function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue }) {
   const [editingLongDescription, setEditingLongDescription] = useState(false);
   const [editingShortDescription, setEditingShortDescription] = useState(false);
   const [profilePicture, setProfilePicture] = useState(null);
+  const [editToggle, setEditToggle] = useState(false);
   const sessionUsername = localStorage.getItem('user');
 
   useEffect(() => {
@@ -219,7 +221,10 @@ function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue }) {
   };
 
   const handleImageClick = () => {
-    document.getElementById('fileInput').click();
+    if (username === localStorage.getItem('user')) {
+      document.getElementById('fileInput').click();
+    }
+
   };
 
 
@@ -252,12 +257,16 @@ function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue }) {
     uploadPicture();
   }, [file]);
 
+  const toggleEdit = () => {
+    setEditToggle(!editToggle);
+  }
+
 
   return (
     <div className="profile-info-container">
       <div className="left-box">
-        <div className="center" onClick={handleImageClick}>
-          <img src={profilePicture} alt="Profile" className="profile-image" />
+        <div className="center">
+          <img src={profilePicture} alt="Profile" className="profile-image" onClick={handleImageClick} />
           {username === localStorage.getItem("user") &&
             <input
               type="file"
@@ -268,6 +277,13 @@ function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue }) {
         </div>
         <div className="section">
           <h2 className="center">{username}</h2>
+        </div>
+        <div className="section">
+          <div className="center">
+            {username !== localStorage.getItem('user') ? (
+              <Link className="schedule-button" to={`/schedule/?q=${username}`}>Schedule Meeting</Link>
+            ) : (<button onClick={toggleEdit}>Edit</button>)}
+          </div>
         </div>
         <div className="section">
           <h2>Short Description</h2>
@@ -284,7 +300,7 @@ function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue }) {
           ) : (
             <>
               <p>{shortDescription}</p>
-              {username == sessionUsername && <button onClick={handleEditShortDescription}><FaEdit /></button>}
+              {editToggle && username == sessionUsername && <button onClick={handleEditShortDescription}><FaEdit /></button>}
             </>
           )}
         </div>
@@ -311,19 +327,19 @@ function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue }) {
           ) : (
             <>
               <p>{longDescription}</p>
-              {username == sessionUsername && <button onClick={handleEditLongDescription}><FaEdit /></button>}
+              {editToggle && username == sessionUsername && <button onClick={handleEditLongDescription}><FaEdit /></button>}
             </>
           )}
         </div>
         <div className="section">
           <div className="section-header">
-            <h2>Education {username == sessionUsername && <button className="add-icon" onClick={() => { setShowAddEducation(true); setEditingEducation(false) }}>
+            <h2>Education {editToggle && username == sessionUsername && <button className="add-icon" onClick={() => { setShowAddEducation(true); setEditingEducation(false) }}>
               <FaPlus />
             </button>}</h2>
           </div>
           {education.length && education.map((line) =>
             <li key={line.educationid}>{line.degree} {line.school}
-              {username === sessionUsername &&
+              {editToggle && username === sessionUsername &&
                 <div className="icons"><button onClick={() => handleEditEducation(line.school, line.degree, line.educationid)}>
                   <FaEdit />
                 </button>
@@ -354,13 +370,13 @@ function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue }) {
         )}
         <div className="section">
           <div className="section-header">
-            <h2>Qualifications {username == sessionUsername && <button className="add-icon" onClick={() => { setShowAddQualification(true); setEditingQualifications(false) }}>
+            <h2>Qualifications {editToggle && username == sessionUsername && <button className="add-icon" onClick={() => { setShowAddQualification(true); setEditingQualifications(false) }}>
               <FaPlus />
             </button>}</h2>
           </div>
           {qualifications.length && qualifications.map((line) =>
             <li key={line.qualificationid}>{line.skill}
-              {username == sessionUsername && <div className="icons"><button onClick={() => handleEditQualification(line.skill, line.qualificationid)}>
+              {editToggle && username == sessionUsername && <div className="icons"><button onClick={() => handleEditQualification(line.skill, line.qualificationid)}>
                 <FaEdit />
               </button>
                 <button onClick={() => handleDeleteQualification(line.qualificationid, line.skill)}>

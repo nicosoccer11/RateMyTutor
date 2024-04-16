@@ -24,6 +24,38 @@
 
 .center {
   text-align: center;
+  margin-bottom: 5px;
+}
+
+.section button {
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 14px;
+  margin: 5px;
+}
+
+.section button:hover {
+  background-color: #0056b3;
+}
+
+.schedule-button {
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 14px;
+  margin-bottom: 5px;
+  text-decoration: none;
+}
+
+.schedule-button:hover {
+  background-color: #0056b3;
 }
 
 .rating {
@@ -78,8 +110,8 @@
 
 .popup {
   position: fixed;
-  top: 50%; /* Adjust as needed */
-  left: 50%; /* Adjust as needed */
+  top: 50%;
+  left: 50%;
   transform: translate(-50%, -50%);
   background-color: #fff;
   padding: 20px;
@@ -108,11 +140,11 @@
 
 .popup button:last-child {
   margin-right: 0;
-  background-color: #dc3545; /* Change color as needed */
+  background-color: #dc3545;
 }
 
 .popup button:hover {
-  background-color: #0056b3; /* Change color as needed */
+  background-color: #0056b3;
 }
 
 .popup label {
@@ -120,7 +152,6 @@
   margin-bottom: 5px;
 }
 
-/* CSS for the confirmation popup */
 .confirmation-popup {
   position: fixed;
   top: 50%;
@@ -149,27 +180,24 @@
   background-color: #0056b3;
 }
 
-/* CSS for edit and delete buttons */
 .edit-button,
 .delete-button {
   background-color: transparent;
   border: none;
   cursor: pointer;
   padding: 0;
-  margin-right: 5px; /* Adjust margin as needed */
+  margin-right: 5px;
 }
 
-/* Styling for icons */
 .edit-icon,
 .delete-icon {
-  font-size: 1.2em; /* Adjust icon size as needed */
-  color: #777; /* Adjust icon color */
+  font-size: 1.2em;
+  color: #777;
 }
 
-/* Hover effect */
 .edit-button:hover .edit-icon,
 .delete-button:hover .delete-icon {
-  color: #333; /* Change color on hover */
+  color: #333;
 }
 
 .section li {

@@ -1,7 +1,8 @@
 .bg-blur {
-    background: transparent;
-    backdrop-filter: blur(10px);
-  }
+  background: transparent;
+  backdrop-filter: blur(10px);
+}
 
-
-
+.logout {
+  margin-right: 10px;
+}
