@@ -100,14 +100,42 @@ const getMeetingRequests = async (req, res) => {
 };
 
 // Function to get all the schedules meetings for tutor
-const getAcceptedRequests = async (req, res) => {
-  const { username } = req.body;
+const getAcceptedReceivedRequests = async (req, res) => {
+  const { username } = req.body; 
+  //console.log(username);
   try {
     const meetingRequests = await db.query(
-      'SELECT * FROM schedule WHERE (sender = $1 OR receiver = $1) AND status = 1',
+      'SELECT * FROM schedule WHERE receiver = $1 AND status = 1',
       [username]
     );
-    // console.log(meetingRequests);
+    
+    //console.log(meetingRequests);
+    res.json({
+      message: 'Scheduled meetings retrieved successfully',
+      meetingRequests: meetingRequests.rows
+    });
+
+  } catch (err) {
+    console.error(err.message);
+    if (err.code === "23503") { // PostgreSQL foreign key violation error code
+      res.status(400).send('One or both users do not exist.');
+    } else {
+      res.status(500).send('Server Error');
+    }
+  }
+};
+
+// Function to get all the scheduled meetings for a student
+const getAcceptedSentRequests = async (req, res) => {
+  const { username } = req.body; 
+  //console.log(username);
+  try {
+    const meetingRequests = await db.query(
+      'SELECT * FROM schedule WHERE sender = $1 AND status = 1',
+      [username]
+    );
+    
+    //console.log(meetingRequests);
     res.json({
       message: 'Scheduled meetings retrieved successfully',
       meetingRequests: meetingRequests.rows
@@ -190,5 +218,6 @@ module.exports = {
  sendMeeting,
  hadMeeting,
  getOutgoingRequests,
- getAcceptedRequests,
+ getAcceptedReceivedRequests,
+ getAcceptedSentRequests,
 };
