@@ -10,12 +10,12 @@ import 'react-dropdown/style.css';
 
 
 function Schedule() {
-    const navigate = useNavigate();
     const searchLocation = useLocation();
     const queryParams = new URLSearchParams(searchLocation.search);
     const [incomingRequests, setIncomingRequests] = useState([]);
     const [outgoingRequests, setOutgoingRequests] = useState([]);
-    const [meetings, setMeetings] = useState([]);
+    const [meetingsWithStudents, setMeetingsWithStudents] = useState([]);
+    const [meetingsWithTutors, setMeetingsWithTutors] = useState([]);
     const [selectedUser, setSelectedUser] = useState(queryParams.get('q') || null);
     const [selectedDate, setSelectedDate] = useState(null);
     const [friends, setFriends] = useState([]);
@@ -28,7 +28,8 @@ function Schedule() {
         if (username) {
             fetchOutgoing();
             fetchIncoming();
-            fetchCurrent();
+            fetchTutor();
+            fetchStudent();
             getFriends();
         }
     }, [username]);
@@ -45,8 +46,8 @@ function Schedule() {
                 newImages[user.receiver] = img;
             }
             for (let user of meetings) {
-                const img = await fetchPicture(user.sender);
-                newImages[user.sender] = img;
+                const img = await fetchPicture(user.other);
+                newImages[user.other] = img;
             }
             setImages(newImages);
         };
@@ -118,13 +119,25 @@ function Schedule() {
         }
     };
 
-    const fetchCurrent = async () => {
+    const fetchTutor = async () => {
         try {
             const response = await axios.post('http://localhost:5000/schedule/get/scheduledRequests', {
                 username: username
             });
-            setMeetings(response.data.meetingRequests);
-            // console.log("current", response.data.meetingRequests);
+            setMeetingsWithTutors(response.data.meetingRequests);
+            // console.log("tutor", response.data.meetingRequests);
+        } catch (error) {
+            console.error('Error fetching outgoing meeting requests:', error);
+        }
+    };
+
+    const fetchStudent = async () => {
+        try {
+            const response = await axios.post('http://localhost:5000/schedule/get/scheduledRequests', {
+                username: username
+            });
+            setMeetingsWithStudents(response.data.meetingRequests);
+            // console.log("student", response.data.meetingRequests);
         } catch (error) {
             console.error('Error fetching outgoing meeting requests:', error);
         }
@@ -155,7 +168,7 @@ function Schedule() {
                 meeting_id: requestId
             });
             fetchIncoming();
-            fetchCurrent();
+            fetchStudent();
         } catch (error) {
             console.error('Error accepting request:', error);
         }
@@ -208,19 +221,40 @@ function Schedule() {
                 </div>
             </div>
             <div className='current'>
-                <h2>Scheduled Meetings</h2>
+                <h2>Meetings With Tutors</h2>
                 <ul>
-                    {meetings.map(request => (
+                    {meetingsWithTutors.map(request => (
                         <li key={request.schedule_id}>
                             <div className="user-info">
-                                {images[request.sender] && (
+                                {images[request.other] && (
                                     <img
                                         className="user-avatar"
-                                        src={images[request.sender]}
-                                        alt={request.sender}
+                                        src={images[request.other]}
+                                        alt={request.other}
                                     />
                                 )}
-                                <span><Link className='name' to={`/profile/${request.sender}`}>{request.sender}</Link></span>
+                                <span><Link className='name' to={`/profile/${request.other}`}>{request.other}</Link></span>
+                            </div>
+                            <span>{formatDateTime(request.start_time)}-{formatDateTimeHours(request.end_time)}</span>
+                            <button onClick={() => handleDeclineRequest(request.schedule_id)}>Remove</button>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+            <div className='current'>
+                <h2>Meetings With Students</h2>
+                <ul>
+                    {meetingsWithStudents.map(request => (
+                        <li key={request.schedule_id}>
+                            <div className="user-info">
+                                {images[request.other] && (
+                                    <img
+                                        className="user-avatar"
+                                        src={images[request.other]}
+                                        alt={request.other}
+                                    />
+                                )}
+                                <span><Link className='name' to={`/profile/${request.other}`}>{request.other}</Link></span>
                             </div>
                             <span>{formatDateTime(request.start_time)}-{formatDateTimeHours(request.end_time)}</span>
                             <button onClick={() => handleDeclineRequest(request.schedule_id)}>Remove</button>
