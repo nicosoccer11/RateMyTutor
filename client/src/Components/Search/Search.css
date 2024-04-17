@@ -155,3 +155,12 @@
 .link-button:hover {
   background-color: #0056b3;
 }
+
+.requested{
+  background-color: #ccc;
+  color: #333;
+}
+.requested:hover{
+  background-color: #252424;
+  color: white;
+}
