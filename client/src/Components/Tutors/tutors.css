@@ -1,0 +1,17 @@
+ul{
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: "60%"; /* Set the maximum height for the list */
+  overflow-y: auto; /* Enable vertical scrollbar when needed */
+}
+
+li{
+    display: flex;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+  border: 1px solid transparent;
+  height: 100px;
+  position: relative;
+}

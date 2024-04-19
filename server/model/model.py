@@ -113,11 +113,12 @@ def FindTutor(username):
 
         insert_to_vectordb()
         #Raise n for more results if you have larger datasets 
-        n=3
+        n=4
         results = search_vectordb(username, n)
         ret = {"names": []}
         for name in results['metadatas'][0]:
-            ret['names'].append(name['Name'])
+            if (name['Name'] != username):
+                ret['names'].append(name['Name'])
         return jsonify(ret)
 
 
