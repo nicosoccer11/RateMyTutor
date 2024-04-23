@@ -99,20 +99,35 @@ const getMeetingRequests = async (req, res) => {
   }
 };
 
-// Function to get all the schedules meetings for tutor
+// Function to get all the scheduled meetings for tutor
 const getAcceptedReceivedRequests = async (req, res) => {
   const { username } = req.body; 
-  //console.log(username);
+  console.log("checkingreceived");
   try {
     const meetingRequests = await db.query(
       'SELECT * FROM schedule WHERE receiver = $1 AND status = 1',
       [username]
     );
-    
+    const currentTime = new Date();
+    for (const row of meetingRequests.rows) {
+      const endTime = new Date(row.end_time);
+      if (endTime <= currentTime) {
+        console.log("deleting past meeting", row.schedule_id);
+        await db.query(
+          'DELETE FROM schedule WHERE schedule_id = $1',
+          [row.schedule_id]
+        );
+      }
+    }
+    const filteredMeetingRequests = meetingRequests.rows.filter(row => {
+      const endTime = new Date(row.end_time);
+      return endTime > currentTime;
+    });
+
     //console.log(meetingRequests);
     res.json({
       message: 'Scheduled meetings retrieved successfully',
-      meetingRequests: meetingRequests.rows
+      meetingRequests: filteredMeetingRequests
     });
 
   } catch (err) {
@@ -134,11 +149,24 @@ const getAcceptedSentRequests = async (req, res) => {
       'SELECT * FROM schedule WHERE sender = $1 AND status = 1',
       [username]
     );
-    
-    //console.log(meetingRequests);
+    const currentTime = new Date();
+    for (const row of meetingRequests.rows) {
+      const endTime = new Date(row.end_time);
+      if (endTime <= currentTime) {
+        console.log("deleting past meeting", row.schedule_id);
+        await db.query(
+          'DELETE FROM schedule WHERE schedule_id = $1',
+          [row.schedule_id]
+        );
+      }
+    }
+    const filteredMeetingRequests = meetingRequests.rows.filter(row => {
+      const endTime = new Date(row.end_time);
+      return endTime > currentTime;
+    });
     res.json({
       message: 'Scheduled meetings retrieved successfully',
-      meetingRequests: meetingRequests.rows
+      meetingRequests: filteredMeetingRequests
     });
 
   } catch (err) {
