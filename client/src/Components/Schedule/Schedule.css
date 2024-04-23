@@ -1,3 +1,9 @@
+.schedule {
+  background-color: #f5f5f5;
+  border: 1px solid #ccc;
+  min-height: calc(100vh - 77px);
+}
+
 .header {
   text-align: center;
 }
@@ -138,6 +144,9 @@
   border-radius: 5px;
   margin-left: 10px;
   margin-right: 10px;
+  background-color: white;
+  border: 1px solid black;
+  border-radius: 5px;
 }
 
 .pending-requests li span {
@@ -175,7 +184,9 @@
 .message {
   margin-bottom: 10px;
   padding: 10px;
-  background-color: #f7f7f7;
+  background-color: white;
+  border: 1px solid black;
+  border-radius: 5px;
 }
 
 .message-text {

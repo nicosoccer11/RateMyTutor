@@ -164,7 +164,7 @@ const Post = ({ user, content, postid, num_likes }) => {
         <div className="post">
             <div className='username'>
                 <Link className="post-photo" to={`/profile/${user}`}>
-                    <Avatar src={image} name="user" size="md" />
+                    <img className='image' src={image} />
                 </Link>
                 <h4>{user}</h4>
             </div>

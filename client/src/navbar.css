@@ -6,3 +6,8 @@
 .logout {
   margin-right: 10px;
 }
+
+.navbar {
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+

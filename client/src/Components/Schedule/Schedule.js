@@ -195,7 +195,7 @@ function Schedule() {
     };
 
     return (
-        <div>
+        <div className='schedule'>
             <h2 className='header'>Schedule Request</h2>
             <div className="schedule-container">
                 <div className="user-select">

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ProfileInfo from './ProfileInfo';
 import Reviews from './Reviews';
-
+import './Profile.css';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import Posts from './Posts';
@@ -113,7 +113,7 @@ function Profile({ setIsLoggedIn }) {
 
 
   return (
-    <div>
+    <div className='profile'>
       <ProfileInfo reviewsID="reviews" profile={profileInfo} reviewTotal={reviewTotal} update={setUpdate} updateValue={update} setIsLoggedIn={setIsLoggedIn} />
       <Qualities qualities={qualities} setQualities={setQualities} user={userProfileID} />
       <Posts posts={posts} user={userProfileID} update={setUpdate} updateValue={update}/>

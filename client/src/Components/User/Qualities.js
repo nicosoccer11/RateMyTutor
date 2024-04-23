@@ -42,7 +42,7 @@ function Qualities({ qualities, setQualities, user }) {
                 {qualities && qualities.length > 0 && qualities.map((quality) => (
                     <button
                         key={quality.qualityid}
-                        className={`quality-item ${quality.hasquality ? (quality.hasmatch && !isCurrentUser ? 'match' : 'active ') : ''}`}
+                        className={`quality-item ${quality.hasquality ? (quality.hasmatch && !isCurrentUser ? 'match' : 'active') : 'editable'}`}
                         onClick={() => handleQualityToggle(quality.qualityid)}
                     >
                         {isCurrentUser ? (
