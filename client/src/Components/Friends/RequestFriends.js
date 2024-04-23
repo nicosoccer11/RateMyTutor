@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './RequestFriend.css'; // Import CSS file
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 
 const RequestFriends = ({ username, handler, friends, urls, urlHandler }) => {
@@ -18,6 +19,7 @@ const RequestFriends = ({ username, handler, friends, urls, urlHandler }) => {
               const data = response.data.friendRequests; // Assuming the data returned is an array of friends
               console.log(data);
               setUsers(data);
+              console.log("this is :",users);
             }
             
             
@@ -123,10 +125,11 @@ const RequestFriends = ({ username, handler, friends, urls, urlHandler }) => {
           {images[user.username] && <img
             className="user-avatar"
             src={images[user.username]}
-            alt={user.name}
+            alt={`${user.firstName} ${user.lastName}`}
           />}
           <div>
-            <h3>{user.name}</h3>
+            <Link className='name_request' to={`/profile/${user.username}`}>{user.firstName} {user.lastName}</Link>
+            {/* <Link className='name' to={`/profile/${user.username}`}>{user.username}</Link> */}
             <p>@{user.username}</p>
           </div>
           <button className="friend_request_add_button" onClick={() => handleAddUser(user.username)}>✓</button>
