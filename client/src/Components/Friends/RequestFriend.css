@@ -76,3 +76,11 @@
 .friend_request_decline_button:hover{
     color:rgb(64, 0, 0);
 }
+.name_request{
+  text-decoration: none; /* Remove underline */
+  color: inherit;
+}
+
+.name_request:hover{
+  text-decoration: underline;
+}

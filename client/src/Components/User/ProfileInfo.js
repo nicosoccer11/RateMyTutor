@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './ProfileInfo.css';
 import { FaPlus } from 'react-icons/fa';
 import axios from 'axios';
-import { FaEdit, FaTrash, FaSave } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaSave,FaPencilAlt } from 'react-icons/fa';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 
@@ -290,7 +290,7 @@ function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue, set
           <div className="center">
             {username !== localStorage.getItem('user') ? (
               <Link className="schedule-button" to={`/schedule/?q=${username}`}>Schedule Meeting</Link>
-            ) : (<div><button className='edit-button' onClick={toggleEdit}>Edit</button>
+            ) : (<div><button className='edit-button' onClick={toggleEdit}> <FaPencilAlt /> Edit</button>
               <Button className='logout' variant="outline-danger" onClick={handleLogout}>Logout</Button></div>)}
 
           </div>
