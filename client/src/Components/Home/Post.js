@@ -18,6 +18,7 @@ import "./home.css";
 import axios from 'axios';
 import Comment from './comment';
 import { Avatar } from '@chakra-ui/react';
+import { FaThumbsUp, FaComment} from 'react-icons/fa'; 
 
 const Post = ({ user, content, postid, num_likes }) => {
     const [update, setupdate] = useState(false);
@@ -173,8 +174,8 @@ const Post = ({ user, content, postid, num_likes }) => {
                 <button className="numcomments" onClick={get_all_comment}>{numComment} Comments</button>
             </div>
             <div className="post-actions">
-                <button className={`like_button ${liked === true ? 'selected' : ''}`} onClick={handleLike}>Like</button>
-                <button className='post_button' onClick={toggleCommentsBox}> Comment</button>
+                <button className={`like_button ${liked === true ? 'selected' : ''}`} onClick={handleLike}>Like <span><FaThumbsUp /></span> </button>
+                <button className='post_button' onClick={toggleCommentsBox}>Comment <FaComment/></button>
             </div>
             <div className="comments-box">
                 <div className="comment-input-container">

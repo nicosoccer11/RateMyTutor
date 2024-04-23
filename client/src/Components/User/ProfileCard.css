@@ -5,7 +5,7 @@
     display: flex;
     flex-direction: column; /* Adjust layout to column */
     align-items: flex-start; /* Align items to start */
-    background-color: #f4f4f4;
+    background-color: white;
     border-radius: 8px;
     padding: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);

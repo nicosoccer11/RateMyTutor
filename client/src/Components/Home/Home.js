@@ -61,22 +61,24 @@ function Home() {
 
 
     return (
-        <div className='full-container'>
-            <SearchBar />
-            {suggestedUsers && suggestedUsers.length > 0 && <SuggestedUsersList users={suggestedUsers} />}
-            <ProfileCard username={username} email={`${username}@mail.com`} name={username} />
-            <div className='new-post-container'>
-                <button className="add-post-button" onClick={handleAddPostClick}>
-                    <img src='images/plus.png'></img>
-                </button>
-                <div className="textbox">New Post</div>
+        <div className='home-container'>
+            <div className='full-container'>
+                <SearchBar />
+                {suggestedUsers && suggestedUsers.length > 0 && <SuggestedUsersList users={suggestedUsers} />}
+                <ProfileCard username={username} email={`${username}@mail.com`} name={username} />
+                <div className='new-post-container'>
+                    <button className="add-post-button" onClick={handleAddPostClick}>
+                        <img src='images/plus.png'></img>
+                    </button>
+                    <div className="textbox">New Post</div>
+                </div>
+
+                {showCreatePost ? <CreatePost onClose={() => setShowCreatePost(false)} onSubmit={handleNewPost} /> : <></>}
+                {posts.length !== 0 && posts.map((post, index) => (
+
+                    <Post key={index} user={post.userid} content={post.content} postid={post.postid} />
+                ))}
             </div>
-
-            {showCreatePost ? <CreatePost onClose={() => setShowCreatePost(false)} onSubmit={handleNewPost} /> : <></>}
-            {posts.length !== 0 && posts.map((post, index) => (
-
-                <Post key={index} user={post.userid} content={post.content} postid={post.postid} />
-            ))}
         </div>
     );
 }
