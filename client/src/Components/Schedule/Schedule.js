@@ -173,6 +173,8 @@ function Schedule() {
             });
             fetchIncoming();
             fetchStudent();
+            fetchTutor();
+            fetchStudent();
         } catch (error) {
             console.error('Error accepting request:', error);
         }
@@ -185,6 +187,8 @@ function Schedule() {
             });
             fetchIncoming();
             fetchOutgoing();
+            fetchTutor();
+            fetchStudent();
         } catch (error) {
             console.error('Error declining request:', error);
         }
@@ -226,6 +230,11 @@ function Schedule() {
             </div>
             <div className='current'>
                 <h2>Meetings With Tutors</h2>
+                {meetingsWithTutors.length === 0 && (
+                    <div className="message">
+                        <p className="message-text">No meetings with tutors.</p>
+                    </div>
+                )}
                 <ul>
                     {meetingsWithTutors.map(request => (
                         <li key={request.schedule_id}>
@@ -247,6 +256,11 @@ function Schedule() {
             </div>
             <div className='current'>
                 <h2>Meetings With Students</h2>
+                {meetingsWithStudents.length === 0 && (
+                    <div className="message">
+                        <p className="message-text">No meetings with students.</p>
+                    </div>
+                )}
                 <ul>
                     {meetingsWithStudents.map(request => (
                         <li key={request.schedule_id}>
@@ -269,6 +283,11 @@ function Schedule() {
             <div className="pending-requests">
                 <div className="incoming-requests">
                     <h2>Incoming Meeting Requests</h2>
+                    {incomingRequests.length === 0 && (
+                        <div className="message">
+                            <p className="message-text">No incoming meeting requests.</p>
+                        </div>
+                    )}
                     <ul>
                         {incomingRequests.map(request => (
                             <li key={request.schedule_id}>
@@ -287,6 +306,11 @@ function Schedule() {
                 </div>
                 <div className="outgoing-requests">
                     <h2>Outgoing Meeting Requests</h2>
+                    {outgoingRequests.length === 0 && (
+                        <div className="message">
+                            <p className="message-text">No outgoing meeting requests.</p>
+                        </div>
+                    )}
                     <ul>
                         {outgoingRequests.map(request => (
                             <li key={request.schedule_id}>

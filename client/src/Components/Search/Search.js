@@ -200,6 +200,65 @@ function Search() {
            </Routes>
        </div>
    );
+    return (
+        <div class="search-results-container">
+            <div className="search-container">
+                <form className="search-form" onSubmit={handleSearch}>
+                    <input
+                        type="text"
+                        className="search-input"
+                        placeholder="Enter one or multiple search terms (e.g., Python, Houston, Calculus)..."
+                        value={query}
+                        onChange={(e) => setQuery(e.target.value)}
+                    />
+                    <button type="submit" className="search-button">Search</button>
+                </form>
+                <div className="search-tabs">
+                    <button className={`search-tab ${searchType === 'users' ? 'active' : ''}`} onClick={() => handleTabChange('users')}>Users</button>
+                    <button className={`search-tab ${searchType === 'posts' ? 'active' : ''}`} onClick={() => handleTabChange('posts')}>Posts</button>
+                </div>
+                {searchType === 'users' && (
+                    <div className='users'>
+                        {usersMessage.length !== 0 && <p>{usersMessage}</p>}
+                        <ul className="user-list">
+                            {users && users.length > 0 && users.map((user) => (
+                                <li key={user.username} className="user-item">
+                                    {images[user.username] && <img
+                                        className="user-avatar"
+                                        src={images[user.username]}
+                                        alt={user.name}
+                                    />}
+                                    <div className="user-info">
+                                        <h3>
+                                            <Link className='name' to={`/profile/${user.username}`}>{user.username}</Link>
+                                            {user.isFriend ?
+                                                <Link className='link-button' to={`/messages/${user.username}`}>Message</Link> :
+                                                <button className="link-button" onClick={() => handleAddUser(user.username)}>Add Friend</button>
+                                            }
+                                        </h3>
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
+                {searchType === 'posts' && (
+                    <div>
+                        {postsMessage.length !== 0 && <p>{postsMessage}</p>}
+                        <ul className="post-list">
+                            {posts && posts.length > 0 && posts.map((post) => (
+                                <Post key={post.postid} content={post.content} user={post.userid} />
+                            ))}
+                        </ul>
+                    </div>
+                )}
+                <Routes>
+                    <Route path="/profile/:id" element={<Profile />} />
+                    <Route path="/messages/:id" element={<Chat />} />
+                </Routes>
+            </div>
+        </div>
+    );
 }
 
 
