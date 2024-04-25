@@ -5,6 +5,7 @@ import axios from 'axios';
 import { FaEdit, FaTrash, FaSave,FaPencilAlt } from 'react-icons/fa';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
+import { Rating } from 'react-simple-star-rating'
 
 function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue, setIsLoggedIn }) {
 
@@ -316,6 +317,7 @@ function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue, set
         </div>
         <div className="section">
           <p className="rating">{averageRating}/10 <a href={`#${reviewsID}`}> ({reviewTotal} review(s))</a></p>
+          <Rating className="rating-stars" initialValue={averageRating / 2} readonly={true} allowFraction={true}></Rating>
         </div>
       </div>
 

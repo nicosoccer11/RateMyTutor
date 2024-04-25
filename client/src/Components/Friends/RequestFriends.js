@@ -117,7 +117,7 @@ const RequestFriends = ({ username, handler, friends, urls, urlHandler }) => {
 
     return (
     <div className="suggested-users">
-      <h2>Friend Request</h2>
+      <h2>Friend Requests</h2>
       
       <ul>
         {users.map(user => (
