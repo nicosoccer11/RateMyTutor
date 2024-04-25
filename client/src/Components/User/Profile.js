@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ProfileInfo from './ProfileInfo';
 import Reviews from './Reviews';
-import './Profile.css';
+import './Profile.css'
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import Posts from './Posts';
