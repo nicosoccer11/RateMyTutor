@@ -102,23 +102,23 @@ const getMeetingRequests = async (req, res) => {
 // Function to get all the scheduled meetings for tutor
 const getAcceptedReceivedRequests = async (req, res) => {
   const { username } = req.body; 
-  console.log("checkingreceived");
+  //console.log("checkingreceived");
   try {
     const meetingRequests = await db.query(
       'SELECT * FROM schedule WHERE receiver = $1 AND status = 1',
       [username]
     );
     const currentTime = new Date();
-    for (const row of meetingRequests.rows) {
-      const endTime = new Date(row.end_time);
-      if (endTime <= currentTime) {
-        console.log("deleting past meeting", row.schedule_id);
-        await db.query(
-          'DELETE FROM schedule WHERE schedule_id = $1',
-          [row.schedule_id]
-        );
-      }
-    }
+    // for (const row of meetingRequests.rows) {
+    //   const endTime = new Date(row.end_time);
+    //   if (endTime <= currentTime) {
+    //     console.log("deleting past meeting", row.schedule_id);
+    //     await db.query(
+    //       'DELETE FROM schedule WHERE schedule_id = $1',
+    //       [row.schedule_id]
+    //     );
+    //   }
+    // }
     const filteredMeetingRequests = meetingRequests.rows.filter(row => {
       const endTime = new Date(row.end_time);
       return endTime > currentTime;
@@ -150,16 +150,16 @@ const getAcceptedSentRequests = async (req, res) => {
       [username]
     );
     const currentTime = new Date();
-    for (const row of meetingRequests.rows) {
-      const endTime = new Date(row.end_time);
-      if (endTime <= currentTime) {
-        console.log("deleting past meeting", row.schedule_id);
-        await db.query(
-          'DELETE FROM schedule WHERE schedule_id = $1',
-          [row.schedule_id]
-        );
-      }
-    }
+    // for (const row of meetingRequests.rows) {
+    //   const endTime = new Date(row.end_time);
+      // if (endTime <= currentTime) {
+      //   console.log("deleting past meeting", row.schedule_id);
+      //   await db.query(
+      //     'DELETE FROM schedule WHERE schedule_id = $1',
+      //     [row.schedule_id]
+      //   );
+      // }
+    //}
     const filteredMeetingRequests = meetingRequests.rows.filter(row => {
       const endTime = new Date(row.end_time);
       return endTime > currentTime;
@@ -182,7 +182,7 @@ const getAcceptedSentRequests = async (req, res) => {
 // Function to check if a student/user had a meeting with the tutor before and if it has passed
 const hadMeeting = async (req, res) => {
   const { student, tutor } = req.body;
-  console.log(student, tutor);
+  //console.log(student, tutor);
   try {
     // Fetch all meetings between the student and tutor
     const meetings = await db.query(
