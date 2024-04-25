@@ -22,6 +22,7 @@
 .friend-list-box {
   /* Add any styles you want for the friend list box here */
   width: 500px; /* Adjust the width as needed */
+  
 }
 
 .friend-list-box li {
@@ -49,10 +50,11 @@
   display: flex;
   align-items: center;
   padding: 10px;
-  border-bottom: 1px solid #ccc;
-  border: 1px solid transparent;
+  /* border-bottom: 1px solid #ccc; */
+  border: 1px solid black;
   height: 100px;
   position: relative;
+  background-color:white;
 }
 
 .friend-item-tutor {
@@ -125,4 +127,9 @@ label {
 .delete:hover {
   color: darkred;
   transform: scale(1.2); 
+}
+
+.container_friends{
+  background:#f5f5f5;
+  min-height: 100vh;
 }

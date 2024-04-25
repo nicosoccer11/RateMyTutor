@@ -104,13 +104,13 @@ class Friends extends React.Component {
 
   render() { 
     return (
+      <div className='container_friends'>
+      <div className='container_full'>
       <>
       <ProfileCard username={this.state.username} email={`${this.state.username}@mail.com`} name={this.state.username} avatar="/images/logo512.png"/>
       
       <div className="friend-list-container">
-       
         <div className="friend-list-wrapper">
-        <h3></h3>
           <ul className="friend-list">
             {this.state.friends.map((friend, ind) => (
               <li key={friend} onClick={() => this.handleSendMessage(friend)} className={`friend-item ${this.state.otherUser === friend ? 'selected' : ''}`}>
@@ -133,14 +133,17 @@ class Friends extends React.Component {
             ))}
           </ul>
         </div>
+      
         {(this.state.otherUser || this.state.friends.length === 1) && <Chat friend={this.state.otherUser ? this.state.otherUser : this.state.friends[0]}/>}
-      </div>
+        </div>
         <Routes>
           <Route path="/profile/:id" element={<Profile />} />
           <Route path="/messages/:id" element={<Chat/>} />
         </Routes>
         {<RequestFriends username = {this.state.username} handler={this.setFriends} friends={this.state.friends} urls={this.state.friend_urls} urlHandler={this.setURLs}/>}
         </>
+        </div>
+        </div>
     );
   }
 }
