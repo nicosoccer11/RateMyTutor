@@ -28,16 +28,21 @@ def getInfo():
         colnames = [desc[0] for desc in cursor.description]
         # Fetch result
         record = cursor.fetchall()
-        #print(colnames)
+        print(colnames)
         #print(record)
         students = {'name': [], 'bio': []}
         for student in record:
             students['name'].append(student[0])
-            bio = ""
-            if student[9] is not None:
-                bio = student[9]
-            elif student[8] is not None:
-                bio = student[8]
+            p1 = '' if student[9] is None else student[9]
+            p2 = '' if student[8] is None else student[8]
+            p3 = '' if student[5] is None else student[5]
+            
+            bio = p1 + p2 + p3
+            print(student, bio)
+            # if student[9] is not None:
+            #     bio = student[9]
+            # elif student[8] is not None:
+            #     bio = student[8]
             students['bio'].append(bio)
         
 
@@ -55,7 +60,7 @@ def getInfo():
 def FindTutor(username):
     if (request.method == 'GET'):
         students = getInfo()
-        tutors = {'name': students['name'][5:], 'bio': students['bio'][5:]}
+        tutors = {'name': students['name'][:], 'bio': students['bio'][:]}
         client = chromadb.Client()
         model = SentenceTransformer("all-MiniLM-L6-v2")
 
@@ -115,6 +120,7 @@ def FindTutor(username):
         #Raise n for more results if you have larger datasets 
         n=4
         results = search_vectordb(username, n)
+        print(results)
         ret = {"names": []}
         for name in results['metadatas'][0]:
             if (name['Name'] != username):

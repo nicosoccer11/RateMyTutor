@@ -65,9 +65,16 @@
 }
 
 .rating {
+  display: flex;
   font-size: 40px;
   font-weight: bold;
   text-align: center;
+  align-items: center;
+  justify-content: center;
+}
+
+.rating-stars{
+  margin-left: 150px;
 }
 
 .rating a {
