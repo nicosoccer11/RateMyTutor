@@ -153,7 +153,6 @@ const deleteFriend = async (req, res) => {
 // Function to get all the accepted friends for a user
 const getFriends = async (req, res) => {
   const { username } = req.body; // Assuming you're getting the username in the request body
-  console.log('Username:', username);
   try {
     // Getting all the friends where the user is user1id and the friendship has been accepted
     const friends1 = await db.query(

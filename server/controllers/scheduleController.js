@@ -76,14 +76,12 @@ const respondToRequest = async (req, res) => {
 // Function to get all the incoming requests for the tutor
 // TODO: do error checking for when there is nothing there (so it does not return null)
 const getMeetingRequests = async (req, res) => {
-  const { username } = req.body; 
-  //console.log(req.body);
+  const { username } = req.body;
   try {
     const meetingRequests = await db.query(
       'SELECT * FROM schedule WHERE receiver = $1 AND status = 2',
       [username]
     );
-    //console.log(meetingRequests);
     res.json({
       message: 'Meeting requests retrieved successfully',
       meetingRequests: meetingRequests.rows
@@ -101,30 +99,18 @@ const getMeetingRequests = async (req, res) => {
 
 // Function to get all the scheduled meetings for tutor
 const getAcceptedReceivedRequests = async (req, res) => {
-  const { username } = req.body; 
-  //console.log("checkingreceived");
+  const { username } = req.body;
   try {
     const meetingRequests = await db.query(
       'SELECT * FROM schedule WHERE receiver = $1 AND status = 1',
       [username]
     );
     const currentTime = new Date();
-    // for (const row of meetingRequests.rows) {
-    //   const endTime = new Date(row.end_time);
-    //   if (endTime <= currentTime) {
-    //     console.log("deleting past meeting", row.schedule_id);
-    //     await db.query(
-    //       'DELETE FROM schedule WHERE schedule_id = $1',
-    //       [row.schedule_id]
-    //     );
-    //   }
-    // }
     const filteredMeetingRequests = meetingRequests.rows.filter(row => {
       const endTime = new Date(row.end_time);
       return endTime > currentTime;
     });
 
-    //console.log(meetingRequests);
     res.json({
       message: 'Scheduled meetings retrieved successfully',
       meetingRequests: filteredMeetingRequests
@@ -142,24 +128,13 @@ const getAcceptedReceivedRequests = async (req, res) => {
 
 // Function to get all the scheduled meetings for a student
 const getAcceptedSentRequests = async (req, res) => {
-  const { username } = req.body; 
-  //console.log(username);
+  const { username } = req.body;
   try {
     const meetingRequests = await db.query(
       'SELECT * FROM schedule WHERE sender = $1 AND status = 1',
       [username]
     );
     const currentTime = new Date();
-    // for (const row of meetingRequests.rows) {
-    //   const endTime = new Date(row.end_time);
-      // if (endTime <= currentTime) {
-      //   console.log("deleting past meeting", row.schedule_id);
-      //   await db.query(
-      //     'DELETE FROM schedule WHERE schedule_id = $1',
-      //     [row.schedule_id]
-      //   );
-      // }
-    //}
     const filteredMeetingRequests = meetingRequests.rows.filter(row => {
       const endTime = new Date(row.end_time);
       return endTime > currentTime;
@@ -182,7 +157,6 @@ const getAcceptedSentRequests = async (req, res) => {
 // Function to check if a student/user had a meeting with the tutor before and if it has passed
 const hadMeeting = async (req, res) => {
   const { student, tutor } = req.body;
-  //console.log(student, tutor);
   try {
     // Fetch all meetings between the student and tutor
     const meetings = await db.query(
@@ -222,14 +196,12 @@ const hadMeeting = async (req, res) => {
 
 // Function to get all the outgoing requests of student
 const getOutgoingRequests = async (req, res) => {
-  const { username } = req.body; 
-  //console.log(username);
+  const { username } = req.body;
   try {
     const outgoingRequests = await db.query(
       'SELECT * FROM schedule WHERE sender = $1 AND status = 2',
       [username]
     );
-    //console.log(outgoingRequests.rows);
     res.json({
       message: 'Outgoing requests retrieved successfully',
       outgoingRequests: outgoingRequests.rows

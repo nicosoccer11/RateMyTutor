@@ -33,10 +33,8 @@ class Friends extends React.Component {
       user1Username:this.state.username, 
       user2Username:friend,
     }).then((response) => {
-      console.log(response.data);
       this.fetchData();
     });
-    console.log('Deleted friend:', friend);
   }
 
   fetchURLs = async (friends) => {
@@ -94,7 +92,6 @@ class Friends extends React.Component {
   };
   showmenu = (e) => {
     e.preventDefault();
-    console.log('clicked')
   };
   handleDropdownToggle = (index) => {
     this.setState(prevState => ({

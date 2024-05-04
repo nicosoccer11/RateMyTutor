@@ -20,7 +20,6 @@ const addComment = async (req, res) => {
   // Delete a comment
 const deleteComment = async (req, res) => {
     const { commentId } = req.params;
-    // Optional: Add additional checks to verify the user's permission to delete the comment
   
     try {
       await db.query('DELETE FROM comments WHERE CommentID = $1', [commentId]);

@@ -17,17 +17,8 @@ const RequestFriends = ({ username, handler, friends, urls, urlHandler }) => {
             const msg = response.data.message;
             if (msg === "Friend requests retrieved successfully.") {
               const data = response.data.friendRequests; // Assuming the data returned is an array of friends
-              console.log(data);
               setUsers(data);
-              console.log("this is :",users);
             }
-            
-            
-            // this.setState({
-            //   friend_requests:  data.friendRequests,
-            // }, () => {
-            //   console.log('Friend requests:', this.state.friend_requests); // <-- Updated state here
-            // });
           });
           
         } catch (error) {
@@ -76,7 +67,6 @@ const RequestFriends = ({ username, handler, friends, urls, urlHandler }) => {
           temp.push(user);
         }
         else{
-          console.log(`Adding ${user.username}`);
         }
       }
       friends.push(user1Username);
@@ -104,7 +94,6 @@ const RequestFriends = ({ username, handler, friends, urls, urlHandler }) => {
           temp.push(user);
         }
         else{
-          console.log(`Removing ${user.username}`);
         }
       }
       setUsers(temp);

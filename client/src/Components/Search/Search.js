@@ -6,11 +6,15 @@ import Profile from '../User/Profile';
 import Chat from '../Messages/Chat';
 import Post from '../Home/Post';
 
-
 function Search() {
+    // Hook for navigation
     const navigate = useNavigate();
+
+    // Get search query and location
     const searchLocation = useLocation();
     const queryParams = new URLSearchParams(searchLocation.search);
+
+    // State variables
     const [query, setQuery] = useState('');
     const [data, setData] = useState(queryParams.get('q'));
     const [users, setUsers] = useState([]);
@@ -22,7 +26,7 @@ function Search() {
     const [images, setImages] = useState({});
     const [buttonText, setButtonText] = useState({});
 
-
+    // Effect to handle initial search based on query
     useEffect(() => {
         if (data) {
             handleSearch(null, data);
@@ -33,16 +37,14 @@ function Search() {
         }
     }, []);
 
-
+    // Effect to fetch images and button text when users state updates
     useEffect(() => {
-        // Fetch and set images when users state updates
         const fetchImages = async () => {
             const newImages = {};
             const buttonText = {};
             for (let user of users) {
                 const img = await fetchPicture(user.username);
                 newImages[user.username] = img;
-                console.log(user.username, (!checkStatus(user.username)));
                 if (user.isFriend && !(await checkStatus(user.username))) {
                     buttonText[user.username] = '';
                 }
@@ -53,20 +55,17 @@ function Search() {
             setImages(newImages);
             setButtonText(buttonText);
         };
-
-
         fetchImages();
     }, [users]);
 
+    // Function to check friend request status
     const checkStatus = async (userUsername) => {
         try {
             const response = await axios.get(`http://localhost:5000/friends/status/${user2Username}/${userUsername}`);
-            console.log(userUsername, response.data.status);
             if (response.data.status === 'requested') {
                 return true;
             }
             else {
-                // console.log('false');
                 return false;
             }
         } catch (error) {
@@ -74,12 +73,12 @@ function Search() {
         }
     };
 
+    // Function to handle search
     const handleSearch = async (e, input) => {
         if (e != null) {
             e.preventDefault();
         }
         const searchData = input || query;
-        console.log(searchData, user2Username);
         try {
             const response = await axios.get(`http://localhost:5000/users/search`, {
                 params: {
@@ -98,7 +97,7 @@ function Search() {
         }
     };
 
-
+    // Function to add or remove user as friend
     const handleAddUser = async (user1Username) => {
         if (buttonText[user1Username] === 'Requested') {
             try {
@@ -107,7 +106,6 @@ function Search() {
                     user2Username: user1Username,
                 });
                 setButtonText({ ...buttonText, [user1Username]: 'Add Friend' });
-                // console.log('Deleted friend:', user1Username);
             }
             catch (error) {
                 console.error('Error getting users:', error);
@@ -120,17 +118,17 @@ function Search() {
                 user2Username: user1Username,
             });
             setButtonText({ ...buttonText, [user1Username]: 'Requested' });
-            // console.log('Added friend:', user1Username);
         } catch (error) {
             console.error('Error getting users:', error);
         }
     };
 
+    // Function to handle tab change
     const handleTabChange = (type) => {
         setSearchType(type);
     };
 
-
+    // Function to fetch user picture
     const fetchPicture = async (user) => {
         try {
             const response = await axios.get(`http://localhost:5000/image/get/${user}`);
@@ -141,10 +139,10 @@ function Search() {
         }
     };
 
-
     return (
         <div class="search-results-container">
             <div className="search-container">
+                {/* Search form */}
                 <form className="search-form" onSubmit={handleSearch}>
                     <input
                         type="text"
@@ -155,10 +153,12 @@ function Search() {
                     />
                     <button type="submit" className="search-button">Search</button>
                 </form>
+                {/* Search tabs */}
                 <div className="search-tabs">
                     <button className={`search-tab ${searchType === 'users' ? 'active' : ''}`} onClick={() => handleTabChange('users')}>Users</button>
                     <button className={`search-tab ${searchType === 'posts' ? 'active' : ''}`} onClick={() => handleTabChange('posts')}>Posts</button>
                 </div>
+                {/* Users or posts based on search type */}
                 {searchType === 'users' && (
                     <div className='users'>
                         {usersMessage.length !== 0 && <p>{usersMessage}</p>}
@@ -193,6 +193,7 @@ function Search() {
                         </ul>
                     </div>
                 )}
+                {/* Routes for profile and chat */}
                 <Routes>
                     <Route path="/profile/:id" element={<Profile />} />
                     <Route path="/messages/:id" element={<Chat />} />
@@ -201,6 +202,5 @@ function Search() {
         </div>
     );
 }
-
 
 export default Search;

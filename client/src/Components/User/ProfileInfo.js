@@ -2,14 +2,17 @@ import React, { useEffect, useState } from 'react';
 import './ProfileInfo.css';
 import { FaPlus } from 'react-icons/fa';
 import axios from 'axios';
-import { FaEdit, FaTrash, FaSave,FaPencilAlt } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaSave, FaPencilAlt } from 'react-icons/fa';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import { Rating } from 'react-simple-star-rating'
 
 function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue, setIsLoggedIn }) {
 
+  // Using react-router's hook to navigate programmatically
   const navigate = useNavigate();
+
+  // State variables to hold user information and form inputs
   const [username, setUsername] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -38,13 +41,14 @@ function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue, set
   const [editToggle, setEditToggle] = useState(false);
   const sessionUsername = localStorage.getItem('user');
 
-
+  // Function to handle logout
   const handleLogout = () => {
     navigate('/home');
     localStorage.removeItem('user');
     setIsLoggedIn(false);
   };
 
+  // Fetch user data on component mount or profile change
   useEffect(() => {
     async function fetchData() {
       if (profile) {
@@ -58,26 +62,22 @@ function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue, set
         setQualifications(profile.qualifications);
         if (profile.username) {
           try {
-            const response = await axios.get(`http://localhost:5000/image/get/${profile.username}`, {
-            });
+            const response = await axios.get(`http://localhost:5000/image/get/${profile.username}`);
             setProfilePicture(response.data.imageUrl);
           } catch (error) {
             console.error('Error retrieving profile data:', error);
           }
         }
-
       }
     }
-
-
     fetchData();
   }, [profile]);
 
+  // Function to add qualification
   const addQualification = async () => {
     if (editingQualifications) {
-      editQualification()
-    }
-    else {
+      editQualification();
+    } else {
       try {
         const response = await axios.post('http://localhost:5000/qualifications/add', {
           username,
@@ -92,13 +92,15 @@ function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue, set
     }
   };
 
+  // Function to handle edit qualification
   const handleEditQualification = async (skill, id) => {
     setSkill(skill);
     setQIDD(id);
     setShowAddQualification(true);
     setEditingQualifications(true);
-  }
+  };
 
+  // Function to edit qualification
   const editQualification = async () => {
     try {
       const response = await axios.patch(`http://localhost:5000/qualifications/edit/${qIDD}`, {
@@ -112,28 +114,29 @@ function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue, set
     }
   };
 
+  // Function to handle delete qualification
   const handleDeleteQualification = (id, skill) => {
     setQIDD(id);
     setSkillD(skill);
     setShowDeleteConfirmationQ(true);
   };
 
+  // Function to delete qualification
   const deleteQualification = async () => {
     try {
-      const response = await axios.delete(`http://localhost:5000/qualifications/delete/${qIDD}`, {
-      });
+      const response = await axios.delete(`http://localhost:5000/qualifications/delete/${qIDD}`);
       setShowDeleteConfirmationQ(false);
       update(!updateValue);
     } catch (error) {
       console.error('Error removing education', error);
     }
-  }
+  };
 
+  // Function to add education
   const addEducation = async () => {
     if (editingEducation) {
       editEducation();
-    }
-    else {
+    } else {
       try {
         const response = await axios.post('http://localhost:5000/education/add', {
           username,
@@ -150,14 +153,16 @@ function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue, set
     }
   };
 
+  // Function to handle edit education
   const handleEditEducation = async (school, degree, id) => {
     setSchool(school);
     setDegree(degree);
     setEIDD(id);
     setShowAddEducation(true);
     setEditingEducation(true);
-  }
+  };
 
+  // Function to edit education
   const editEducation = async () => {
     try {
       const response = await axios.patch(`http://localhost:5000/education/edit/${eIDD}`, {
@@ -173,6 +178,7 @@ function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue, set
     }
   };
 
+  // Function to handle delete education
   const handleDeleteEducation = (id, school, degree) => {
     setEIDD(id);
     setSchoolD(school);
@@ -180,21 +186,23 @@ function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue, set
     setShowDeleteConfirmationE(true);
   };
 
+  // Function to delete education
   const deleteEducation = async () => {
     try {
-      const response = await axios.delete(`http://localhost:5000/education/delete/${eIDD}`, {
-      });
+      const response = await axios.delete(`http://localhost:5000/education/delete/${eIDD}`);
       setShowDeleteConfirmationE(false);
       update(!updateValue);
     } catch (error) {
       console.error('Error removing education', error);
     }
-  }
+  };
 
+  // Function to handle editing long description
   const handleEditLongDescription = () => {
     setEditingLongDescription(true);
   };
 
+  // Function to save long description
   const handleSaveLongDescription = async () => {
     try {
       await axios.patch(`http://localhost:5000/users/update/${username}`, {
@@ -206,10 +214,12 @@ function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue, set
     }
   };
 
+  // Function to handle editing short description
   const handleEditShortDescription = () => {
     setEditingShortDescription(true);
   };
 
+  // Function to save short description
   const handleSaveShortDescription = async () => {
     try {
       await axios.patch(`http://localhost:5000/users/update/${username}`, {
@@ -221,26 +231,25 @@ function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue, set
     }
   };
 
+  // State variable and function to handle file input
   const [file, setFile] = useState(null);
 
   const handleFileInputChange = (event) => {
     const selectedFile = event.target.files[0];
     setFile(selectedFile);
-    //handleSubmit();
   };
 
+  // Function to handle image click
   const handleImageClick = () => {
     if (username === localStorage.getItem('user')) {
       document.getElementById('fileInput').click();
     }
-
   };
 
-
+  // Upload picture on file change
   useEffect(() => {
     async function uploadPicture() {
       if (!file) {
-        //console.error('No file selected');
         return;
       }
       try {
@@ -253,8 +262,7 @@ function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue, set
           },
         });
         try {
-          const response = await axios.get(`http://localhost:5000/image/get/${username}`, {
-          });
+          const response = await axios.get(`http://localhost:5000/image/get/${username}`);
           setProfilePicture(response.data.imageUrl);
         } catch (error) {
           console.error('Error retrieving profile data:', error);
@@ -266,14 +274,16 @@ function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue, set
     uploadPicture();
   }, [file]);
 
+  // Function to toggle edit mode
   const toggleEdit = () => {
     setEditToggle(!editToggle);
-  }
-
+  };
 
   return (
     <div className="profile-info-container">
+      {/* Left box */}
       <div className="left-box">
+        {/* Profile picture */}
         <div className="center">
           <img src={profilePicture} alt="Profile" className="profile-image" onClick={handleImageClick} />
           {username === localStorage.getItem("user") &&
@@ -284,18 +294,20 @@ function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue, set
               onChange={handleFileInputChange}
             />}
         </div>
+        {/* User info */}
         <div className="section">
           <h2 className="center">{username}</h2>
         </div>
+        {/* Actions */}
         <div className="section">
           <div className="center">
             {username !== localStorage.getItem('user') ? (
               <Link className="schedule-button" to={`/schedule/?q=${username}`}>Schedule Meeting</Link>
             ) : (<div><button className='edit-button' onClick={toggleEdit}> <FaPencilAlt /> Edit</button>
               <Button className='logout' variant="outline-danger" onClick={handleLogout}>Logout</Button></div>)}
-
           </div>
         </div>
+        {/* Short description */}
         <div className="section">
           <h2>Short Description</h2>
           {editingShortDescription ? (
@@ -315,16 +327,20 @@ function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue, set
             </>
           )}
         </div>
+        {/* Average rating */}
         <div className="section">
           <p className="rating">{averageRating}/10 <a href={`#${reviewsID}`}> ({reviewTotal} review(s))</a></p>
           <Rating className="rating-stars" initialValue={averageRating / 2} readonly={true} allowFraction={true}></Rating>
         </div>
       </div>
 
+      {/* Right box */}
       <div className="right-box">
+        {/* About section */}
         <div className="section">
           <h1>About {firstName} {lastName}</h1>
         </div>
+        {/* Long description */}
         <div className="section">
           {editingLongDescription ? (
             <>
@@ -343,12 +359,14 @@ function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue, set
             </>
           )}
         </div>
+        {/* Education section */}
         <div className="section">
           <div className="section-header">
             <h2>Education {editToggle && username == sessionUsername && <button className="add-icon" onClick={() => { setShowAddEducation(true); setEditingEducation(false) }}>
               <FaPlus />
             </button>}</h2>
           </div>
+          {/* List of educations */}
           {education.length && education.map((line) =>
             <li key={line.educationid}>{line.degree} {line.school}
               {editToggle && username === sessionUsername &&
@@ -360,6 +378,7 @@ function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue, set
                   </button></div>}
             </li>
           )}
+          {/* Delete confirmation for education */}
           {showDeleteConfirmationE && (
             <div className="confirmation-popup">
               <p>Are you sure you want to delete this entry?</p>
@@ -368,8 +387,8 @@ function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue, set
               <button onClick={() => setShowDeleteConfirmationE(false)}>No</button>
             </div>
           )}
-
         </div>
+        {/* Add education popup */}
         {showAddEducation && (
           <div className="popup">
             <label htmlFor="qualification">School:</label>
@@ -380,12 +399,14 @@ function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue, set
             <button onClick={() => { setShowAddEducation(false); setSchool(''); setDegree('') }}>Cancel</button>
           </div>
         )}
+        {/* Qualifications section */}
         <div className="section">
           <div className="section-header">
             <h2>Qualifications {editToggle && username == sessionUsername && <button className="add-icon" onClick={() => { setShowAddQualification(true); setEditingQualifications(false) }}>
               <FaPlus />
             </button>}</h2>
           </div>
+          {/* List of qualifications */}
           {qualifications.length && qualifications.map((line) =>
             <li key={line.qualificationid}>{line.skill}
               {editToggle && username == sessionUsername && <div className="icons"><button onClick={() => handleEditQualification(line.skill, line.qualificationid)}>
@@ -395,6 +416,7 @@ function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue, set
                   <FaTrash />
                 </button></div>}</li>
           )}
+          {/* Delete confirmation for qualifications */}
           {showDeleteConfirmationQ && (
             <div className="confirmation-popup">
               <p>Are you sure you want to delete this entry?</p>
@@ -404,6 +426,7 @@ function ProfileInfo({ reviewsID, profile, reviewTotal, update, updateValue, set
             </div>
           )}
         </div>
+        {/* Add qualification popup */}
         {showAddQualification && (
           <div className="popup">
             <label htmlFor="qualification">Qualification:</label>

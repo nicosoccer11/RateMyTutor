@@ -1,3 +1,4 @@
+// Import necessary modules from Chakra UI and React
 import { Flex } from "@chakra-ui/react";
 import React, { useState, useEffect } from "react";
 import Footer from "./Footer";
@@ -6,84 +7,83 @@ import Messages from "./Messages";
 import { useParams } from 'react-router-dom';
 import axios from 'axios'
 
+// Define the Chat component
 const Chat = (props) => {
-	const [messages, setMessages] = useState([
-		// { from: "computer", text: "Hi, My Name is HoneyChat" },
-		// { from: "me", text: "Hey there" },
-		// { from: "me", text: "Myself Ferin Patel" },
-		// {
-		// from: "computer",
-		// text: "Nice to meet you. You can send me message and i'll reply you with same message.",
-		// },
-	]);
+	// State variables initialization
+	const [messages, setMessages] = useState([]);
 	const [inputMessage, setInputMessage] = useState("");
+	// Get the logged-in user from localStorage
 	let user = localStorage.getItem('user');
+	// Get the friend's id from the URL params
 	const friendId = useParams();
+	// Determine the friend based on props or URL params
 	const friend = props ? props.friend : friendId.id;
+
+	// Function to fetch previous messages between the user and the friend
 	useEffect(() => {
-		const getPrevMessages = async () =>{
-			//console.log(`user->${user} friend->${friendId.id}`);
-			
-		
-			await axios.get(`http://localhost:5000/messages/history/${user}/${friend}`).then((response) => {
-				//console.log(response.data.data);
+		const getPrevMessages = async () => {
+			try {
+				// Fetch previous messages from the server
+				const response = await axios.get(`http://localhost:5000/messages/history/${user}/${friend}`);
+				// Process the response data to format messages
 				let msgData = response.data.data;
 				let previous_messages = [];
 				for (let msg in msgData){
-					//console.log(msgData[msg]);
-					previous_messages.push({"from": msgData[msg].user1id,
-											"text": msgData[msg].content
-											});
+					previous_messages.push({
+						"from": msgData[msg].user1id,
+						"text": msgData[msg].content
+					});
 				}
+				// Set the messages state with previous messages
 				setMessages(previous_messages)
-			})
+			} catch (error) {
+				console.error('Error retrieving previous messages:', error);
+			}
 		}
 		getPrevMessages();
-
-		// let interval;
-		// if (!interval) {
-		// 	interval = setInterval(getPrevMessages, 3000);
-		// }
-
-		// return () => clearInterval(interval);
 	}, [friend])
-	
+
+	// Function to handle sending a new message
 	const handleSendMessage = () => {
 		if (!inputMessage.trim().length) {
-		return;
+			return;
 		}
+		// Create message data
 		const data = inputMessage;
-
+		// Update messages state with the new message
 		setMessages((old) => [...old, { from: user, text: data }]);
 		setInputMessage("");
 
-		setTimeout(() => {
-		//setMessages((old) => [...old, { from: "computer", text: data }]);
-		}, 1000);
-
+		// Send the message to the server
 		axios.post('http://localhost:5000/messages/send', {
 			senderUsername: user,
 			receiverUsername: friend,
 			content: inputMessage
 		}).then((response) => {
-		}, (error) => {
-			console.error(error);
+			// Handle success response if needed
+		}).catch((error) => {
+			console.error('Error sending message:', error);
 		});
 	};
 
+	// Render the Chat component
 	return (
 		<Flex w="25%" h="100%" justify="left" align="center">
-		<Flex w="1000%" h="90%" flexDir="column">
-			<Header username={friend}/>
-			<Messages messages={messages} user1={user} user2={friend}/>
-			<Footer
-			inputMessage={inputMessage}
-			setInputMessage={setInputMessage}
-			handleSendMessage={handleSendMessage}
-			/>
-		</Flex>
+			<Flex w="1000%" h="90%" flexDir="column">
+				{/* Header component */}
+				<Header username={friend}/>
+				{/* Messages component */}
+				<Messages messages={messages} user1={user} user2={friend}/>
+				{/* Footer component */}
+				<Footer
+					inputMessage={inputMessage}
+					setInputMessage={setInputMessage}
+					handleSendMessage={handleSendMessage}
+				/>
+			</Flex>
 		</Flex>
 	);
-	};
+};
 
+// Export the Chat component
 export default Chat;

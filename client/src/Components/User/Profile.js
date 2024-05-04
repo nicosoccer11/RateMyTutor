@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import ProfileInfo from './ProfileInfo';
 import Reviews from './Reviews';
-import './Profile.css'
+import './Profile.css';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import Posts from './Posts';
 import Qualities from './Qualities';
-function Profile({ setIsLoggedIn }) {
 
+function Profile({ setIsLoggedIn }) {
+  // State variables for profile information, reviews, posts, and qualities
   const [profileInfo, setProfileInfo] = useState(null);
   const [reviewsOriginal, setReviewsOriginal] = useState(null);
   const [reviews, setReviews] = useState(null);
@@ -15,26 +16,30 @@ function Profile({ setIsLoggedIn }) {
   const [tempQualities, setTempQualities] = useState(null);
   const [qualities, setQualities] = useState(null);
   const [reviewTotal, setReviewTotal] = useState(0);
-  const user = useParams();
-  const loggedInUser = localStorage.getItem('user');
   const [userProfileID, setUserProfileID] = useState(null);
   const [update, setUpdate] = useState(false);
   const [hadSession, setHadSession] = useState(false);
 
-  useEffect(() => {
+  // Extracting user ID from the URL path using useParams hook
+  const user = useParams();
+  const loggedInUser = localStorage.getItem('user');
 
+  // useEffect hook to fetch profile information and review status
+  useEffect(() => {
     const fetchProfileInfo = async () => {
       try {
         var username = localStorage.getItem('user');
         if (user.id !== undefined) {
           username = user.id;
         }
+        // Fetch profile information from the server
         const response = await axios.get('http://localhost:5000/profile', {
           headers: {
             username: username
           }
         });
 
+        // Set profile information, reviews, and other relevant data
         setProfileInfo(response.data.user);
         setReviewsOriginal(response.data.reviews);
         setReviewTotal(response.data.reviews.length);
@@ -45,6 +50,8 @@ function Profile({ setIsLoggedIn }) {
         console.error('Error retrieving profile data:', error);
       }
     };
+
+    // Fetch review status (whether the logged-in user had a session with the profile user)
     const fetchReviewStatus = async () => {
       try {
         var username = localStorage.getItem('user');
@@ -56,27 +63,27 @@ function Profile({ setIsLoggedIn }) {
           tutor: username
         });
         setHadSession(response.data.hadMeeting);
-        console.log(response.data.hadMeeting);
       } catch (error) {
         console.error('Error retrieving profile data:', error);
       }
     };
+
     fetchProfileInfo();
     fetchReviewStatus();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, update]);
+  }, [user, update]); // Dependency array includes 'user' and 'update' to trigger effect on relevant changes
 
+  // useEffect hook to fetch qualities and match with logged-in user's qualities
   useEffect(() => {
-
     const fetchQualities = async () => {
-      if(tempQualities){
+      if (tempQualities) {
         try {
-          const response = await axios.get(`http://localhost:5000/user-qualities/${loggedInUser}`, {
-          });
-          for(var i = 0; i < tempQualities.length; i++){
+          // Fetch qualities data from the server
+          const response = await axios.get(`http://localhost:5000/user-qualities/${loggedInUser}`);
+          // Match user's qualities with logged-in user's qualities
+          for (var i = 0; i < tempQualities.length; i++) {
             tempQualities[i].hasmatch = response.data[i].hasquality && tempQualities[i].hasquality;
           }
-          setQualities(tempQualities);
+          setQualities(tempQualities); // Set matched qualities
         } catch (error) {
           console.error('Error retrieving qualities data:', error);
         }
@@ -84,11 +91,11 @@ function Profile({ setIsLoggedIn }) {
     }
 
     fetchQualities();
-    
-  }, [tempQualities])
+  }, [tempQualities, loggedInUser]); // Dependency array includes 'tempQualities' and 'loggedInUser'
 
+  // useEffect hook to calculate rating color for reviews
   useEffect(() => {
-
+    // Function to calculate rating color based on score
     const calculateRatingColor = (score) => {
       if (score >= 7) {
         return 'green';
@@ -100,23 +107,22 @@ function Profile({ setIsLoggedIn }) {
     };
 
     if (reviewsOriginal && reviewsOriginal.length > 0) {
+      // Update reviews with calculated rating color
       const updatedReviews = reviewsOriginal.map(review => {
         var color = calculateRatingColor(review.score)
         review.ratingColor = color;
-        return {
-          ...review
-        };
+        return { ...review };
       });
       setReviews(updatedReviews);
     }
-  }, [reviewsOriginal])
+  }, [reviewsOriginal]); // Dependency array includes 'reviewsOriginal'
 
-
+  // Render profile information, qualities, posts, and reviews
   return (
     <div className='profile'>
       <ProfileInfo reviewsID="reviews" profile={profileInfo} reviewTotal={reviewTotal} update={setUpdate} updateValue={update} setIsLoggedIn={setIsLoggedIn} />
       <Qualities qualities={qualities} setQualities={setQualities} user={userProfileID} />
-      <Posts posts={posts} user={userProfileID} update={setUpdate} updateValue={update}/>
+      <Posts posts={posts} user={userProfileID} update={setUpdate} updateValue={update} />
       <Reviews reviews={reviews} user={userProfileID} hadSession={hadSession} update={setUpdate} updateValue={update} />
     </div>
   );

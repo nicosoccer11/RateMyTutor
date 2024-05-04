@@ -1,26 +1,15 @@
-
-// const Post = ({ user, content }) => {
-
-
-//     useEffect(() => {
-//         const fetchPicture = async (user) => {
-//         await axios.get(`http://localhost:5000/image/get/${user}`).then((response) => {
-//             setImage(response.data.imageUrl);
-//         })
-//         }
-
-//         fetchPicture(user);
-//     }, [])
-
+// This component represents a single post.
+// It displays the user's profile picture, username, content, likes, and comments.
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom';
 import "./home.css";
 import axios from 'axios';
 import Comment from './comment';
 import { Avatar } from '@chakra-ui/react';
-import { FaThumbsUp, FaComment} from 'react-icons/fa'; 
+import { FaThumbsUp, FaComment } from 'react-icons/fa'; 
 
 const Post = ({ user, content, postid, num_likes }) => {
+    // State variables initialization
     const [update, setupdate] = useState(false);
     const [numLikes, setNumLikes] = useState(0);
     const [numComment, setcomment] = useState(0);
@@ -28,6 +17,7 @@ const Post = ({ user, content, postid, num_likes }) => {
     const [image, setImage] = useState("");
     const [liked, setLiked] = useState(false);
 
+    // Fetch user's profile picture
     useEffect(() => {
         const fetchPicture = async (user) => {
             await axios.get(`http://localhost:5000/image/get/${user}`).then((response) => {
@@ -37,6 +27,7 @@ const Post = ({ user, content, postid, num_likes }) => {
 
         fetchPicture(user);
 
+        // Fetch number of likes for the post
         const fetchNumLikes = async (postId) => {
             try {
                 const response = await axios.get(`http://localhost:5000/likes/${postId}`);
@@ -48,7 +39,7 @@ const Post = ({ user, content, postid, num_likes }) => {
         fetchNumLikes(postid);
     }, [postid, update]);
 
-
+    // Fetch number of comments and check if the current user has liked the post
     useEffect(() => {
         const fetchNumCom = async (postId) => {
             try {
@@ -72,7 +63,7 @@ const Post = ({ user, content, postid, num_likes }) => {
 
     }, [postid, update]);
 
-
+    // Submit a new comment
     const submit = async (content) => {
         try {
             const newComment = await axios.post('http://localhost:5000/comments', {
@@ -86,17 +77,12 @@ const Post = ({ user, content, postid, num_likes }) => {
         }
     };
 
-
-
+    // Fetch all comments for the post
     useEffect(() => {
         const fetchComments = async (postId) => {
             try {
                 const response = await axios.get(`http://localhost:5000/comments/${postId}`);
                 setAllComments(response.data);
-                if (postid === 26) {
-                    console.log("all comments:", postid, response.data);
-                }
-
             } catch (error) {
                 console.error('Error retrieving profile data:', error);
             }
@@ -104,6 +90,7 @@ const Post = ({ user, content, postid, num_likes }) => {
         fetchComments(postid);
     }, [update, postid]);
 
+    // Toggle display of comments box
     function toggleCommentsBox(event) {
         var post = event.target.closest(".post");
         var commentsBox = post.querySelector(".comments-box");
@@ -115,7 +102,7 @@ const Post = ({ user, content, postid, num_likes }) => {
         }
     }
 
-
+    // Submit a comment
     function submitComment(event) {
         var post = event.target.closest(".post");
         var input = post.querySelector(".comment-input");
@@ -123,23 +110,24 @@ const Post = ({ user, content, postid, num_likes }) => {
         if (commentText !== "") {
             submit(commentText);
             input.value = "";
-
         } else {
             alert("Please enter a comment.");
         }
     }
 
+    // Show/hide all comments
     const [showAllComments, setShowAllComments] = useState(false);
     function get_all_comment() {
         setShowAllComments(!showAllComments);
-        console.log(showAllComments);
     }
 
+    // Adjust textarea height dynamically
     function adjustTextareaHeight(el) {
         el.style.height = "auto";
         el.style.height = (el.scrollHeight) + "px";
     }
 
+    // Handle like/unlike functionality
     function handleLike() {
         if (liked) {
             axios.delete(`http://localhost:5000/likes`, {
@@ -160,6 +148,7 @@ const Post = ({ user, content, postid, num_likes }) => {
         }
     }
 
+    // Render the post component
     return (
         <div className="post">
             <div className='username'>
@@ -191,6 +180,5 @@ const Post = ({ user, content, postid, num_likes }) => {
         </div>
     );
 }
-
 
 export default Post;

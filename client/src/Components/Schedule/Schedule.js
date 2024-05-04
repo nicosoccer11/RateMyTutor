@@ -10,6 +10,7 @@ import 'react-dropdown/style.css';
 
 
 function Schedule() {
+    // State variables
     const searchLocation = useLocation();
     const queryParams = new URLSearchParams(searchLocation.search);
     const [incomingRequests, setIncomingRequests] = useState([]);
@@ -24,6 +25,7 @@ function Schedule() {
 
     const username = localStorage.getItem('user');
 
+    // useEffect to fetch data when username changes
     useEffect(() => {
         if (username) {
             fetchOutgoing();
@@ -34,6 +36,7 @@ function Schedule() {
         }
     }, [username]);
 
+    // useEffect to fetch images when meeting data changes
     useEffect(() => {
         const fetchImages = async () => {
             const newImages = {};
@@ -59,6 +62,7 @@ function Schedule() {
         fetchImages();
     }, [incomingRequests, outgoingRequests, meetingsWithTutors, meetingsWithStudents]);
 
+    // Function to fetch user image
     const fetchPicture = async (user) => {
         try {
             const response = await axios.get(`http://localhost:5000/image/get/${user}`);
@@ -69,6 +73,7 @@ function Schedule() {
         }
     };
 
+    // Function to format date and time
     const formatDateTime = (dateTimeString) => {
         const options = {
             year: 'numeric',
@@ -81,6 +86,7 @@ function Schedule() {
         return date.toLocaleString(undefined, options);
     };
 
+    // Function to format date and time with hours and minutes
     const formatDateTimeHours = (dateTimeString) => {
         const options = {
             hour: 'numeric',
@@ -90,6 +96,7 @@ function Schedule() {
         return date.toLocaleString(undefined, options);
     };
 
+    // Function to fetch friends
     const getFriends = async () => {
         try {
             const response = await axios.post('http://localhost:5000/friends/get', {
@@ -101,6 +108,7 @@ function Schedule() {
         }
     }
 
+    // Function to fetch outgoing meeting requests
     const fetchOutgoing = async () => {
         try {
             const response = await axios.post('http://localhost:5000/schedule/OutgoingRequests', {
@@ -112,6 +120,7 @@ function Schedule() {
         }
     };
 
+    // Function to fetch incoming meeting requests
     const fetchIncoming = async () => {
         try {
             const response = await axios.post('http://localhost:5000/schedule/get', {
@@ -123,30 +132,31 @@ function Schedule() {
         }
     };
 
+    // Function to fetch meeting requests where user is a tutor
     const fetchTutor = async () => {
         try {
             const response = await axios.post('http://localhost:5000/schedule/get/sentRequests', {
                 username: username
             });
             setMeetingsWithTutors(response.data.meetingRequests);
-            // console.log("tutor", response.data.meetingRequests);
         } catch (error) {
             console.error('Error fetching outgoing meeting requests:', error);
         }
     };
 
+    // Function to fetch meeting requests where user is a student
     const fetchStudent = async () => {
         try {
             const response = await axios.post('http://localhost:5000/schedule/get/scheduledRequest', {
                 username: username
             });
             setMeetingsWithStudents(response.data.meetingRequests);
-            // console.log("student", response.data.meetingRequests);
         } catch (error) {
             console.error('Error fetching outgoing meeting requests:', error);
         }
     };
 
+    // Function to handle sending a meeting request
     const handleSendRequest = async () => {
         if (selectedUser) {
             try {
@@ -156,7 +166,6 @@ function Schedule() {
                     start_time: selectedDate,
                     minutes: meetingDuration
                 });
-                // console.log("Creating request:", username, selectedUser, selectedDate, meetingDuration);
                 if (response) {
                     fetchOutgoing();
                 }
@@ -166,6 +175,7 @@ function Schedule() {
         }
     };
 
+    // Function to handle accepting a meeting request
     const handleAcceptRequest = async (requestId) => {
         try {
             await axios.post(`http://localhost:5000/schedule/respond/1`, {
@@ -180,6 +190,7 @@ function Schedule() {
         }
     };
 
+    // Function to handle declining a meeting request
     const handleDeclineRequest = async (requestId) => {
         try {
             await axios.post(`http://localhost:5000/schedule/respond/0`, {
