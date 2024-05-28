@@ -1,0 +1,345 @@
+const db = require('../config/db');
+
+// Create a new user with specified fields
+const createUser = async (req, res) => {
+  const { username, password, firstname, lastname, email } = req.body;
+
+  // Validate that the username does not contain spaces
+  if (/\s/.test(username)) {
+    return res.status(400).send('Username must not contain spaces.');
+  }
+  // Validate that the password field is not empty
+  if (!password) {
+    return res.status(400).send('Password field  cannot be empty');
+  }
+
+  try {
+    const newUser = await db.query(
+      'INSERT INTO users (Username, Password, FirstName, LastName, Email, profilepicture) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+      [username, password, firstname, lastname, email, "Test.jpg"]
+    );
+    res.json(newUser.rows[0]);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error, check console for logs');
+  }
+};
+
+const createUserWithGoogle = async (req, res) => {
+  const { email, given_name, family_name, picture } = req.body;
+  // Check if the user already exists
+  const existingUserResponse = await db.query('SELECT * FROM users WHERE Email = $1', [email]);
+  if (existingUserResponse.rows.length > 0) {
+    // User already exists, so log them in
+    const user = existingUserResponse.rows[0];
+    res.json({ message: 'Login successful', username: user.username });
+  } else {
+    // No existing user, create a new one
+    try {
+      const newUserResponse = await db.query(
+        'INSERT INTO users (Username, FirstName, LastName, Email, ProfilePicture) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+        [email.split('@')[0], given_name, family_name, email, picture] // Generates username from email (we can and should change this)
+      );
+      const newUser = newUserResponse.rows[0];
+      res.json({ message: 'User created successfully.', username: newUser.username });
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send('Server Error, check console for logs');
+    }
+  }
+};
+
+// Get all users
+const getAllUsers = async (req, res) => {
+  try {
+    const allUsers = await db.query('SELECT * FROM users');
+    res.json(allUsers.rows);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error, check console for logs');
+  }
+};
+
+// Get a user's profile
+const getUserProfile = async (req, res) => {
+  const username = req.headers['username'];
+
+  try {
+    // Fetch user information
+    const userResult = await db.query('SELECT * FROM users WHERE Username = $1', [username]);
+    if (userResult.rows.length === 0) {
+      return res.status(404).send('User not found');
+    }
+    const user = userResult.rows[0];
+
+    // Fetch user's reviews as a tutor and calculate average rating
+    const reviewsResult = await db.query('SELECT * FROM reviews WHERE TutorReviewedID = $1', [username]);
+    const reviews = reviewsResult.rows;
+
+    // Calculate average rating
+    const averageRatingResult = await db.query(
+      'SELECT AVG(Score) as averageRating FROM reviews WHERE TutorReviewedID = $1',
+      [username]
+    );
+    const averageRating = averageRatingResult.rows[0].averagerating ? parseFloat(averageRatingResult.rows[0].averagerating).toFixed(2) : null;
+
+    // Fetch user's education
+    const educationResult = await db.query('SELECT * FROM education WHERE Username = $1', [username]);
+    const education = educationResult.rows;
+
+    // Fetch user's qualifications
+    const qualificationsResult = await db.query('SELECT * FROM qualifications WHERE Username = $1', [username]);
+    const qualifications = qualificationsResult.rows;
+
+    // Fetch user's own posts
+    const postsResult = await db.query('SELECT * FROM posts WHERE UserID = $1 ORDER BY Time DESC', [username]);
+    const posts = postsResult.rows;
+    
+    // Fetch user's qualities
+    const qualitiesResult = await db.query(
+      `SELECT q.QualityID, q.QualityName, 
+      CASE WHEN uq.Username IS NULL THEN 0 ELSE 1 END AS HasQuality
+      FROM qualities q
+      LEFT JOIN user_qualities uq ON q.QualityID = uq.QualityID AND uq.Username = $1
+      ORDER BY q.QualityID`, 
+      [username]
+    );
+    const qualities = qualitiesResult.rows;
+    // Combine user info, reviews, education, qualifications, and average rating in the response
+    res.json({
+      user: {
+        username: user.username,
+        firstName: user.firstname,
+        lastName: user.lastname,
+        email: user.email,
+        bio: user.bio,
+        profilePicture: user.profilepicture,
+        averageRating: averageRating,
+        shortDescription: user.shortdescription,
+        longDescription: user.longdescription,
+        education,
+        qualifications,
+        posts,
+        qualities
+      },
+      reviews
+    });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error, check console for logs');
+  }
+};
+
+// Login a user
+const loginUser = async (req, res) => {
+  const { username, password } = req.body;
+  try {
+    // Query the database for the user
+    const queryResult = await db.query('SELECT * FROM users WHERE Username = $1', [username]);
+    const user = queryResult.rows[0];
+
+    if (user && user.password === password) {
+      // Passwords match, send username back
+      res.json({ message: 'Login successful', username: user.username });
+    } else {
+      // Authentication failed
+      res.status(401).send('Authentication failed');
+    }
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+};
+
+// Update user information
+const updateUser = async (req, res) => {
+  const { username } = req.params; // Assuming username is in the URL
+  const updates = req.body; // All updates are passed in the request body
+
+  // Construct the SET part of the SQL query dynamically based on provided fields
+  const setString = Object.keys(updates).map(
+    (key, index) => `${key} = $${index + 2}`
+  ).join(', ');
+
+  // Ensure that only fields that exist in the users table can be updated
+  if (!setString) {
+    return res.status(400).send('No valid fields provided for update.');
+  }
+
+  try {
+    // Execute the update query, passing the username and values to update
+    await db.query(
+      `UPDATE users SET ${setString} WHERE Username = $1 RETURNING *`,
+      [username, ...Object.values(updates)]
+    );
+
+    res.send('User updated successfully.');
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error, check console for logs');
+  }
+};
+
+// Search users by username
+const searchUsersByUsername = async (req, res) => {
+  const searchString = req.query.username;
+  const requesterUsername = req.query.requester;
+
+  if (!searchString) {
+    return res.status(400).send('Search username is required.');
+  }
+
+  try {
+    // Step 1: Fetch matching users
+    const usersQuery = `
+      SELECT Username FROM users
+      WHERE Username ILIKE $1
+      AND Username <> $2
+    `;
+    const searchValue = `%${searchString}%`;
+    const usersResult = await db.query(usersQuery, [searchValue, requesterUsername]);
+    let users = usersResult.rows;
+
+    // Step 2: Check friendship status for each user
+    for (let i = 0; i < users.length; i++) {
+      const friendCheckQuery = `
+        SELECT EXISTS (
+          SELECT 1 FROM friends
+          WHERE (LOWER(User1ID) = LOWER($1) AND LOWER(User2ID) = LOWER($2))
+          OR (LOWER(User1ID) = LOWER($2) AND LOWER(User2ID) = LOWER($1))
+        ) AS "isFriend"
+      `;
+      const friendCheckResult = await db.query(friendCheckQuery, [requesterUsername, users[i].username]);
+      users[i].isFriend = friendCheckResult.rows[0].isFriend;
+    }
+
+    res.json(users);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error, check console for logs');
+  }
+};
+
+// Unified search function
+const searchEverything = async (req, res) => {
+  const { term, requesterUsername } = req.query;
+  console.log(term, requesterUsername);
+  if (!term) {
+    return res.status(400).send('A search term is required.');
+  }
+
+  const terms = term.split(',').map(t => t.trim()).filter(t => t);
+
+  if (terms.length === 0) {
+    return res.status(400).send('A search term is required.');
+  }
+
+  try {
+    const searchPatterns = terms.map(t => `%${t}%`);
+
+    // Use ANY to match any of the search patterns
+    const userQuery = `
+      SELECT DISTINCT u.Username,
+      EXISTS (
+        SELECT 1 FROM friends
+        WHERE (User1ID = $2 AND User2ID = u.Username) OR (User1ID = u.Username AND User2ID = $2)
+      ) AS "isFriend"
+      FROM users u
+      LEFT JOIN qualifications q ON u.Username = q.Username
+      LEFT JOIN education e ON u.Username = e.Username
+      WHERE (u.Username ILIKE ANY($1::text[]) OR q.Skill ILIKE ANY($1::text[]) OR e.School ILIKE ANY($1::text[]) OR e.Degree ILIKE ANY($1::text[]))
+      AND u.Username <> $2
+    `;
+
+    // Perform the searches
+    const users = await db.query(userQuery, [searchPatterns, requesterUsername]);
+
+    const postsQuery = `
+      SELECT p.PostID, p.UserID, p.Content
+      FROM posts p
+      WHERE p.Content ILIKE ANY($1::text[])
+    `;
+
+    const posts = await db.query(postsQuery, [searchPatterns]);
+
+    // Aggregate results without needing to remove duplicates
+    const results = {
+      usernames: users.rows,
+      posts: posts.rows
+    };
+
+    res.json(results);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server error');
+  }
+};
+
+const getSuggestedFriends = async (req, res) => {
+  const { username } = req.params;
+
+  try {
+    // Retrieve the current user's qualities as an array of IDs
+    const currentUserQualitiesResult = await db.query(
+      'SELECT QualityID FROM user_qualities WHERE Username = $1',
+      [username]
+    );
+    const currentUserQualities = currentUserQualitiesResult.rows.map(q => q.QualityID);
+
+    let suggestedFriends = [];
+    // if (currentUserQualities.length > 0) {
+    //   // Use the ANY function for array comparison in PostgreSQL
+    //   const suggestedFriendsQuery = `
+    //     SELECT u.Username, COUNT(*) AS sharedQualitiesCount
+    //     FROM users u
+    //     JOIN user_qualities uq ON u.Username = uq.Username
+    //     WHERE uq.QualityID = ANY($1::int[])
+    //     AND u.Username <> $2
+    //     AND NOT EXISTS (
+    //       SELECT 1 FROM friends
+    //       WHERE (User1ID = u.Username AND User2ID = $2) OR (User1ID = $2 AND User2ID = u.Username)
+    //     )
+    //     GROUP BY u.Username
+    //     ORDER BY sharedQualitiesCount DESC
+    //     LIMIT 3
+    //   `;
+    //   const suggestedFriendsResult = await db.query(suggestedFriendsQuery, [currentUserQualities, username]);
+    //   suggestedFriends = suggestedFriendsResult.rows;
+    // }
+    // If there are fewer than 3 suggested friends based on shared qualities, add random users
+    if (suggestedFriends.length < 3) {
+      const fillCount = 3 - suggestedFriends.length;
+      const additionalUsersQuery = `
+        SELECT Username, FIRSTNAME, LASTNAME FROM users
+        WHERE Username <> $1
+        AND Username NOT IN (
+          SELECT User1ID FROM friends WHERE User2ID = $1
+          UNION
+          SELECT User2ID FROM friends WHERE User1ID = $1
+        )
+        ORDER BY RANDOM()
+        LIMIT $2
+      `;
+      const additionalUsersResult = await db.query(additionalUsersQuery, [username, fillCount]);
+      suggestedFriends.push(...additionalUsersResult.rows);
+    }
+
+    res.json(suggestedFriends);
+  } catch (err) {
+    console.error("Error:", err.message);
+    res.status(500).send('Server Error, check console for logs');
+  }
+};
+
+// Export the functions
+module.exports = {
+  createUser,
+  getAllUsers,
+  loginUser,
+  getUserProfile,
+  updateUser,
+  searchUsersByUsername,
+  searchEverything,
+  createUserWithGoogle,
+  getSuggestedFriends
+};

@@ -1,0 +1,1 @@
+pip3 install chromadb sentence-transformers pandas psycopg2 flask flask_cors
